@@ -1,0 +1,438 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>MicroLab | Staff Login</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+          rel="stylesheet">
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <style>
+        :root {
+            --primary: #087f8c;
+            --primary-dark: #066570;
+            --text-dark: #173042;
+            --text-muted: #748494;
+            --border: #dce7ec;
+            --white: #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px 16px;
+            background: #f3f8fb;
+            font-family: 'Inter', sans-serif;
+            color: var(--text-dark);
+        }
+
+        /* Login panel */
+
+        .login-container {
+            width: 100%;
+            max-width: 460px;
+            padding: 35px 36px;
+            background: var(--white);
+            border: 1px solid #e5edf1;
+            border-radius: 18px;
+            box-shadow: 0 15px 45px rgba(23, 48, 66, 0.08);
+        }
+
+        /* Large logo */
+
+        .brand {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 22px;
+        }
+
+        .brand-logo {
+            display: block;
+            width: 100%;
+            max-width: 200px;
+            height: 150px;
+            object-fit: contain;
+            object-position: center;
+        }
+
+        /* Heading */
+
+        .login-heading {
+            margin-bottom: 28px;
+            text-align: center;
+        }
+
+        .login-heading h1 {
+            margin-bottom: 8px;
+            font-size: 28px;
+            font-weight: 800;
+            letter-spacing: -0.7px;
+        }
+
+        .login-heading p {
+            font-size: 13px;
+            line-height: 1.7;
+            color: var(--text-muted);
+        }
+
+        /* Django messages */
+
+        .message {
+            padding: 12px 14px;
+            margin-bottom: 18px;
+            border: 1px solid transparent;
+            border-radius: 9px;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .message.error {
+            background: #fff0f0;
+            color: #b42318;
+            border-color: #ffd4d4;
+        }
+
+        .message.success {
+            background: #eaf9f0;
+            color: #167342;
+            border-color: #c8efd6;
+        }
+
+        .message.warning {
+            background: #fff8e8;
+            color: #8a5a00;
+            border-color: #f6e2a8;
+        }
+
+        .message.info {
+            background: #eaf5ff;
+            color: #175b91;
+            border-color: #cce4fa;
+        }
+
+        /* Form fields */
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 9px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #31485a;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #8295a3;
+            font-size: 17px;
+            pointer-events: none;
+        }
+
+        .input-wrapper input {
+            width: 100%;
+            height: 50px;
+            padding: 0 44px;
+            border: 1px solid var(--border);
+            border-radius: 9px;
+            outline: none;
+            background: #fbfdfe;
+            color: var(--text-dark);
+            font-family: inherit;
+            font-size: 13px;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .input-wrapper input::placeholder {
+            color: #9aa9b5;
+        }
+
+        .input-wrapper input:focus {
+            border-color: var(--primary);
+            background: white;
+            box-shadow: 0 0 0 3px rgba(8, 127, 140, 0.10);
+        }
+
+        /* Password visibility */
+
+        .password-toggle {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            padding: 5px;
+            border: none;
+            background: transparent;
+            color: #8295a3;
+            cursor: pointer;
+            font-size: 17px;
+        }
+
+        .password-toggle:hover {
+            color: var(--primary);
+        }
+
+        /* Login button */
+
+        .login-btn {
+            width: 100%;
+            height: 50px;
+            margin-top: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 9px;
+            border: none;
+            border-radius: 9px;
+            background: var(--primary);
+            color: white;
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .login-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .login-btn:focus-visible,
+        .password-toggle:focus-visible {
+            outline: 3px solid #80d4da;
+            outline-offset: 3px;
+        }
+
+        /* Security note */
+
+        .security-note {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-top: 22px;
+            padding: 12px;
+            border: 1px solid #e5f0f2;
+            border-radius: 9px;
+            background: #f5fafb;
+        }
+
+        .security-note i {
+            color: var(--primary);
+            font-size: 17px;
+        }
+
+        .security-note p {
+            font-size: 11px;
+            line-height: 1.7;
+            color: var(--text-muted);
+        }
+
+        .copyright {
+            margin-top: 22px;
+            text-align: center;
+            font-size: 11px;
+            line-height: 1.8;
+            color: #98a7b2;
+        }
+
+        /* Tablet */
+
+        @media (max-width: 768px) {
+            .login-container {
+                max-width: 440px;
+                padding: 30px;
+            }
+
+            .brand-logo {
+                max-width: 340px;
+                height: 130px;
+            }
+        }
+
+        /* Mobile */
+
+        @media (max-width: 480px) {
+            body {
+                padding: 15px;
+            }
+
+            .login-container {
+                padding: 25px 20px;
+                border-radius: 14px;
+            }
+
+            .brand {
+                margin-bottom: 18px;
+            }
+
+            .brand-logo {
+                max-width: 100%;
+                height: 110px;
+            }
+
+            .login-heading {
+                margin-bottom: 24px;
+            }
+
+            .login-heading h1 {
+                font-size: 25px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="login-container">
+
+    <!-- MicroLab logo -->
+    <div class="brand">
+        <img
+            src="https://microlabchengannur.com/static/logo.png"
+            alt="MicroLab Logo"
+            class="brand-logo"
+        >
+    </div>
+
+    <!-- Heading -->
+    <div class="login-heading">
+        <h1>Welcome Back!</h1>
+        <p>Sign in to access the Patient Queue Management System.</p>
+    </div>
+
+    <!-- Django messages -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="message {{ message.tags }}">
+                <i class="bi bi-info-circle"></i>
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- Login form -->
+    <form method="POST">
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label for="username">Username</label>
+
+            <div class="input-wrapper">
+                <i class="bi bi-person input-icon"></i>
+
+                <input
+                    type="text"
+                    id="username"
+                    name="username"
+                    placeholder="Enter your username"
+                    autocomplete="username"
+                    required
+                    autofocus
+                >
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="password">Password</label>
+
+            <div class="input-wrapper">
+                <i class="bi bi-lock input-icon"></i>
+
+                <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    placeholder="Enter your password"
+                    autocomplete="current-password"
+                    required
+                >
+
+                <button
+                    type="button"
+                    class="password-toggle"
+                    id="togglePassword"
+                    aria-label="Show password"
+                    title="Show password"
+                >
+                    <i class="bi bi-eye" id="passwordIcon"></i>
+                </button>
+            </div>
+        </div>
+
+        <button type="submit" class="login-btn">
+            <span>Sign In</span>
+            <i class="bi bi-arrow-right"></i>
+        </button>
+    </form>
+
+    <!-- Security note -->
+    <div class="security-note">
+        <i class="bi bi-shield-lock"></i>
+
+        <p>
+            <strong>Secure Staff Login</strong><br>
+            Keep your login credentials confidential.
+        </p>
+    </div>
+
+    <!-- Footer -->
+    <div class="copyright">
+        &copy; 2026 MicroLab. All rights reserved.
+    </div>
+
+</div>
+
+<script>
+    const passwordInput = document.getElementById("password");
+    const togglePassword = document.getElementById("togglePassword");
+    const passwordIcon = document.getElementById("passwordIcon");
+
+    togglePassword.addEventListener("click", function () {
+        const showPassword = passwordInput.type === "password";
+
+        passwordInput.type = showPassword ? "text" : "password";
+
+        passwordIcon.className = showPassword
+            ? "bi bi-eye-slash"
+            : "bi bi-eye";
+
+        togglePassword.setAttribute(
+            "aria-label",
+            showPassword ? "Hide password" : "Show password"
+        );
+
+        togglePassword.setAttribute(
+            "title",
+            showPassword ? "Hide password" : "Show password"
+        );
+    });
+</script>
+
+</body>
+</html>

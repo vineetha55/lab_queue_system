@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+  <div class="sidebar-wrapper" id="sidebar">
+    <!-- Brand Logo / Identity -->
+    <a href="/admin_home/" class="sidebar-brand">
+      <i class="bi bi-asterisk"></i>
+      <span>Microlab</span>
+    </a>
+
+    <!-- Navigation Menu -->
+    <div class="flex-grow-1 overflow-y-auto">
+      <!-- Group: Menu -->
+      <div class="sidebar-menu-section">
+        <div class="sidebar-menu-title">Menu</div>
+        <ul class="sidebar-menu-list">
+          <li class="sidebar-menu-item">
+            <a href="/admin_home" class="sidebar-menu-link active" id="menu-overview" title="Overview">
+              <i class="bi bi-grid-fill"></i>
+              <span>Dashboard</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Group: Components -->
+      <div class="sidebar-menu-section">
+        <div class="sidebar-menu-title">Components</div>
+        <ul class="sidebar-menu-list">
+          <li class="sidebar-menu-item">
+            <a href="/branch" class="sidebar-menu-link" id="menu-basictables" title="Branch">
+              <i class="bi bi-table"></i>
+              <span>Branch</span>
+            </a>
+          </li>
+          <li class="sidebar-menu-item">
+            <a href="/waiting_list" class="sidebar-menu-link" id="menu-uiforms" title="Forms and Input">
+              <i class="bi bi-input-cursor-text"></i>
+              <span>Waiting List</span>
+            </a>
+          </li>
+
+        </ul>
+      </div>
+
+      <!-- Group: Pages -->
+      <div class="sidebar-menu-section">
+        <div class="sidebar-menu-title">Pages</div>
+        <ul class="sidebar-menu-list">
+          <li class="sidebar-menu-item">
+            <a href="/Logout" class="sidebar-menu-link" id="menu-404" title="404 Page">
+              <i class="bi bi-slash-circle"></i>
+              <span>Logout</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Sidebar Profile Card (Dynamic Footer) -->
+    <div class="sidebar-profile">
+           <div class="sidebar-profile-info">
+        <div class="sidebar-profile-name">{{request.user.username}}</div>
+        <div class="sidebar-profile-email">{{request.user.email}}</div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,565 @@
+{% load static %}
+
+<style>
+    /* ========================================
+       NAVBAR BASE
+    ======================================== */
+    .navbar-custom {
+        position: relative;
+        z-index: 1200;
+        width: 100%;
+        padding: 12px 0;
+        background: #ffffff;
+        border-bottom: 1px solid #e5ebf4;
+    }
+
+    .navbar-inner {
+        width: 100%;
+        max-width: 1240px;
+        margin-inline: auto;
+    }
+
+    /* ========================================
+       BRAND / LOGO
+    ======================================== */
+    .navbar-custom .brand {
+        display: inline-flex;
+        align-items: center;
+        flex-shrink: 0;
+        gap: 10px;
+        text-decoration: none !important;
+    }
+
+    .navbar-custom .brand-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 75px;
+        height: 65px;
+        flex-shrink: 0;
+        overflow: hidden;
+        background: #ffffff;
+    }
+
+    .navbar-custom .brand-icon img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+    }
+
+    /* ========================================
+       DESKTOP NAVIGATION
+    ======================================== */
+    .navbar-custom .nav-actions {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 10px;
+        margin-left: auto;
+    }
+
+    .navbar-custom .nav-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 9px;
+        min-height: 42px;
+        padding: 10px 16px;
+        border: 1px solid transparent;
+        border-radius: 10px;
+        font-size: 13px;
+        font-weight: 700;
+        line-height: 1.3;
+        text-decoration: none !important;
+        white-space: nowrap;
+        transition:
+            background-color .2s ease,
+            color .2s ease,
+            border-color .2s ease,
+            transform .2s ease;
+    }
+
+    .navbar-custom .nav-btn i {
+        font-size: 17px;
+    }
+
+    /* Waiting List */
+    .navbar-custom .waiting-btn {
+        color: #ffffff;
+        background: #1769e0;
+        border-color: #1769e0;
+    }
+
+    .navbar-custom .waiting-btn:hover,
+    .navbar-custom .waiting-btn:focus-visible {
+        color: #ffffff;
+        background: #124bb0;
+        border-color: #124bb0;
+    }
+
+    /* Logout */
+    .navbar-custom .logout-btn {
+        color: #d93649;
+        background: #fff7f7;
+        border-color: #f2d9dd;
+    }
+
+    .navbar-custom .logout-btn:hover,
+    .navbar-custom .logout-btn:focus-visible {
+        color: #b42335;
+        background: #ffe8eb;
+        border-color: #efc1c8;
+    }
+
+    /* ========================================
+       MOBILE TOGGLE
+    ======================================== */
+    .navbar-custom .mobile-nav-toggle {
+        display: none;
+        align-items: center;
+        justify-content: center;
+        width: 44px;
+        height: 44px;
+        padding: 0;
+        margin-left: auto;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        background: #ffffff;
+        color: #172033;
+        font-size: 24px;
+        line-height: 1;
+        cursor: pointer;
+        position: relative;
+        z-index: 1202;
+        transition:
+            background .2s ease,
+            border-color .2s ease,
+            transform .2s ease;
+    }
+
+    .navbar-custom .mobile-nav-toggle:hover {
+        background: #f1f5f9;
+        border-color: #cbd5e1;
+    }
+
+    .navbar-custom .mobile-nav-toggle:focus-visible {
+        outline: 2px solid #1769e0;
+        outline-offset: 3px;
+    }
+
+    .navbar-custom .mobile-nav-toggle i {
+        display: inline-block;
+        transition: transform .2s ease;
+    }
+
+    /* ========================================
+       PREMIUM FULL-SCREEN MOBILE MENU
+    ======================================== */
+    @media (max-width: 767.98px) {
+
+        .navbar-custom {
+            padding: 8px 0;
+        }
+
+        .navbar-custom .brand-icon {
+            width: 64px;
+            height: 54px;
+        }
+
+        .navbar-custom .mobile-nav-toggle {
+            display: inline-flex;
+        }
+
+        /* Full-screen menu overlay */
+        .navbar-custom .nav-actions {
+            display: flex;
+            position: fixed;
+            inset: 0;
+            z-index: 1201;
+
+            width: 100%;
+            height: 100vh;
+            height: 100dvh;
+            box-sizing: border-box;
+
+            margin: 0;
+            padding: 105px 24px 32px;
+
+            flex-direction: column;
+            align-items: stretch;
+            justify-content: flex-start;
+            gap: 15px;
+
+            overflow-y: auto;
+            overscroll-behavior: contain;
+
+            background:
+                radial-gradient(
+                    circle at top right,
+                    rgba(23, 105, 224, .10),
+                    transparent 35%
+                ),
+                linear-gradient(
+                    145deg,
+                    #f7faff 0%,
+                    #ffffff 55%,
+                    #edf4ff 100%
+                );
+
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+
+            transform: translateY(-12px);
+
+            transition:
+                opacity .25s ease,
+                transform .25s ease,
+                visibility .25s ease;
+        }
+
+        /* Open state */
+        .navbar-custom .nav-actions.show {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+            transform: translateY(0);
+        }
+
+        /* Menu heading */
+        .navbar-custom .nav-actions::before {
+            content: "MAIN MENU";
+            display: block;
+            margin-bottom: 8px;
+            color: #64748b;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 3px;
+        }
+
+        /* Navigation cards */
+        .navbar-custom .nav-btn {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 15px;
+
+            width: 100%;
+            min-height: 72px;
+            box-sizing: border-box;
+            padding: 14px 17px;
+
+            border-radius: 16px;
+            font-size: 15px;
+            font-weight: 700;
+            white-space: normal;
+            text-align: left;
+
+            box-shadow: 0 6px 20px rgba(15, 23, 42, .045);
+        }
+
+        .navbar-custom .nav-btn i {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            width: 44px;
+            height: 44px;
+            flex-shrink: 0;
+
+            border-radius: 13px;
+            font-size: 21px;
+        }
+
+        /* Waiting List card */
+        .navbar-custom .waiting-btn {
+            color: #ffffff;
+            background: linear-gradient(135deg, #1769e0, #1254bd);
+            border: 1px solid #1769e0;
+        }
+
+        .navbar-custom .waiting-btn i {
+            color: #1769e0;
+            background: #ffffff;
+        }
+
+        .navbar-custom .waiting-btn:hover {
+            background: linear-gradient(135deg, #155dcc, #104aa7);
+        }
+
+        /* Logout card */
+        .navbar-custom .logout-btn {
+            color: #d93649;
+            background: #ffffff;
+            border: 1px solid #f2d9dd;
+        }
+
+        .navbar-custom .logout-btn i {
+            color: #d93649;
+            background: #fff0f2;
+        }
+
+        .navbar-custom .logout-btn:hover {
+            color: #b42335;
+            background: #fff8f8;
+        }
+
+        .navbar-custom .nav-btn:active {
+            transform: scale(.985);
+        }
+    }
+
+    /* ========================================
+       SMALL MOBILE DEVICES
+    ======================================== */
+    @media (max-width: 420px) {
+
+        .navbar-custom .brand-icon {
+            width: 60px;
+            height: 50px;
+        }
+
+        .navbar-custom .mobile-nav-toggle {
+            width: 42px;
+            height: 42px;
+        }
+
+        .navbar-custom .nav-actions {
+            padding: 95px 18px 24px;
+            gap: 12px;
+        }
+
+        .navbar-custom .nav-btn {
+            min-height: 66px;
+            padding: 12px 14px;
+            font-size: 14px;
+        }
+    }
+
+    /* Respect reduced-motion settings */
+    @media (prefers-reduced-motion: reduce) {
+        .navbar-custom .nav-actions,
+        .navbar-custom .nav-btn,
+        .navbar-custom .mobile-nav-toggle,
+        .navbar-custom .mobile-nav-toggle i {
+            transition: none !important;
+        }
+    }
+</style>
+
+
+<!-- ========================================
+     MAIN NAVIGATION
+======================================== -->
+<nav class="navbar-custom" aria-label="Main navigation">
+
+    <div class="container-fluid px-3 px-md-4 navbar-inner
+                d-flex align-items-center">
+
+        <!-- Brand logo -->
+        <a href="{% url 'home' %}"
+           class="brand"
+           aria-label="Lab Bill Scanner home">
+
+            <span class="brand-icon">
+                <img
+                    src="https://microlabchengannur.com/static/logo.png"
+                    alt="Lab Scanner Logo"
+                    loading="eager">
+            </span>
+
+        </a>
+
+
+        <!-- Mobile menu toggle -->
+        <button
+            type="button"
+            class="mobile-nav-toggle"
+            id="mobileNavToggle"
+            aria-label="Open navigation menu"
+            aria-controls="navActions"
+            aria-expanded="false">
+
+            <i
+                class="bi bi-list"
+                id="mobileNavIcon"
+                aria-hidden="true">
+            </i>
+
+        </button>
+
+
+        <!-- Navigation links -->
+        <div class="nav-actions" id="navActions">
+
+            <!-- Waiting List -->
+            <a href="/waiting-dashboard/"
+               class="nav-btn waiting-btn">
+
+                <i class="bi bi-clock-history"
+                   aria-hidden="true"></i>
+
+                <span>Waiting List</span>
+
+            </a>
+
+
+            <!-- Logout -->
+            <a href="/Logout/"
+               class="nav-btn logout-btn"
+               id="logoutNavLink">
+
+                <i class="bi bi-box-arrow-right"
+                   aria-hidden="true"></i>
+
+                <span>Logout</span>
+
+            </a>
+
+        </div>
+
+    </div>
+
+</nav>
+
+<style>
+    /* Desktop logo */
+.navbar-custom .brand-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 110px;
+    height: 85px;
+    flex-shrink: 0;
+    overflow: hidden;
+    background: #ffffff;
+}
+
+.navbar-custom .brand-icon img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+/* Tablet and mobile logo */
+@media (max-width: 767.98px) {
+    .navbar-custom .brand-icon {
+        width: 64px;
+        height: 54px;
+    }
+}
+
+@media (max-width: 420px) {
+    .navbar-custom .brand-icon {
+        width: 60px;
+        height: 50px;
+    }
+}
+</style>
+<!-- ========================================
+     MOBILE NAVIGATION SCRIPT
+======================================== -->
+<script>
+(function () {
+    'use strict';
+
+    const toggle = document.getElementById('mobileNavToggle');
+    const menu = document.getElementById('navActions');
+    const icon = document.getElementById('mobileNavIcon');
+    const logoutLink = document.getElementById('logoutNavLink');
+
+    if (!toggle || !menu || !icon) {
+        return;
+    }
+
+    let previousBodyOverflow = '';
+
+    function isMobile() {
+        return window.matchMedia('(max-width: 767.98px)').matches;
+    }
+
+    function setMenu(open) {
+        const shouldOpen = Boolean(open) && isMobile();
+
+        if (shouldOpen && !menu.classList.contains('show')) {
+            previousBodyOverflow = document.body.style.overflow;
+        }
+
+        menu.classList.toggle('show', shouldOpen);
+
+        toggle.setAttribute('aria-expanded', String(shouldOpen));
+
+        toggle.setAttribute(
+            'aria-label',
+            shouldOpen
+                ? 'Close navigation menu'
+                : 'Open navigation menu'
+        );
+
+        icon.classList.toggle('bi-list', !shouldOpen);
+        icon.classList.toggle('bi-x-lg', shouldOpen);
+
+        if (shouldOpen) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = previousBodyOverflow;
+        }
+    }
+
+    /* Toggle full-screen menu */
+    toggle.addEventListener('click', function () {
+        setMenu(!menu.classList.contains('show'));
+    });
+
+    /* Close when clicking outside the menu content */
+    document.addEventListener('click', function (event) {
+        if (
+            menu.classList.contains('show') &&
+            !menu.contains(event.target) &&
+            !toggle.contains(event.target)
+        ) {
+            setMenu(false);
+        }
+    });
+
+    /* Close with Escape */
+    document.addEventListener('keydown', function (event) {
+        if (
+            event.key === 'Escape' &&
+            menu.classList.contains('show')
+        ) {
+            setMenu(false);
+            toggle.focus();
+        }
+    });
+
+    /* Close menu after selecting Waiting List */
+    menu.querySelectorAll('a').forEach(function (link) {
+        link.addEventListener('click', function (event) {
+
+            if (link === logoutLink) {
+                const confirmed = window.confirm(
+                    'Are you sure you want to logout?'
+                );
+
+                if (!confirmed) {
+                    event.preventDefault();
+                    return;
+                }
+            }
+
+            setMenu(false);
+        });
+    });
+
+    /* Reset when switching to desktop */
+    window.addEventListener('resize', function () {
+        if (!isMobile()) {
+            setMenu(false);
+        }
+    });
+
+})();
+</script>
