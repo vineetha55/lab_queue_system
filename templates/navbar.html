@@ -1,439 +1,71 @@
 {% load static %}
 
 <style>
-    /* ========================================
-       NAVBAR BASE
-    ======================================== */
-    .navbar-custom {
-        position: relative;
-        z-index: 1200;
-        width: 100%;
-        padding: 12px 0;
-        background: #ffffff;
-        border-bottom: 1px solid #e5ebf4;
-    }
+/* =========================================
+   NAVBAR DESIGN SYSTEM
+========================================= */
+:root {
+    --nav-primary: #1769e0;
+    --nav-primary-dark: #1254bd;
+    --nav-text: #172033;
+    --nav-muted: #64748b;
+    --nav-border: #e8edf5;
+    --nav-danger: #dc3545;
+    --nav-bg: #ffffff;
+    --nav-height: 88px;
+    --nav-mobile-height: 70px;
+}
+
+/* =========================================
+   FIXED NAVBAR
+========================================= */
+.navbar-custom {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1200;
+    width: 100%;
+    background: var(--nav-bg);
+    border-bottom: 1px solid var(--nav-border);
+    box-shadow: 0 3px 16px rgba(15, 23, 42, .045);
+}
+
+.navbar-inner {
+    max-width: 1400px;
+    min-height: var(--nav-height);
+    margin: 0 auto;
+    padding: 8px 28px;
+    display: flex;
+    align-items: center;
+    gap: 25px;
+    box-sizing: border-box;
+}
+
+/* =========================================
+   PAGE SPACING
+========================================= */
+body {
+    padding-top: var(--nav-height);
+}
+
+/* =========================================
+   LOGO
+========================================= */
+.navbar-custom .brand {
+    display: inline-flex;
+    align-items: center;
+    flex-shrink: 0;
+    text-decoration: none;
+}
 
-    .navbar-inner {
-        width: 100%;
-        max-width: 1240px;
-        margin-inline: auto;
-    }
-
-    /* ========================================
-       BRAND / LOGO
-    ======================================== */
-    .navbar-custom .brand {
-        display: inline-flex;
-        align-items: center;
-        flex-shrink: 0;
-        gap: 10px;
-        text-decoration: none !important;
-    }
-
-    .navbar-custom .brand-icon {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 75px;
-        height: 65px;
-        flex-shrink: 0;
-        overflow: hidden;
-        background: #ffffff;
-    }
-
-    .navbar-custom .brand-icon img {
-        display: block;
-        width: 100%;
-        height: 100%;
-        object-fit: contain;
-    }
-
-    /* ========================================
-       DESKTOP NAVIGATION
-    ======================================== */
-    .navbar-custom .nav-actions {
-        display: flex;
-        align-items: center;
-        justify-content: flex-end;
-        gap: 10px;
-        margin-left: auto;
-    }
-
-    .navbar-custom .nav-btn {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 9px;
-        min-height: 42px;
-        padding: 10px 16px;
-        border: 1px solid transparent;
-        border-radius: 10px;
-        font-size: 13px;
-        font-weight: 700;
-        line-height: 1.3;
-        text-decoration: none !important;
-        white-space: nowrap;
-        transition:
-            background-color .2s ease,
-            color .2s ease,
-            border-color .2s ease,
-            transform .2s ease;
-    }
-
-    .navbar-custom .nav-btn i {
-        font-size: 17px;
-    }
-
-    /* Waiting List */
-    .navbar-custom .waiting-btn {
-        color: #ffffff;
-        background: #1769e0;
-        border-color: #1769e0;
-    }
-
-    .navbar-custom .waiting-btn:hover,
-    .navbar-custom .waiting-btn:focus-visible {
-        color: #ffffff;
-        background: #124bb0;
-        border-color: #124bb0;
-    }
-
-    /* Logout */
-    .navbar-custom .logout-btn {
-        color: #d93649;
-        background: #fff7f7;
-        border-color: #f2d9dd;
-    }
-
-    .navbar-custom .logout-btn:hover,
-    .navbar-custom .logout-btn:focus-visible {
-        color: #b42335;
-        background: #ffe8eb;
-        border-color: #efc1c8;
-    }
-
-    /* ========================================
-       MOBILE TOGGLE
-    ======================================== */
-    .navbar-custom .mobile-nav-toggle {
-        display: none;
-        align-items: center;
-        justify-content: center;
-        width: 44px;
-        height: 44px;
-        padding: 0;
-        margin-left: auto;
-        border: 1px solid #e2e8f0;
-        border-radius: 12px;
-        background: #ffffff;
-        color: #172033;
-        font-size: 24px;
-        line-height: 1;
-        cursor: pointer;
-        position: relative;
-        z-index: 1202;
-        transition:
-            background .2s ease,
-            border-color .2s ease,
-            transform .2s ease;
-    }
-
-    .navbar-custom .mobile-nav-toggle:hover {
-        background: #f1f5f9;
-        border-color: #cbd5e1;
-    }
-
-    .navbar-custom .mobile-nav-toggle:focus-visible {
-        outline: 2px solid #1769e0;
-        outline-offset: 3px;
-    }
-
-    .navbar-custom .mobile-nav-toggle i {
-        display: inline-block;
-        transition: transform .2s ease;
-    }
-
-    /* ========================================
-       PREMIUM FULL-SCREEN MOBILE MENU
-    ======================================== */
-    @media (max-width: 767.98px) {
-
-        .navbar-custom {
-            padding: 8px 0;
-        }
-
-        .navbar-custom .brand-icon {
-            width: 64px;
-            height: 54px;
-        }
-
-        .navbar-custom .mobile-nav-toggle {
-            display: inline-flex;
-        }
-
-        /* Full-screen menu overlay */
-        .navbar-custom .nav-actions {
-            display: flex;
-            position: fixed;
-            inset: 0;
-            z-index: 1201;
-
-            width: 100%;
-            height: 100vh;
-            height: 100dvh;
-            box-sizing: border-box;
-
-            margin: 0;
-            padding: 105px 24px 32px;
-
-            flex-direction: column;
-            align-items: stretch;
-            justify-content: flex-start;
-            gap: 15px;
-
-            overflow-y: auto;
-            overscroll-behavior: contain;
-
-            background:
-                radial-gradient(
-                    circle at top right,
-                    rgba(23, 105, 224, .10),
-                    transparent 35%
-                ),
-                linear-gradient(
-                    145deg,
-                    #f7faff 0%,
-                    #ffffff 55%,
-                    #edf4ff 100%
-                );
-
-            opacity: 0;
-            visibility: hidden;
-            pointer-events: none;
-
-            transform: translateY(-12px);
-
-            transition:
-                opacity .25s ease,
-                transform .25s ease,
-                visibility .25s ease;
-        }
-
-        /* Open state */
-        .navbar-custom .nav-actions.show {
-            opacity: 1;
-            visibility: visible;
-            pointer-events: auto;
-            transform: translateY(0);
-        }
-
-        /* Menu heading */
-        .navbar-custom .nav-actions::before {
-            content: "MAIN MENU";
-            display: block;
-            margin-bottom: 8px;
-            color: #64748b;
-            font-size: 11px;
-            font-weight: 800;
-            letter-spacing: 3px;
-        }
-
-        /* Navigation cards */
-        .navbar-custom .nav-btn {
-            display: flex;
-            align-items: center;
-            justify-content: flex-start;
-            gap: 15px;
-
-            width: 100%;
-            min-height: 72px;
-            box-sizing: border-box;
-            padding: 14px 17px;
-
-            border-radius: 16px;
-            font-size: 15px;
-            font-weight: 700;
-            white-space: normal;
-            text-align: left;
-
-            box-shadow: 0 6px 20px rgba(15, 23, 42, .045);
-        }
-
-        .navbar-custom .nav-btn i {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-
-            width: 44px;
-            height: 44px;
-            flex-shrink: 0;
-
-            border-radius: 13px;
-            font-size: 21px;
-        }
-
-        /* Waiting List card */
-        .navbar-custom .waiting-btn {
-            color: #ffffff;
-            background: linear-gradient(135deg, #1769e0, #1254bd);
-            border: 1px solid #1769e0;
-        }
-
-        .navbar-custom .waiting-btn i {
-            color: #1769e0;
-            background: #ffffff;
-        }
-
-        .navbar-custom .waiting-btn:hover {
-            background: linear-gradient(135deg, #155dcc, #104aa7);
-        }
-
-        /* Logout card */
-        .navbar-custom .logout-btn {
-            color: #d93649;
-            background: #ffffff;
-            border: 1px solid #f2d9dd;
-        }
-
-        .navbar-custom .logout-btn i {
-            color: #d93649;
-            background: #fff0f2;
-        }
-
-        .navbar-custom .logout-btn:hover {
-            color: #b42335;
-            background: #fff8f8;
-        }
-
-        .navbar-custom .nav-btn:active {
-            transform: scale(.985);
-        }
-    }
-
-    /* ========================================
-       SMALL MOBILE DEVICES
-    ======================================== */
-    @media (max-width: 420px) {
-
-        .navbar-custom .brand-icon {
-            width: 60px;
-            height: 50px;
-        }
-
-        .navbar-custom .mobile-nav-toggle {
-            width: 42px;
-            height: 42px;
-        }
-
-        .navbar-custom .nav-actions {
-            padding: 95px 18px 24px;
-            gap: 12px;
-        }
-
-        .navbar-custom .nav-btn {
-            min-height: 66px;
-            padding: 12px 14px;
-            font-size: 14px;
-        }
-    }
-
-    /* Respect reduced-motion settings */
-    @media (prefers-reduced-motion: reduce) {
-        .navbar-custom .nav-actions,
-        .navbar-custom .nav-btn,
-        .navbar-custom .mobile-nav-toggle,
-        .navbar-custom .mobile-nav-toggle i {
-            transition: none !important;
-        }
-    }
-</style>
-
-
-<!-- ========================================
-     MAIN NAVIGATION
-======================================== -->
-<nav class="navbar-custom" aria-label="Main navigation">
-
-    <div class="container-fluid px-3 px-md-4 navbar-inner
-                d-flex align-items-center">
-
-        <!-- Brand logo -->
-        <a href="{% url 'home' %}"
-           class="brand"
-           aria-label="Lab Bill Scanner home">
-
-            <span class="brand-icon">
-                <img
-                    src="https://microlabchengannur.com/static/logo.png"
-                    alt="Lab Scanner Logo"
-                    loading="eager">
-            </span>
-
-        </a>
-
-
-        <!-- Mobile menu toggle -->
-        <button
-            type="button"
-            class="mobile-nav-toggle"
-            id="mobileNavToggle"
-            aria-label="Open navigation menu"
-            aria-controls="navActions"
-            aria-expanded="false">
-
-            <i
-                class="bi bi-list"
-                id="mobileNavIcon"
-                aria-hidden="true">
-            </i>
-
-        </button>
-
-
-        <!-- Navigation links -->
-        <div class="nav-actions" id="navActions">
-
-            <!-- Waiting List -->
-            <a href="/waiting-dashboard/"
-               class="nav-btn waiting-btn">
-
-                <i class="bi bi-clock-history"
-                   aria-hidden="true"></i>
-
-                <span>Waiting List</span>
-
-            </a>
-
-
-            <!-- Logout -->
-            <a href="/Logout/"
-               class="nav-btn logout-btn"
-               id="logoutNavLink">
-
-                <i class="bi bi-box-arrow-right"
-                   aria-hidden="true"></i>
-
-                <span>Logout</span>
-
-            </a>
-
-        </div>
-
-    </div>
-
-</nav>
-
-<style>
-    /* Desktop logo */
 .navbar-custom .brand-icon {
+    width: 115px;
+    height: 75px;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 110px;
-    height: 85px;
-    flex-shrink: 0;
     overflow: hidden;
-    background: #ffffff;
 }
 
 .navbar-custom .brand-icon img {
@@ -443,24 +75,472 @@
     object-fit: contain;
 }
 
-/* Tablet and mobile logo */
-@media (max-width: 767.98px) {
+/* =========================================
+   DESKTOP NAVIGATION
+========================================= */
+.navbar-custom .nav-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 9px;
+    margin-left: auto;
+}
+
+.navbar-custom .nav-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    min-height: 44px;
+    padding: 11px 16px;
+    border-radius: 11px;
+    border: 1px solid transparent;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--nav-text);
+    text-decoration: none !important;
+    white-space: nowrap;
+    transition: all .22s ease;
+    box-sizing: border-box;
+}
+
+.navbar-custom .nav-btn i {
+    font-size: 17px;
+}
+
+.navbar-custom .nav-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 14px;
+    border-radius: 10px;
+    color: #475569;
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: all .2s ease;
+}
+
+.navbar-custom .nav-link:hover {
+    color: var(--nav-primary);
+    background: #eff6ff;
+}
+
+/* Staff Portal */
+.navbar-custom .staff-btn {
+    color: var(--nav-primary);
+    background: #eff6ff;
+    border-color: #dbeafe;
+}
+
+.navbar-custom .staff-btn:hover {
+    background: #dbeafe;
+    color: var(--nav-primary-dark);
+}
+
+/* TV Display */
+.navbar-custom .tv-btn {
+    color: #475569;
+    background: #f8fafc;
+    border-color: #e2e8f0;
+}
+
+.navbar-custom .tv-btn:hover {
+    color: var(--nav-primary);
+    background: #eff6ff;
+}
+
+/* Waiting List */
+.navbar-custom .waiting-btn {
+    background: var(--nav-primary);
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(23, 105, 224, .18);
+}
+
+.navbar-custom .waiting-btn:hover {
+    background: var(--nav-primary-dark);
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 7px 16px rgba(23, 105, 224, .22);
+}
+
+/* Logout */
+.navbar-custom .logout-btn {
+    color: var(--nav-danger);
+    background: #fff7f7;
+    border-color: #f8d7da;
+}
+
+.navbar-custom .logout-btn:hover {
+    color: #b42335;
+    background: #ffe8eb;
+}
+
+/* =========================================
+   MOBILE TOGGLE
+========================================= */
+.navbar-custom .mobile-nav-toggle {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 46px;
+    height: 46px;
+    flex-shrink: 0;
+    border: 1px solid var(--nav-border);
+    border-radius: 12px;
+    background: #f8fafc;
+    color: var(--nav-text);
+    font-size: 23px;
+    cursor: pointer;
+    margin-left: auto;
+    position: relative;
+    z-index: 1203;
+    transition: all .2s ease;
+}
+
+.navbar-custom .mobile-nav-toggle:hover {
+    background: #eff6ff;
+    color: var(--nav-primary);
+}
+
+/* =========================================
+   TABLET
+========================================= */
+@media (max-width: 1050px) and (min-width: 768px) {
+    .navbar-inner {
+        padding-inline: 16px;
+        gap: 12px;
+    }
+
     .navbar-custom .brand-icon {
-        width: 64px;
-        height: 54px;
+        width: 90px;
+    }
+
+    .navbar-custom .nav-actions {
+        gap: 4px;
+    }
+
+    .navbar-custom .nav-btn,
+    .navbar-custom .nav-link {
+        padding: 10px 9px;
+        font-size: 12px;
+        gap: 6px;
     }
 }
 
-@media (max-width: 420px) {
+/* =========================================
+   MOBILE FULL-SCREEN MENU
+========================================= */
+@media (max-width: 767.98px) {
+    body {
+        padding-top: var(--nav-mobile-height);
+    }
+
+    .navbar-inner {
+        min-height: var(--nav-mobile-height);
+        padding: 6px 17px;
+        gap: 12px;
+    }
+
     .navbar-custom .brand-icon {
-        width: 60px;
-        height: 50px;
+        width: 76px;
+        height: 57px;
+    }
+
+    /* Toggle remains on the right */
+    .navbar-custom .mobile-nav-toggle {
+        display: inline-flex;
+        margin-left: auto;
+    }
+
+    .navbar-custom .nav-actions {
+        position: fixed;
+        inset: 0;
+        z-index: 1201;
+
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        justify-content: flex-start;
+
+        width: 100%;
+        height: 100vh;
+        height: 100dvh;
+        box-sizing: border-box;
+
+        margin: 0;
+        padding: 110px 22px 30px;
+        gap: 13px;
+
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        -webkit-overflow-scrolling: touch;
+
+        /* Gradient removed; plain white background */
+        background: #ffffff;
+
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        transform: translateY(-10px);
+
+        transition:
+            opacity .25s ease,
+            transform .25s ease,
+            visibility .25s ease;
+    }
+
+    .navbar-custom .nav-actions.show {
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+        transform: translateY(0);
+    }
+
+    .navbar-custom .nav-actions::before {
+        content: "NAVIGATION MENU";
+        color: #64748b;
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 2.5px;
+        margin-bottom: 7px;
+    }
+
+    .navbar-custom .nav-btn,
+    .navbar-custom .nav-link {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 15px;
+
+        width: 100%;
+        min-height: 65px;
+        flex-shrink: 0;
+        box-sizing: border-box;
+        padding: 12px 16px;
+
+        border-radius: 15px;
+        font-size: 15px;
+        font-weight: 700;
+
+        box-shadow: 0 5px 18px rgba(15, 23, 42, .045);
+    }
+
+    .navbar-custom .nav-btn i,
+    .navbar-custom .nav-link i {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        width: 42px;
+        height: 42px;
+        flex-shrink: 0;
+
+        border-radius: 12px;
+        font-size: 20px;
+        background: rgba(255, 255, 255, .2);
+    }
+
+    .navbar-custom .nav-link {
+        color: #334155;
+        background: #fff;
+        border: 1px solid #e5eaf2;
+    }
+
+    .navbar-custom .nav-link i {
+        color: var(--nav-primary);
+        background: #eff6ff;
+    }
+
+    .navbar-custom .staff-btn {
+        background: #eff6ff;
+    }
+
+    .navbar-custom .staff-btn i {
+        background: #dbeafe;
+    }
+
+    .navbar-custom .waiting-btn {
+        background: linear-gradient(135deg, #1769e0, #1254bd);
+        color: white;
+    }
+
+    .navbar-custom .waiting-btn i {
+        color: var(--nav-primary);
+        background: white;
+    }
+
+    .navbar-custom .tv-btn {
+        background: #fff;
+    }
+
+    .navbar-custom .tv-btn i {
+        background: #eff6ff;
+        color: var(--nav-primary);
+    }
+
+    .navbar-custom .logout-btn {
+        background: #fff;
+    }
+
+    .navbar-custom .logout-btn i {
+        color: var(--nav-danger);
+        background: #fff0f2;
+    }
+
+    .navbar-custom .nav-btn:active,
+    .navbar-custom .nav-link:active {
+        transform: scale(.985);
+    }
+}
+
+/* =========================================
+   SMALL MOBILE
+========================================= */
+@media (max-width: 420px) {
+    .navbar-inner {
+        padding-inline: 13px;
+    }
+
+    .navbar-custom .brand-icon {
+        width: 68px;
+        height: 52px;
+    }
+
+    .navbar-custom .nav-actions {
+        padding: 95px 17px 24px;
+    }
+
+    .navbar-custom .nav-btn,
+    .navbar-custom .nav-link {
+        min-height: 61px;
+        font-size: 14px;
+    }
+}
+
+/* =========================================
+   ACCESSIBILITY
+========================================= */
+.navbar-custom a:focus-visible,
+.navbar-custom button:focus-visible {
+    outline: 2px solid var(--nav-primary);
+    outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .navbar-custom *,
+    .navbar-custom *::before,
+    .navbar-custom *::after {
+        transition: none !important;
     }
 }
 </style>
-<!-- ========================================
+
+<!-- =========================================
+     NAVBAR HTML
+========================================= -->
+<nav class="navbar-custom" aria-label="Main navigation">
+    <div class="navbar-inner">
+
+        <!-- Original Logo Restored -->
+        <a href="{% url 'home' %}"
+           class="brand"
+           aria-label="Lab Bill Scanner Home">
+
+            <span class="brand-icon">
+                <img
+                    src="https://microlabchengannur.com/static/logo.png"
+                    alt="Lab Scanner Logo"
+                    loading="eager">
+            </span>
+        </a>
+<style>
+    .brand,
+.brand-icon {
+    background: transparent !important;
+    background-image: none !important;
+    box-shadow: none;
+}
+</style>
+        <!-- Mobile Toggle -->
+        <button
+            type="button"
+            class="mobile-nav-toggle"
+            id="mobileNavToggle"
+            aria-label="Open navigation menu"
+            aria-controls="navActions"
+            aria-expanded="false">
+
+            <i class="bi bi-list"
+               id="mobileNavIcon"
+               aria-hidden="true"></i>
+        </button>
+
+        <!-- Navigation Actions -->
+        <div class="nav-actions" id="navActions">
+
+            {% if not request.session.bch %}
+
+                <!-- Staff Portal -->
+                <a href="/Login/" class="nav-btn staff-btn">
+                    <i class="bi bi-person-circle"
+                       aria-hidden="true"></i>
+                    <span>Staff Portal</span>
+                </a>
+
+            {% else %}
+
+                <!-- Sample Collection -->
+                <!-- <a href="{% url 'collection_dashboard' %}"
+                   class="nav-link">
+                    <i class="bi bi-droplet-half"
+                       aria-hidden="true"></i>
+                    <span>Sample Collection</span>
+                </a>
+
+     
+                <a href="{% url 'inside_lab_dashboard' %}"
+                   class="nav-link">
+                    <i class="bi bi-hospital"
+                       aria-hidden="true"></i>
+                    <span>Inside Lab</span>
+                </a> -->
+
+                <!-- TV Display -->
+                <a href="{% url 'collection_tv_display' %}"
+                   class="nav-btn tv-btn">
+                    <i class="bi bi-tv"
+                       aria-hidden="true"></i>
+                    <span>TV Display</span>
+                </a>
+
+                <!-- Waiting List -->
+                <a href="/waiting-dashboard/"
+                   class="nav-btn waiting-btn">
+                    <i class="bi bi-clock-history"
+                       aria-hidden="true"></i>
+                    <span>Waiting List</span>
+                </a>
+
+                <!-- Logout -->
+                <a href="/Logout/"
+                   class="nav-btn logout-btn"
+                   id="logoutNavLink">
+                    <i class="bi bi-box-arrow-right"
+                       aria-hidden="true"></i>
+                    <span>Logout</span>
+                </a>
+
+            {% endif %}
+
+        </div>
+    </div>
+</nav>
+
+<!-- =========================================
      MOBILE NAVIGATION SCRIPT
-======================================== -->
+========================================= -->
 <script>
 (function () {
     'use strict';
@@ -470,14 +550,14 @@
     const icon = document.getElementById('mobileNavIcon');
     const logoutLink = document.getElementById('logoutNavLink');
 
-    if (!toggle || !menu || !icon) {
-        return;
-    }
+    if (!toggle || !menu || !icon) return;
 
     let previousBodyOverflow = '';
 
+    const mobileQuery = window.matchMedia('(max-width: 767.98px)');
+
     function isMobile() {
-        return window.matchMedia('(max-width: 767.98px)').matches;
+        return mobileQuery.matches;
     }
 
     function setMenu(open) {
@@ -501,19 +581,17 @@
         icon.classList.toggle('bi-list', !shouldOpen);
         icon.classList.toggle('bi-x-lg', shouldOpen);
 
-        if (shouldOpen) {
-            document.body.style.overflow = 'hidden';
-        } else {
-            document.body.style.overflow = previousBodyOverflow;
-        }
+        document.body.style.overflow = shouldOpen
+            ? 'hidden'
+            : previousBodyOverflow;
     }
 
-    /* Toggle full-screen menu */
+    /* Toggle mobile menu */
     toggle.addEventListener('click', function () {
         setMenu(!menu.classList.contains('show'));
     });
 
-    /* Close when clicking outside the menu content */
+    /* Close when clicking outside */
     document.addEventListener('click', function (event) {
         if (
             menu.classList.contains('show') &&
@@ -524,7 +602,7 @@
         }
     });
 
-    /* Close with Escape */
+    /* Close with Escape key */
     document.addEventListener('keydown', function (event) {
         if (
             event.key === 'Escape' &&
@@ -535,10 +613,9 @@
         }
     });
 
-    /* Close menu after selecting Waiting List */
+    /* Close after navigation; confirm logout */
     menu.querySelectorAll('a').forEach(function (link) {
         link.addEventListener('click', function (event) {
-
             if (link === logoutLink) {
                 const confirmed = window.confirm(
                     'Are you sure you want to logout?'
@@ -554,12 +631,20 @@
         });
     });
 
-    /* Reset when switching to desktop */
-    window.addEventListener('resize', function () {
+    /* Reset menu and body scroll when resizing */
+    function handleViewportChange() {
         if (!isMobile()) {
             setMenu(false);
         }
-    });
+    }
+
+    window.addEventListener('resize', handleViewportChange);
+
+    if (mobileQuery.addEventListener) {
+        mobileQuery.addEventListener('change', handleViewportChange);
+    } else {
+        mobileQuery.addListener(handleViewportChange);
+    }
 
 })();
 </script>

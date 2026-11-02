@@ -37,7 +37,53 @@ class LabBill(models.Model):
         editable=False
     )
     sms_sent_at = models.DateTimeField(null=True, blank=True)
+    timer_stopped = models.BooleanField(default=False)
+    timer_stopped_at = models.DateTimeField(null=True, blank=True)
 
+
+class LabCollection(models.Model):
+
+    bill = models.ForeignKey(
+        LabBill,
+        on_delete=models.CASCADE,
+        related_name="collections"
+    )
+
+    test_name = models.CharField(max_length=150)
+
+    called_at = models.DateTimeField(
+        null=True,
+        blank=True
+    )
+
+    inside_at = models.DateTimeField(
+        null=True,
+        blank=True
+    )
+
+    completed_at = models.DateTimeField(
+        null=True,
+        blank=True
+    )
+
+    collector_name = models.CharField(
+        max_length=150,
+        blank=True
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.bill.lab_number} - {self.test_name}"
+
+    class Meta:
+        ordering = ["id"]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["bill", "test_name"],
+                name="unique_test_per_bill"
+            )
+        ]
 
 
 

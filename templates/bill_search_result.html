@@ -1,0 +1,926 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Patient Waiting Time &amp; Bill Status | Microlab</title>
+
+    <!-- Bootstrap CSS -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <!-- Bootstrap Icons -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+        rel="stylesheet"
+    >
+
+    <style>
+        :root {
+            --primary: #2398d0;
+            --primary-dark: #147bb1;
+            --text: #172b45;
+            --muted: #718096;
+            --border: #e6edf5;
+            --page-bg: #f1f5f9;
+            --danger: #d5222a;
+            --success: #16834a;
+            --warning: #bd5700;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            min-height: 100%;
+        }
+
+        body {
+            margin: 0;
+            padding: 24px 14px;
+            background: var(--page-bg);
+            color: var(--text);
+            font-family: Inter, "Segoe UI", Arial, sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* =====================================
+           MAIN BILL CARD
+        ===================================== */
+
+        .bill-page {
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+            overflow: hidden;
+            background: #fff;
+            border: 1px solid #e6edf5;
+            border-radius: 22px;
+            box-shadow: 0 14px 45px rgba(27, 50, 79, 0.09);
+        }
+
+        /* =====================================
+           HEADER AND LOGO
+        ===================================== */
+
+        .bill-header {
+            padding: 27px 22px 23px;
+            text-align: center;
+            background: #fff;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .bill-logo {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 19px;
+        }
+
+        .bill-logo img {
+            display: block;
+            width: 175px;
+            max-width: 80%;
+            height: auto;
+            object-fit: contain;
+        }
+
+        .bill-header-title {
+            margin: 0;
+            color: #435d7d;
+            font-size: 13px;
+            font-weight: 600;
+            line-height: 1.6;
+        }
+
+        /* =====================================
+           CONTENT AREA
+        ===================================== */
+
+        .bill-content {
+            padding: 22px;
+        }
+
+        /* =====================================
+           SINGLE COUNTDOWN TIMER
+           No visible Time Balance section
+        ===================================== */
+
+        .combined-timer-card {
+            width: 100%;
+            margin-bottom: 24px;
+            padding: 25px 17px;
+            overflow: hidden;
+            text-align: center;
+            background: linear-gradient(145deg, #eef8ff, #e6f3fb);
+            border: 1px solid #c9e8fb;
+            border-radius: 18px;
+            transition:
+                background .25s ease,
+                border-color .25s ease;
+        }
+
+        .combined-timer-label {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 13px;
+            color: #647b9a;
+            font-size: 12px;
+            font-weight: 850;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        .combined-timer-label i {
+            font-size: 15px;
+        }
+
+        /* The only visible timer */
+        .combined-countdown {
+            color: var(--danger);
+            font-size: clamp(40px, 9vw, 48px);
+            font-weight: 900;
+            letter-spacing: 1px;
+            line-height: 1.2;
+            font-variant-numeric: tabular-nums;
+            transition: color .25s ease;
+        }
+
+        .combined-countdown.timer-ready {
+            color: var(--success);
+            font-size: 29px;
+            letter-spacing: 0;
+        }
+
+        .timer-ready-badge {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .combined-countdown-description {
+            margin: 11px 0 0;
+            color: #647b9a;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        /* =====================================
+           TIMER STATUS COLORS
+           Status is shown through timer styling,
+           not a separate Time Balance component.
+        ===================================== */
+
+        .combined-timer-card.status-normal {
+            background: linear-gradient(145deg, #eef8ff, #e6f3fb);
+            border-color: #c9e8fb;
+        }
+
+        .combined-timer-card.status-normal .combined-countdown {
+            color: var(--danger);
+        }
+
+        .combined-timer-card.status-warning {
+            background: linear-gradient(145deg, #fff9eb, #fff3dc);
+            border-color: #ffd18c;
+        }
+
+        .combined-timer-card.status-warning .combined-countdown {
+            color: var(--warning);
+        }
+
+        .combined-timer-card.status-danger {
+            background: linear-gradient(145deg, #fff1f1, #ffe5e5);
+            border-color: #ffc4c4;
+        }
+
+        .combined-timer-card.status-danger .combined-countdown {
+            color: var(--danger);
+        }
+
+        .combined-timer-card.status-success {
+            background: linear-gradient(145deg, #f0fcf4, #e4f8eb);
+            border-color: #bce8ca;
+        }
+
+        .combined-timer-card.status-success .combined-countdown {
+            color: var(--success);
+        }
+
+        /* =====================================
+           PATIENT DETAILS
+        ===================================== */
+
+        .patient-heading {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            margin: 0 0 16px;
+            color: #132b46;
+            font-size: 20px;
+            font-weight: 850;
+        }
+
+        .patient-heading i {
+            color: #168bc4;
+            font-size: 21px;
+        }
+
+        .patient-details {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .patient-detail-row {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            min-width: 0;
+            padding: 14px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .patient-detail-row:last-child {
+            border-bottom: 0;
+        }
+
+        .patient-detail-icon {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 42px;
+            height: 42px;
+            min-width: 42px;
+            background: #eaf6fc;
+            color: #168bc4;
+            border-radius: 12px;
+            font-size: 19px;
+        }
+
+        .patient-detail-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .patient-detail-label {
+            display: block;
+            margin-bottom: 4px;
+            color: #718198;
+            font-size: 10px;
+            font-weight: 850;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .patient-detail-value {
+            display: block;
+            color: #152b46;
+            font-size: 13px;
+            font-weight: 750;
+            line-height: 1.5;
+            overflow-wrap: anywhere;
+            word-break: break-word;
+        }
+
+        /* =====================================
+           DJANGO MESSAGES
+        ===================================== */
+
+        .message-list {
+            margin-bottom: 18px;
+        }
+
+        .message-list .alert {
+            margin-bottom: 10px;
+            border-radius: 11px;
+            font-size: 13px;
+        }
+
+        /* =====================================
+           ERROR / BILL NOT FOUND
+        ===================================== */
+
+        .error-card {
+            padding: 26px 20px;
+            text-align: center;
+            background: #fff4f4;
+            border: 1px solid #ffdada;
+            border-radius: 16px;
+        }
+
+        .error-card > i {
+            display: block;
+            margin-bottom: 12px;
+            color: var(--danger);
+            font-size: 38px;
+        }
+
+        .error-card h2 {
+            margin-bottom: 9px;
+            color: #9f2020;
+            font-size: 20px;
+            font-weight: 800;
+        }
+
+        .error-card p {
+            margin: 0;
+            color: #6b5555;
+            font-size: 13px;
+            line-height: 1.7;
+        }
+
+        /* =====================================
+           FOOTER
+        ===================================== */
+
+        .bill-footer {
+            padding: 17px 15px;
+            text-align: center;
+            background: #fafcff;
+            border-top: 1px solid var(--border);
+        }
+
+        .bill-footer-brand {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 7px;
+            color: #526a86;
+            font-size: 12px;
+            font-weight: 750;
+        }
+
+        .bill-footer-brand i {
+            color: #168bc4;
+            font-size: 16px;
+        }
+
+        .bill-footer-caption {
+            margin: 6px 0 0;
+            color: #8b99aa;
+            font-size: 10px;
+        }
+
+        /* =====================================
+           MOBILE RESPONSIVE DESIGN
+        ===================================== */
+
+        @media (max-width: 576px) {
+            body {
+                padding: 0;
+                background: #fff;
+            }
+
+            .bill-page {
+                width: 100%;
+                max-width: none;
+                min-height: 100vh;
+                border: 0;
+                border-radius: 0;
+                box-shadow: none;
+            }
+
+            .bill-header {
+                padding: 25px 18px 21px;
+            }
+
+            .bill-logo img {
+                width: 165px;
+            }
+
+            .bill-content {
+                padding: 22px 22px 28px;
+            }
+
+            .combined-timer-card {
+                padding: 24px 15px;
+                border-radius: 16px;
+            }
+
+            .combined-countdown {
+                font-size: 43px;
+            }
+
+            .patient-heading {
+                font-size: 19px;
+            }
+
+            .bill-footer {
+                padding: 19px 12px;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .bill-content {
+                padding-right: 15px;
+                padding-left: 15px;
+            }
+
+            .combined-countdown {
+                font-size: 38px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<main class="bill-page">
+
+    <!-- =====================================
+         MICROLAB HEADER
+    ====================================== -->
+
+    <header class="bill-header">
+        <div class="bill-logo">
+            <img
+                src="https://microlabchengannur.com/static/logo.png"
+                alt="Microlab Scan and Diagnostics"
+            >
+        </div>
+
+
+    </header>
+
+    <div class="bill-content">
+
+        <!-- =====================================
+             DJANGO MESSAGES
+        ====================================== -->
+
+        {% if messages %}
+            <div class="message-list">
+                {% for message in messages %}
+                    <div
+                        class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show"
+                        role="alert"
+                    >
+                        {{ message }}
+
+                        <button
+                            type="button"
+                            class="btn-close"
+                            data-bs-dismiss="alert"
+                            aria-label="Close"
+                        ></button>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% if error %}
+
+            <!-- =====================================
+                 BILL NOT FOUND
+            ====================================== -->
+
+            <section class="error-card" role="alert">
+                <i class="bi bi-exclamation-circle" aria-hidden="true"></i>
+
+                <h2>Bill Not Found</h2>
+
+                <p>{{ error }}</p>
+            </section>
+
+        {% elif bill %}
+
+            <!-- =====================================
+                 SINGLE VISIBLE TIMER
+                 Time Balance calculations run in JS.
+                 No separate Time Balance UI is rendered.
+            ====================================== -->
+
+            <section
+                class="combined-timer-card status-normal"
+                id="combined-timer-card"
+                aria-label="Patient waiting time"
+            >
+                <div class="combined-timer-label">
+                    <i class="bi bi-clock-history" aria-hidden="true"></i>
+                    <span>Time Remaining</span>
+                </div>
+
+                <div
+                    class="combined-countdown {% if bill.timer_stopped %}timer-ready{% endif %}" style="color: #16834a;"
+                    id="waiting-countdown"
+                    data-minutes="{% if bill.waiting_time != None %}{{ bill.waiting_time }}{% endif %}"
+                    data-created="{{ bill.created_at|date:'c'|default:'' }}"
+                    data-timer-stopped="{% if bill.timer_stopped %}1{% else %}0{% endif %}"
+                    data-stopped-at="{{ bill.timer_stopped_at|date:'c'|default:'' }}"
+                    data-purpose="{{ bill.purpose|default:'test'|escape }}"
+                    role="timer"
+                    aria-live="off"
+                >
+                    {% if bill.timer_stopped %}
+                        <span class="timer-ready-badge">
+                            <i class="bi bi-check-circle-fill" aria-hidden="true"></i>
+                            Ready
+                        </span>
+                    {% elif bill.waiting_time != None %}
+                        {{ bill.waiting_time }}:00
+                    {% else %}
+                        —
+                    {% endif %}
+                </div>
+
+                <p
+                    class="combined-countdown-description"
+                    id="countdown-status"
+                >
+                    {% if bill.timer_stopped %}
+                        Please collect your {{ bill.purpose }} results from the reception desk.
+                    {% elif bill.waiting_time != None %}
+                        Estimated time remaining
+                    {% else %}
+                        Waiting time unavailable
+                    {% endif %}
+                </p>
+            </section>
+
+            <!-- =====================================
+                 PATIENT DETAILS
+            ====================================== -->
+
+            <section aria-labelledby="patient-details-heading">
+
+                <h2
+                    class="patient-heading"
+                    id="patient-details-heading"
+                >
+                    <i class="bi bi-person-vcard" aria-hidden="true"></i>
+                    Patient Details
+                </h2>
+
+                <div class="patient-details">
+
+                    <!-- Bill number -->
+                    <div class="patient-detail-row">
+                        <div class="patient-detail-icon">
+                            <i class="bi bi-receipt" aria-hidden="true"></i>
+                        </div>
+
+                        <div class="patient-detail-content">
+                            <span class="patient-detail-label">
+                                Bill No
+                            </span>
+
+                            <span class="patient-detail-value">
+                                {{ bill.lab_number|default:"—" }}
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Patient name -->
+                    <div class="patient-detail-row">
+                        <div class="patient-detail-icon">
+                            <i class="bi bi-person" aria-hidden="true"></i>
+                        </div>
+
+                        <div class="patient-detail-content">
+                            <span class="patient-detail-label">
+                                Patient Name
+                            </span>
+
+                            <span class="patient-detail-value">
+                                {{ bill.patient_name|default:"—" }}
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Phone number -->
+                    <div class="patient-detail-row">
+                        <div class="patient-detail-icon">
+                            <i class="bi bi-telephone" aria-hidden="true"></i>
+                        </div>
+
+                        <div class="patient-detail-content">
+                            <span class="patient-detail-label">
+                                Phone Number
+                            </span>
+
+                            <span class="patient-detail-value">
+                                {{ bill.phone|default:"—" }}
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Test purpose -->
+                    <div class="patient-detail-row">
+                        <div class="patient-detail-icon">
+                            <i class="bi bi-clipboard2-pulse" aria-hidden="true"></i>
+                        </div>
+
+                        <div class="patient-detail-content">
+                            <span class="patient-detail-label">
+                                Test Purpose
+                            </span>
+
+                            <span class="patient-detail-value">
+                                {{ bill.purpose|default:"—" }}
+                            </span>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+        {% else %}
+
+            <!-- No bill or error supplied -->
+            <section class="error-card" role="alert">
+                <i class="bi bi-search" aria-hidden="true"></i>
+
+                <h2>No Bill Information</h2>
+
+                <p>
+                    No bill information is available. Please verify your
+                    bill number or contact the reception desk.
+                </p>
+            </section>
+
+        {% endif %}
+
+    </div>
+
+    <!-- =====================================
+         FOOTER
+    ====================================== -->
+
+    <footer class="bill-footer">
+        <div class="bill-footer-brand">
+            <i class="bi bi-heart-pulse-fill" aria-hidden="true"></i>
+            <span>Microlab Diagnostics &amp; Laboratory</span>
+        </div>
+
+        <p class="bill-footer-caption">
+            Specialty Healthcare Services
+        </p>
+    </footer>
+
+</main>
+
+<!-- Bootstrap JavaScript -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    "use strict";
+
+    const countdown = document.getElementById("waiting-countdown");
+    const timerCard = document.getElementById("combined-timer-card");
+    const countdownStatus = document.getElementById("countdown-status");
+
+    if (!countdown || !timerCard || !countdownStatus) {
+        return;
+    }
+
+    const minutesText = countdown.dataset.minutes;
+    const createdText = countdown.dataset.created;
+    const timerStopped = countdown.dataset.timerStopped === "1";
+    const stoppedAtText = countdown.dataset.stoppedAt;
+
+    const waitingMinutes = Number(minutesText);
+    const createdAt = createdText ? new Date(createdText) : null;
+    const stoppedAt = stoppedAtText ? new Date(stoppedAtText) : null;
+
+    const hasWaitingTime =
+        minutesText !== "" &&
+        minutesText !== undefined &&
+        Number.isFinite(waitingMinutes) &&
+        waitingMinutes >= 0;
+
+    const hasCreatedAt =
+        createdAt instanceof Date &&
+        !Number.isNaN(createdAt.getTime());
+
+    const hasStoppedAt =
+        stoppedAt instanceof Date &&
+        !Number.isNaN(stoppedAt.getTime());
+
+    let intervalId = null;
+
+    /*
+     * Internal status only:
+     * Nothing from Time Balance is rendered as a separate component.
+     * Status is reflected in the timer card's color.
+     */
+    let currentBalanceStatus = "unavailable";
+
+    function applyStatus(status) {
+        currentBalanceStatus = status;
+
+        timerCard.classList.remove(
+            "status-normal",
+            "status-warning",
+            "status-danger",
+            "status-success"
+        );
+
+        if (status === "on-time" || status === "ready") {
+            timerCard.classList.add("status-success");
+        } else if (status === "near-deadline") {
+            timerCard.classList.add("status-warning");
+        } else if (status === "not-attended" || status === "expired") {
+            timerCard.classList.add("status-danger");
+        } else {
+            timerCard.classList.add("status-normal");
+        }
+    }
+
+    function formatRemaining(milliseconds) {
+        const totalSeconds = Math.max(
+            0,
+            Math.ceil(milliseconds / 1000)
+        );
+
+        const hours = Math.floor(totalSeconds / 3600);
+        const minutes = Math.floor((totalSeconds % 3600) / 60);
+        const seconds = totalSeconds % 60;
+
+        const pad = number => String(number).padStart(2, "0");
+
+        if (hours > 0) {
+            return (
+                pad(hours) + "h " +
+                pad(minutes) + "m " +
+                pad(seconds) + "s"
+            );
+        }
+
+        return (
+            pad(minutes) + "m " +
+            pad(seconds) + "s"
+        );
+    }
+
+    function formatCountdown(milliseconds) {
+        const totalSeconds = Math.max(
+            0,
+            Math.ceil(milliseconds / 1000)
+        );
+
+        const hours = Math.floor(totalSeconds / 3600);
+        const minutes = Math.floor((totalSeconds % 3600) / 60);
+        const seconds = totalSeconds % 60;
+
+        const pad = number => String(number).padStart(2, "0");
+
+        if (hours > 0) {
+            return (
+                pad(hours) + ":" +
+                pad(minutes) + ":" +
+                pad(seconds)
+            );
+        }
+
+        return (
+            pad(Math.floor(totalSeconds / 60)) + ":" +
+            pad(seconds)
+        );
+    }
+
+    function setReadyDisplay() {
+        countdown.classList.add("timer-ready");
+
+        countdown.innerHTML =
+            '<span class="timer-ready-badge">' +
+                '<i class="bi bi-check-circle-fill" aria-hidden="true"></i>' +
+                'Ready' +
+            '</span>';
+
+        countdownStatus.textContent =
+            "Please collect your results from the reception desk.";
+    }
+
+    function setUnavailableDisplay() {
+        countdown.textContent = "—";
+        countdown.classList.remove("timer-ready");
+
+        countdownStatus.textContent = "Waiting time unavailable";
+
+        applyStatus("unavailable");
+    }
+
+    function updateTimer() {
+        /*
+         * No waiting time has been configured.
+         */
+        if (!hasWaitingTime) {
+            setUnavailableDisplay();
+            return;
+        }
+
+        /*
+         * A valid creation timestamp is needed to calculate
+         * the remaining time consistently.
+         */
+        if (!hasCreatedAt) {
+            countdown.textContent = "—";
+            countdown.classList.remove("timer-ready");
+
+            countdownStatus.textContent =
+                "Waiting time calculation unavailable";
+
+            applyStatus("unavailable");
+            return;
+        }
+
+        const expectedEnd =
+            createdAt.getTime() + waitingMinutes * 60 * 1000;
+
+        /*
+         * Timer was stopped by staff.
+         */
+        if (timerStopped) {
+            setReadyDisplay();
+
+            if (hasStoppedAt && stoppedAt.getTime() > expectedEnd) {
+                /*
+                 * Background status:
+                 * The timer was stopped after the expected end.
+                 */
+                applyStatus("not-attended");
+            } else {
+                /*
+                 * Background status:
+                 * The timer was stopped on or before the deadline,
+                 * or a stop timestamp is not available.
+                 */
+                applyStatus("on-time");
+            }
+
+            return;
+        }
+
+        /*
+         * Calculate remaining time from the original bill
+         * creation time. Refreshing the page will not reset it.
+         */
+        const remainingMs = expectedEnd - Date.now();
+
+        /*
+         * Deadline passed:
+         * Show only 00:00 and indicate the expired state by color.
+         */
+        if (remainingMs <= 0) {
+            countdown.textContent = "00:00";
+            countdown.classList.remove("timer-ready");
+
+            countdownStatus.textContent =
+                "Estimated waiting time has ended.";
+
+            applyStatus("expired");
+            return;
+        }
+
+        /*
+         * Active countdown.
+         */
+        countdown.classList.remove("timer-ready");
+        countdown.textContent = formatCountdown(remainingMs);
+
+        countdownStatus.textContent = "Estimated time remaining";
+
+        /*
+         * Background Time Balance logic:
+         * At five minutes or less, change the card to warning color.
+         * The remaining time is displayed only in the main countdown.
+         */
+        if (remainingMs <= 5 * 60 * 1000) {
+            applyStatus("near-deadline");
+        } else {
+            applyStatus("normal");
+        }
+    }
+
+    /*
+     * Run immediately, then refresh the single visible countdown
+     * every second. No second timer or Time Balance section exists.
+     */
+    updateTimer();
+
+    if (!timerStopped && hasWaitingTime && hasCreatedAt) {
+        intervalId = window.setInterval(updateTimer, 1000);
+    }
+
+    /*
+     * Stop the interval when the page is unloaded.
+     */
+    window.addEventListener("pagehide", function () {
+        if (intervalId !== null) {
+            window.clearInterval(intervalId);
+        }
+    });
+});
+</script>
+
+</body>
+</html>

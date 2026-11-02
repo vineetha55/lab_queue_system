@@ -1,0 +1,1216 @@
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#050505">
+
+    <title>Patient Waiting Dashboard | Microlab</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+          rel="stylesheet">
+
+    <style>
+        :root {
+            --tv-bg: #050505;
+            --tv-panel: #101010;
+            --tv-border: #343434;
+            --tv-white: #ffffff;
+            --tv-muted: #d0d0d0;
+            --tv-green: #36e58b;
+            --tv-red: #ff6464;
+            --tv-yellow: #ffd34d;
+
+            /* Only patient content uses this scale */
+            --content-scale: 1;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            width: 100%;
+            min-height: 100%;
+            margin: 0;
+            background: var(--tv-bg);
+            color: var(--tv-white);
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* =========================================
+           SETTINGS HEADER - NEVER SCALED
+        ========================================= */
+
+        .tv-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 18px;
+            padding: 20px clamp(14px, 2.5vw, 40px);
+            border-bottom: 1px solid var(--tv-border);
+            background: #090909;
+        }
+
+        .brand-block {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .brand-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 58px;
+            height: 58px;
+            flex-shrink: 0;
+            border: 1px solid #444;
+            border-radius: 12px;
+            background: #181818;
+            color: #fff;
+            font-size: 30px;
+        }
+
+        .brand-name {
+            margin: 0;
+            color: #fff;
+            font-size: 30px;
+            font-weight: 900;
+        }
+
+        .brand-subtitle {
+            margin: 5px 0 0;
+            color: #ccc;
+            font-size: 14px;
+        }
+
+        .tv-controls {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .tv-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            min-height: 44px;
+            padding: 10px 14px;
+            border: 1px solid #505050;
+            border-radius: 9px;
+            background: #202020;
+            color: #fff;
+            font-size: 14px;
+            font-weight: 800;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+
+        .tv-btn:hover {
+            background: #333;
+            color: #fff;
+        }
+
+        .tv-btn:disabled {
+            opacity: .5;
+            cursor: not-allowed;
+        }
+
+        .tv-btn.primary {
+            background: #fff;
+            color: #000;
+            border-color: #fff;
+        }
+
+        .tv-btn.primary:hover {
+            background: #e6e6e6;
+        }
+
+        .tv-btn.danger {
+            background: #291111;
+            border-color: #703333;
+        }
+
+        .text-settings {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px;
+            border: 1px solid #383838;
+            border-radius: 10px;
+            background: #141414;
+        }
+
+        .text-settings-label {
+            padding: 0 7px;
+            color: #ddd;
+            font-size: 12px;
+            font-weight: 800;
+        }
+
+        .text-size-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 38px;
+            height: 38px;
+            border: 1px solid #505050;
+            border-radius: 7px;
+            background: #242424;
+            color: #fff;
+            font-size: 17px;
+            font-weight: 900;
+            cursor: pointer;
+        }
+
+        .text-size-btn:hover {
+            background: #3a3a3a;
+        }
+
+        .text-size-btn:disabled {
+            opacity: .4;
+            cursor: not-allowed;
+        }
+
+        /* =========================================
+           MAIN PATIENT DISPLAY
+        ========================================= */
+
+        .dashboard-container {
+            width: 100%;
+            max-width: none;
+            margin: 0 auto;
+            padding: clamp(16px, 2.5vw, 40px);
+        }
+
+        /*
+         * Font scaling is applied only inside
+         * .patient-content.
+         * Header and settings never inherit the scale.
+         */
+
+        .patient-content {
+            font-size: calc(20px * var(--content-scale));
+        }
+
+        .dashboard-summary {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 22px;
+            padding: 22px 26px;
+            border: 1px solid var(--tv-border);
+            border-radius: 15px;
+            background: var(--tv-panel);
+        }
+
+        .summary-heading {
+            margin: 0;
+            color: #fff;
+            font-size: calc(30px * var(--content-scale));
+            font-weight: 900;
+            line-height: 1.3;
+            overflow-wrap: anywhere;
+        }
+
+        .summary-description {
+            margin: 8px 0 0;
+            color: var(--tv-muted);
+            font-size: calc(16px * var(--content-scale));
+            line-height: 1.5;
+        }
+
+        .today-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 17px;
+            border: 1px solid #444;
+            border-radius: 10px;
+            background: #202020;
+            color: #fff;
+            font-size: calc(15px * var(--content-scale));
+            font-weight: 900;
+            white-space: nowrap;
+        }
+
+        .live-dot {
+            width: 10px;
+            height: 10px;
+            flex-shrink: 0;
+            border-radius: 50%;
+            background: var(--tv-green);
+            box-shadow: 0 0 12px #36e58b66;
+        }
+
+        /* =========================================
+           PATIENT TABLE
+        ========================================= */
+
+        .table-wrap {
+            width: 100%;
+            overflow: auto;
+            border: 1px solid var(--tv-border);
+            border-radius: 15px;
+            background: var(--tv-panel);
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .table-wrap table {
+            width: 100%;
+            min-width: 760px;
+            margin: 0;
+            border-collapse: separate;
+            border-spacing: 0;
+            color: #fff;
+            font-size: calc(21px * var(--content-scale));
+        }
+
+        .table-wrap thead th {
+            position: sticky;
+            top: 0;
+            z-index: 2;
+            padding: 22px 24px;
+            border: 0;
+            border-bottom: 2px solid #414141;
+            background: #202020;
+            color: #fff;
+            text-align: left;
+            text-transform: uppercase;
+            letter-spacing: .5px;
+            font-size: calc(15px * var(--content-scale));
+            font-weight: 900;
+            white-space: nowrap;
+        }
+
+        .table-wrap tbody td {
+            padding: 24px;
+            border: 0;
+            border-bottom: 1px solid #303030;
+            background: #0b0b0b;
+            color: #fff;
+            line-height: 1.5;
+            vertical-align: middle;
+        }
+
+        .table-wrap tbody tr:last-child td {
+            border-bottom: 0;
+        }
+
+        .table-wrap tbody td:first-child {
+            color: #e2e2e2;
+            font-weight: 800;
+        }
+
+        .table-wrap tbody tr:hover td {
+            background: #191919;
+        }
+
+        /* Highlight only pending countdown rows */
+        .table-wrap tbody tr.pending-highlight td {
+            background: #28220d !important;
+            color: #fff !important;
+        }
+
+        .balance-cell {
+            min-width: 270px;
+            font-weight: 900;
+            white-space: normal;
+        }
+
+        .balance-cell.on-time {
+            color: var(--tv-green) !important;
+        }
+
+        .balance-cell.time-over {
+            color: var(--tv-red) !important;
+        }
+
+        .balance-cell.near-deadline {
+            color: var(--tv-yellow) !important;
+        }
+
+        .status-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            font-size: inherit;
+            font-weight: 900;
+        }
+
+        .status-label i {
+            font-size: 1.15em;
+        }
+
+        .table-wrap tr.near-deadline td {
+            animation: rowBlink 1.4s ease-in-out infinite;
+        }
+
+        @keyframes rowBlink {
+            0%, 100% {
+                box-shadow: inset 5px 0 0 #d99d00;
+            }
+            50% {
+                box-shadow: inset 5px 0 0 #ffe17a;
+            }
+        }
+
+        .empty {
+            padding: 55px 20px !important;
+            background: #0b0b0b !important;
+            color: #e0e0e0 !important;
+            text-align: center;
+            font-size: calc(21px * var(--content-scale));
+            font-weight: 700;
+        }
+
+        .empty i {
+            display: block;
+            margin-bottom: 15px;
+            color: #aaa;
+            font-size: calc(44px * var(--content-scale));
+        }
+
+        /* Footer is part of the patient content */
+        .tv-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 18px;
+            color: #ccc;
+            font-size: calc(14px * var(--content-scale));
+        }
+
+        #sound-status {
+            color: #ddd;
+        }
+
+        /* =========================================
+           FULLSCREEN: CONTENT ONLY
+        ========================================= */
+
+        body.tv-fullscreen {
+            width: 100%;
+            height: 100%;
+            min-height: 100vh;
+            overflow: auto;
+            background: #050505;
+        }
+
+        body.tv-fullscreen .tv-header {
+            display: none !important;
+        }
+
+        body.tv-fullscreen .dashboard-container {
+            width: 100%;
+            max-width: none;
+            min-height: 100vh;
+            padding: clamp(18px, 2.2vw, 38px);
+        }
+
+        body.tv-fullscreen .dashboard-summary {
+            margin-top: 0;
+        }
+
+        /*
+         * The fullscreen toolbar is hidden along with
+         * the header. The footer is hidden separately.
+         */
+        body.tv-fullscreen .tv-footer {
+            display: none !important;
+        }
+
+        @media (min-width: 1600px) {
+            .table-wrap table {
+                min-width: 100%;
+            }
+
+            .table-wrap thead th {
+                padding: 28px 30px;
+            }
+
+            .table-wrap tbody td {
+                padding: 30px;
+            }
+        }
+
+        @media (max-width: 850px) {
+            .tv-header {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .tv-controls {
+                justify-content: flex-start;
+                width: 100%;
+            }
+
+            .dashboard-summary {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .table-wrap table {
+                min-width: 720px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .dashboard-container {
+                padding: 12px 9px 20px;
+            }
+
+            .brand-name {
+                font-size: 25px;
+            }
+
+            .brand-icon {
+                width: 48px;
+                height: 48px;
+                font-size: 25px;
+            }
+
+            .tv-controls {
+                gap: 7px;
+            }
+
+            .tv-btn {
+                min-height: 40px;
+                padding: 8px 10px;
+                font-size: 12px;
+            }
+
+            .text-settings-label {
+                font-size: 10px;
+            }
+
+            .text-size-btn {
+                width: 32px;
+                height: 34px;
+                font-size: 15px;
+            }
+
+            .dashboard-summary {
+                padding: 16px;
+                border-radius: 12px;
+            }
+
+            .summary-heading {
+                font-size: calc(24px * var(--content-scale));
+            }
+
+            .table-wrap table {
+                min-width: 650px;
+            }
+
+            .table-wrap thead th {
+                padding: 15px 12px;
+            }
+
+            .table-wrap tbody td {
+                padding: 17px 12px;
+            }
+
+            .balance-cell {
+                min-width: 225px;
+            }
+
+            body.tv-fullscreen .dashboard-container {
+                padding: 12px 9px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .table-wrap tr.near-deadline td {
+                animation: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- SETTINGS: visible only outside fullscreen -->
+    <header class="tv-header">
+
+        <div class="brand-block">
+            <div aria-hidden="true">
+        
+            </div>
+            <h1 class="dashboard-title">
+                <img
+                    src="https://microlabchengannur.com/static/logo.png"
+                    alt="Microlab"
+                    class="microlab-logo"
+                >
+            </h1>
+
+            <style>
+                .dashboard-title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 0 24px;
+    padding: 0;
+}
+
+.microlab-logo {
+    display: block;
+    width: auto;
+    height: 70px;
+    max-width: 260px;
+    object-fit: contain;
+}
+
+@media (max-width: 600px) {
+    .microlab-logo {
+        height: 55px;
+        max-width: 220px;
+    }
+}
+            </style>
+        </div>
+
+        <div class="tv-controls">
+
+            <div class="text-settings"
+                 role="group"
+                 aria-label="Patient display text size">
+
+                <span class="text-settings-label">TEXT SIZE</span>
+
+                <button type="button"
+                        class="text-size-btn"
+                        id="decrease-text"
+                        aria-label="Decrease patient display text">
+                    A−
+                </button>
+
+                <button type="button"
+                        class="text-size-btn"
+                        id="increase-text"
+                        aria-label="Increase patient display text">
+                    A+
+                </button>
+
+                <button type="button"
+                        class="text-size-btn"
+                        id="reset-text"
+                        aria-label="Reset patient display text size">
+                    <i class="bi bi-arrow-counterclockwise"
+                       aria-hidden="true"></i>
+                </button>
+            </div>
+
+            <button type="button"
+                    id="fullscreen-btn"
+                    class="tv-btn primary">
+                <i class="bi bi-fullscreen" aria-hidden="true"></i>
+                Full Screen
+            </button>
+
+            <button type="button"
+                    id="enable-sound"
+                    class="tv-btn">
+                <i class="bi bi-volume-up-fill" aria-hidden="true"></i>
+                Enable Sound
+            </button>
+
+            <button type="button"
+                    id="disable-sound"
+                    class="tv-btn danger"
+                    disabled>
+                <i class="bi bi-volume-mute-fill" aria-hidden="true"></i>
+                Mute
+            </button>
+            <button type="button"
+            id="back-btn"
+            class="tv-btn primary"
+            onclick="window.history.back();">
+        <i  aria-hidden="true"></i>
+        Exit
+    </button>
+        </div>
+    </header>
+
+    <!-- ONLY THIS CONTENT REMAINS VISIBLE IN FULLSCREEN -->
+    <main class="dashboard-container patient-content">
+
+        <section class="dashboard-summary">
+
+            <div>
+                <h2 class="summary-heading">
+                    <i class="bi bi-people-fill me-2"
+                       aria-hidden="true"></i>
+                    Microlab {{ b.name }}
+                </h2>
+
+                <p class="summary-description">
+                    Please check your bill number and remaining waiting time.
+                </p>
+            </div>
+
+            <div class="today-badge">
+                <span class="live-dot" aria-hidden="true"></span>
+                <span>LIVE PATIENT STATUS</span>
+            </div>
+
+        </section>
+
+        <div class="table-wrap">
+
+            <table aria-label="Patient waiting status">
+
+                <thead>
+                    <tr>
+                        <th scope="col">Sl No</th>
+                        <th scope="col">Patient Name</th>
+                        <th scope="col">Bill Number</th>
+                        <th scope="col">Time Balance / Status</th>
+                    </tr>
+                </thead>
+
+                <tbody id="patient-table-body">
+
+                    {% for bill in bills %}
+
+                    <tr data-bill-id="{{ bill.id }}">
+
+                        <td>{{ forloop.counter }}</td>
+
+                        <td>{{ bill.patient_name }}</td>
+
+                        <td>{{ bill.lab_number }}</td>
+
+                        <td
+                            class="balance-cell"
+                            data-bill-id="{{ bill.id }}"
+                            data-created="{{ bill.created_at|date:'c' }}"
+                            data-waiting="{{ bill.waiting_time|default_if_none:'' }}"
+                            data-stopped="{{ bill.timer_stopped|yesno:'true,false' }}"
+                            data-stopped-at="{{ bill.timer_stopped_at|date:'c'|default:'' }}"
+                            aria-live="off">
+                            Calculating...
+                        </td>
+
+                    </tr>
+
+                    {% empty %}
+
+                    <tr>
+                        <td colspan="4" class="empty">
+                            <i class="bi bi-calendar-x"
+                               aria-hidden="true"></i>
+                            No bills found for today.
+                        </td>
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        <footer class="tv-footer">
+            <span>
+                <i class="bi bi-info-circle me-1"
+                   aria-hidden="true"></i>
+                Please collect your result from the reception.
+            </span>
+
+            <span id="sound-status"
+                  role="status"
+                  aria-live="polite">
+                Alert sound is not enabled.
+            </span>
+        </footer>
+
+    </main>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    "use strict";
+
+    const cells = document.querySelectorAll(".balance-cell");
+
+    const fullscreenBtn = document.getElementById("fullscreen-btn");
+    const increaseTextBtn = document.getElementById("increase-text");
+    const decreaseTextBtn = document.getElementById("decrease-text");
+    const resetTextBtn = document.getElementById("reset-text");
+
+    const enableSoundBtn = document.getElementById("enable-sound");
+    const disableSoundBtn = document.getElementById("disable-sound");
+    const soundStatus = document.getElementById("sound-status");
+
+    const body = document.body;
+    const root = document.documentElement;
+
+    const FIVE_MINUTES = 5 * 60 * 1000;
+    const MIN_FONT_SCALE = 0.8;
+    const MAX_FONT_SCALE = 1.8;
+    const FONT_STEP = 0.1;
+
+    const alertedBills = new Set();
+    const activeOscillators = new Set();
+
+    let fontScale = 1;
+    let audioContext = null;
+    let soundEnabled = false;
+
+    /* =========================================
+       FONT SETTINGS
+       Scale patient content only.
+       Header controls never change size.
+    ========================================= */
+
+    function applyFontScale() {
+        fontScale = Math.max(
+            MIN_FONT_SCALE,
+            Math.min(MAX_FONT_SCALE, fontScale)
+        );
+
+        root.style.setProperty(
+            "--content-scale",
+            fontScale.toFixed(2)
+        );
+
+        decreaseTextBtn.disabled =
+            fontScale <= MIN_FONT_SCALE;
+
+        increaseTextBtn.disabled =
+            fontScale >= MAX_FONT_SCALE;
+    }
+
+    increaseTextBtn.addEventListener("click", function () {
+        fontScale = Math.round(
+            (fontScale + FONT_STEP) * 10
+        ) / 10;
+
+        applyFontScale();
+    });
+
+    decreaseTextBtn.addEventListener("click", function () {
+        fontScale = Math.round(
+            (fontScale - FONT_STEP) * 10
+        ) / 10;
+
+        applyFontScale();
+    });
+
+    resetTextBtn.addEventListener("click", function () {
+        fontScale = 1;
+        applyFontScale();
+    });
+
+    applyFontScale();
+
+    /* =========================================
+       FULLSCREEN
+    ========================================= */
+
+    function syncFullscreenState() {
+        const isFullscreen = Boolean(document.fullscreenElement);
+
+        body.classList.toggle("tv-fullscreen", isFullscreen);
+
+        fullscreenBtn.innerHTML = isFullscreen
+            ? '<i class="bi bi-fullscreen-exit" aria-hidden="true"></i> Exit Full Screen'
+            : '<i class="bi bi-fullscreen" aria-hidden="true"></i> Full Screen';
+    }
+
+    fullscreenBtn.addEventListener("click", async function () {
+        try {
+            if (document.fullscreenElement) {
+                await document.exitFullscreen();
+            } else if (document.documentElement.requestFullscreen) {
+                await document.documentElement.requestFullscreen();
+            } else {
+                alert(
+                    "Fullscreen is not supported by this browser. " +
+                    "Please use the browser fullscreen option."
+                );
+            }
+        } catch (error) {
+            console.error("Fullscreen error:", error);
+
+            alert(
+                "Could not change fullscreen mode. " +
+                "Please check your browser permissions."
+            );
+        }
+    });
+
+    document.addEventListener(
+        "fullscreenchange",
+        syncFullscreenState
+    );
+
+    /* =========================================
+       SOUND CONTROLS
+    ========================================= */
+
+    function stopAllAlertSounds() {
+        activeOscillators.forEach(function (oscillator) {
+            try {
+                oscillator.stop();
+            } catch (error) {
+                // Already stopped.
+            }
+
+            try {
+                oscillator.disconnect();
+            } catch (error) {
+                // Already disconnected.
+            }
+        });
+
+        activeOscillators.clear();
+    }
+
+    function playAlert() {
+        if (
+            !soundEnabled ||
+            !audioContext ||
+            audioContext.state !== "running"
+        ) {
+            return;
+        }
+
+        let oscillator;
+        let gainNode;
+
+        try {
+            oscillator = audioContext.createOscillator();
+            gainNode = audioContext.createGain();
+
+            oscillator.type = "sine";
+
+            oscillator.frequency.setValueAtTime(
+                880,
+                audioContext.currentTime
+            );
+
+            gainNode.gain.setValueAtTime(
+                0.15,
+                audioContext.currentTime
+            );
+
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+
+            activeOscillators.add(oscillator);
+
+            oscillator.addEventListener("ended", function () {
+                activeOscillators.delete(oscillator);
+
+                try {
+                    oscillator.disconnect();
+                    gainNode.disconnect();
+                } catch (error) {
+                    // Ignore cleanup errors.
+                }
+            }, { once: true });
+
+            oscillator.start();
+            oscillator.stop(audioContext.currentTime + 0.5);
+
+        } catch (error) {
+            console.error("Unable to play alert:", error);
+        }
+    }
+
+    function setSoundStatus(enabled, message) {
+        enableSoundBtn.disabled = enabled;
+        disableSoundBtn.disabled = !enabled;
+
+        enableSoundBtn.setAttribute(
+            "aria-pressed",
+            String(enabled)
+        );
+
+        disableSoundBtn.setAttribute(
+            "aria-pressed",
+            String(!enabled)
+        );
+
+        soundStatus.textContent = message;
+    }
+
+    enableSoundBtn.addEventListener("click", async function () {
+        const AudioContextClass =
+            window.AudioContext || window.webkitAudioContext;
+
+        if (!AudioContextClass) {
+            setSoundStatus(
+                false,
+                "Audio alerts are not supported by this browser."
+            );
+            return;
+        }
+
+        try {
+            if (!audioContext || audioContext.state === "closed") {
+                audioContext = new AudioContextClass();
+            }
+
+            if (audioContext.state === "suspended") {
+                await audioContext.resume();
+            }
+
+            soundEnabled = audioContext.state === "running";
+
+            setSoundStatus(
+                soundEnabled,
+                soundEnabled
+                    ? "Alert sound is enabled."
+                    : "Sound could not be enabled."
+            );
+
+            if (soundEnabled) {
+                playAlert();
+            }
+
+        } catch (error) {
+            console.error("Unable to enable sound:", error);
+            soundEnabled = false;
+
+            setSoundStatus(false, "Could not enable sound.");
+        }
+    });
+
+    disableSoundBtn.addEventListener("click", async function () {
+        soundEnabled = false;
+        stopAllAlertSounds();
+
+        try {
+            if (audioContext && audioContext.state === "running") {
+                await audioContext.suspend();
+            }
+        } catch (error) {
+            console.error("Unable to suspend audio:", error);
+        }
+
+        setSoundStatus(false, "Alert sound is disabled.");
+    });
+
+    /* =========================================
+       COUNTDOWN HELPERS
+    ========================================= */
+
+    function formatRemaining(milliseconds) {
+        const totalSeconds = Math.max(
+            0,
+            Math.ceil(milliseconds / 1000)
+        );
+
+        const hours = Math.floor(totalSeconds / 3600);
+        const minutes = Math.floor((totalSeconds % 3600) / 60);
+        const seconds = totalSeconds % 60;
+
+        if (hours > 0) {
+            return (
+                hours + "h " +
+                String(minutes).padStart(2, "0") + "m " +
+                String(seconds).padStart(2, "0") + "s"
+            );
+        }
+
+        return (
+            String(minutes).padStart(2, "0") + "m " +
+            String(seconds).padStart(2, "0") + "s"
+        );
+    }
+
+    function hasAlreadyAlerted(billId) {
+        try {
+            return sessionStorage.getItem(
+                "timer-alerted-" + billId
+            ) === "true";
+        } catch (error) {
+            return alertedBills.has(String(billId));
+        }
+    }
+
+    function markAsAlerted(billId) {
+        const id = String(billId);
+        alertedBills.add(id);
+
+        try {
+            sessionStorage.setItem(
+                "timer-alerted-" + id,
+                "true"
+            );
+        } catch (error) {
+            // In-memory tracking remains available.
+        }
+    }
+
+    function showStatus(cell, icon, message) {
+        const wrapper = document.createElement("span");
+        wrapper.className = "status-label";
+
+        const iconElement = document.createElement("i");
+        iconElement.className = "bi " + icon;
+        iconElement.setAttribute("aria-hidden", "true");
+
+        const textElement = document.createElement("span");
+        textElement.textContent = message;
+
+        wrapper.appendChild(iconElement);
+        wrapper.appendChild(textElement);
+
+        cell.replaceChildren(wrapper);
+    }
+
+    /* =========================================
+       UPDATE PATIENT TIMERS
+    ========================================= */
+
+    function updateTimers() {
+        const now = Date.now();
+
+        cells.forEach(function (cell) {
+            const row = cell.closest("tr");
+
+            if (!row) {
+                return;
+            }
+
+            const billId = cell.dataset.billId;
+            const createdValue = cell.dataset.created;
+            const waitingValue = cell.dataset.waiting;
+            const stoppedValue = cell.dataset.stopped;
+            const stoppedAtValue = cell.dataset.stoppedAt;
+
+            const createdAt = createdValue
+                ? new Date(createdValue)
+                : null;
+
+            const waitingMinutes = Number(waitingValue);
+
+            row.classList.remove(
+                "near-deadline",
+                "pending-highlight"
+            );
+
+            cell.classList.remove(
+                "on-time",
+                "time-over",
+                "near-deadline"
+            );
+
+            if (
+                !createdAt ||
+                Number.isNaN(createdAt.getTime()) ||
+                waitingValue === "" ||
+                !Number.isFinite(waitingMinutes) ||
+                waitingMinutes < 0
+            ) {
+                cell.textContent = "Timer unavailable";
+                return;
+            }
+
+            const expectedEnd =
+                createdAt.getTime() +
+                waitingMinutes * 60 * 1000;
+
+            const isStopped = stoppedValue === "true";
+
+            const stoppedAt = stoppedAtValue
+                ? new Date(stoppedAtValue)
+                : null;
+
+            if (
+                isStopped &&
+                stoppedAt &&
+                !Number.isNaN(stoppedAt.getTime())
+            ) {
+                if (stoppedAt.getTime() < expectedEnd) {
+                    showStatus(
+                        cell,
+                        "bi-check-circle-fill",
+                        "Ready"
+                    );
+
+                    cell.classList.add("on-time");
+                } else {
+                    showStatus(
+                        cell,
+                        "bi-info-circle-fill",
+                        "Please check with desk"
+                    );
+
+                    cell.classList.add("time-over");
+                }
+
+                return;
+            }
+
+            const remainingMs = expectedEnd - now;
+
+            if (remainingMs <= 0) {
+                showStatus(
+                    cell,
+                    "bi-info-circle-fill",
+                    "Please check with desk"
+                );
+
+                cell.classList.add("time-over");
+                return;
+            }
+
+            row.classList.add("pending-highlight");
+
+            if (remainingMs <= FIVE_MINUTES) {
+                cell.textContent =
+                    "Near Deadline — " +
+                    formatRemaining(remainingMs);
+
+                cell.classList.add("near-deadline");
+                row.classList.add("near-deadline");
+
+                if (
+                    billId &&
+                    !alertedBills.has(String(billId)) &&
+                    !hasAlreadyAlerted(billId)
+                ) {
+                    markAsAlerted(billId);
+                    playAlert();
+                }
+
+                return;
+            }
+
+            cell.textContent = formatRemaining(remainingMs);
+        });
+    }
+
+    setSoundStatus(false, "Alert sound is not enabled.");
+
+    syncFullscreenState();
+    updateTimers();
+
+    window.setInterval(updateTimers, 1000);
+});
+</script>
+
+</body>
+</html>
