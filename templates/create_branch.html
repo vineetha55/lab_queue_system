@@ -1,143 +1,485 @@
-
 {% load static %}
-{% include 'head.html' %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Microlab | Admin Dashboard</title>
+
+    <link rel="icon" href="{% static 'assets/images/favicon.ico' %}">
+
+    <link rel="stylesheet" href="{% static 'assets/libs/bootstrap/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/libs/bootstrap-icons/bootstrap-icons.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/main.css' %}">
+
+    <script src="{% static 'assets/libs/apexcharts/apexcharts.min.js' %}"></script>
 <body>
 
-
- {% include 'sidebar.html' %}
-<div class="main-wrapper">
-
-{% include 'header.html' %}
+    <!-- ADMIN NAVBAR -->
+    {% include 'admin_navbar.html' %}
 
 
-    <!-- START: Page Header Banner -->
-    <div class="page-header">
-      <div>
-        <h1 class="page-title">Branch Registration</h1>
-      </div>
-      <nav aria-label="breadcrumb">
-        <ol class="breadcrumb mb-0">
-          <li class="breadcrumb-item"><a href="/admin_home" class="text-decoration-none text-muted-green">Home</a></li>
-          <li class="breadcrumb-item text-muted-green">Components</li>
-          <li class="breadcrumb-item active text-main" aria-current="page">new branch</li>
-        </ol>
-      </nav>
-    </div>
-    <!-- END: Page Header Banner -->
+        <!-- PAGE HEADER -->
+        <div class="page-header">
 
-    <!-- START: Form Component Row Grid Layout -->
-<div class="row g-4 mb-4">
-    <div class="col-12 col-lg-8 mx-auto">
-        <div class="card border-light shadow-sm p-4 h-100">
+            <div>
+                <h1 class="page-title">Branch Registration</h1>
+                <p class="text-muted mb-0">
+                    Register and configure a new laboratory branch.
+                </p>
+            </div>
 
-            <h5 class="card-title mb-4">Branch Registration</h5>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-0">
 
-            <form method="POST" >
-                {% csrf_token %}
+                    <li class="breadcrumb-item">
+                        <a href="/admin_home/"
+                           class="text-decoration-none text-muted-green">
+                            Home
+                        </a>
+                    </li>
 
-                <div class="row g-3">
 
-                    <!-- Branch Name -->
-                    <div class="col-12 col-md-6">
-                        <label for="branchName" class="form-label-custom">
-                            Branch Name
-                        </label>
-                        <input type="text"
-                               class="form-control-custom"
-                               id="branchName"
-                               name="name"
-                               placeholder="Enter branch name"
-                               maxlength="150"
-                               required>
+
+                    <li class="breadcrumb-item active text-main"
+                        aria-current="page">
+                        New Branch
+                    </li>
+
+                </ol>
+            </nav>
+
+        </div>
+
+        <!-- REGISTRATION FORM -->
+        <div class="row g-4 mb-4">
+
+            <div class="col-12 col-xl-9 mx-auto">
+
+                <div class="card border-0 shadow-sm branch-form-card">
+
+                    <!-- CARD HEADER -->
+                    <div class="branch-form-header">
+
+                        <div class="d-flex align-items-center gap-3">
+
+                            <div class="branch-icon">
+                                <i class="bi bi-building-add"></i>
+                            </div>
+
+                            <div>
+                                <h5 class="mb-1 fw-semibold">
+                                    Branch Information
+                                </h5>
+
+                                <p class="text-muted mb-0 small">
+                                    Enter the details below to register a new branch.
+                                </p>
+                            </div>
+
+                        </div>
+
                     </div>
 
-                    <!-- Email -->
-                    <div class="col-12 col-md-6">
-                        <label for="branchEmail" class="form-label-custom">
-                            Email Address
-                        </label>
-                        <input type="email"
-                               class="form-control-custom"
-                               id="branchEmail"
-                               name="email"
-                               placeholder="branch@example.com"
-                               maxlength="150">
-                    </div>
+                    <div class="card-body p-4">
 
-                    <!-- Phone -->
-                    <div class="col-12 col-md-6">
-                        <label for="branchPhone" class="form-label-custom">
-                            Phone Number
-                        </label>
-                        <input type="tel"
-                               class="form-control-custom"
-                               id="branchPhone"
-                               name="phone"
-                               placeholder="Enter phone number"
-                               maxlength="150">
-                    </div>
+                        <form method="POST"
+                              action=""
+                              id="branchRegistrationForm">
 
-                    <!-- Username -->
-                    <div class="col-12 col-md-6">
-                        <label for="branchUsername" class="form-label-custom">
-                            Username
-                        </label>
-                        <input type="text"
-                               class="form-control-custom"
-                               id="branchUsername"
-                               name="username"
-                               placeholder="Create username"
-                               maxlength="150"
-                               required>
-                    </div>
+                            {% csrf_token %}
 
-                    <!-- Password -->
-                    <div class="col-12 col-md-6">
-                        <label for="branchPassword" class="form-label-custom">
-                            Password
-                        </label>
-                        <input type="password"
-                               class="form-control-custom"
-                               id="branchPassword"
-                               name="password"
-                               placeholder="Create password"
-                               maxlength="150"
-                               required>
-                    </div>
+                            <div class="row g-4">
 
-                    <!-- Address -->
-                    <div class="col-12">
-                        <label for="branchAddress" class="form-label-custom">
-                            Branch Address
-                        </label>
-                        <textarea class="form-control-custom"
-                                  id="branchAddress"
-                                  name="address"
-                                  rows="3"
-                                  placeholder="Enter complete branch address"
-                                  maxlength="150"></textarea>
-                    </div>
+                                <!-- BRANCH NAME -->
+                                <div class="col-12 col-md-6">
 
-                    <!-- Buttons -->
-                    <div class="col-12 mt-4 d-flex justify-content-end gap-2">
-                        <button type="reset" class="btn btn-light">
-                            Reset
-                        </button>
+                                    <label for="branchName"
+                                           class="form-label-custom">
+                                        Branch Name
+                                        <span class="text-danger">*</span>
+                                    </label>
 
-                        <button type="submit" class="btn btn-primary">
-                            <i class="bi bi-building-add me-1"></i>
-                            Register Branch
-                        </button>
+                                    <div class="input-icon-wrapper">
+                                        <i class="bi bi-building"></i>
+
+                                        <input type="text"
+                                               class="form-control-custom"
+                                               id="branchName"
+                                               name="name"
+                                               placeholder="Enter branch name"
+                                               maxlength="150"
+                                               required>
+                                    </div>
+
+                                </div>
+
+                                <!-- EMAIL -->
+                                <div class="col-12 col-md-6">
+
+                                    <label for="branchEmail"
+                                           class="form-label-custom">
+                                        Email Address
+                                    </label>
+
+                                    <div class="input-icon-wrapper">
+                                        <i class="bi bi-envelope"></i>
+
+                                        <input type="email"
+                                               class="form-control-custom"
+                                               id="branchEmail"
+                                               name="email"
+                                               placeholder="branch@example.com"
+                                               maxlength="150">
+                                    </div>
+
+                                </div>
+
+                                <!-- PHONE -->
+                                <div class="col-12 col-md-6">
+
+                                    <label for="branchPhone"
+                                           class="form-label-custom">
+                                        Phone Number
+                                    </label>
+
+                                    <div class="input-icon-wrapper">
+                                        <i class="bi bi-telephone"></i>
+
+                                        <input type="tel"
+                                               class="form-control-custom"
+                                               id="branchPhone"
+                                               name="phone"
+                                               placeholder="Enter phone number"
+                                               maxlength="150">
+                                    </div>
+
+                                </div>
+
+                                <!-- USERNAME -->
+                                <div class="col-12 col-md-6">
+
+                                    <label for="branchUsername"
+                                           class="form-label-custom">
+                                        Username
+                                        <span class="text-danger">*</span>
+                                    </label>
+
+                                    <div class="input-icon-wrapper">
+                                        <i class="bi bi-person"></i>
+
+                                        <input type="text"
+                                               class="form-control-custom"
+                                               id="branchUsername"
+                                               name="username"
+                                               placeholder="Create username"
+                                               maxlength="150"
+                                               autocomplete="username"
+                                               required>
+                                    </div>
+
+                                </div>
+
+                                <!-- PASSWORD -->
+                                <div class="col-12 col-md-6">
+
+                                    <label for="branchPassword"
+                                           class="form-label-custom">
+                                        Password
+                                        <span class="text-danger">*</span>
+                                    </label>
+
+                                    <div class="input-icon-wrapper">
+                                        <i class="bi bi-lock"></i>
+
+                                        <input type="password"
+                                               class="form-control-custom"
+                                               id="branchPassword"
+                                               name="password"
+                                               placeholder="Create password"
+                                               maxlength="150"
+                                               autocomplete="new-password"
+                                               required>
+
+                                        <button type="button"
+                                                class="password-toggle"
+                                                id="togglePassword"
+                                                aria-label="Show password">
+                                            <i class="bi bi-eye"></i>
+                                        </button>
+
+                                    </div>
+
+                                </div>
+
+                                <!-- ADDRESS -->
+                                <div class="col-12">
+
+                                    <label for="branchAddress"
+                                           class="form-label-custom">
+                                        Branch Address
+                                    </label>
+
+                                    <div class="input-icon-wrapper textarea-wrapper">
+                                        <i class="bi bi-geo-alt"></i>
+
+                                        <textarea class="form-control-custom"
+                                                  id="branchAddress"
+                                                  name="address"
+                                                  rows="4"
+                                                  placeholder="Enter complete branch address"
+                                                  maxlength="150"></textarea>
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <!-- FORM FOOTER -->
+                            <div class="branch-form-footer mt-4 pt-4">
+
+                                <button type="reset"
+                                        class="btn btn-light border px-4"
+                                        id="resetBranchForm">
+                                    <i class="bi bi-arrow-counterclockwise me-1"></i>
+                                    Reset
+                                </button>
+
+                                <button type="submit"
+                                        class="btn btn-primary px-4"
+                                        id="submitBranch">
+
+                                    <i class="bi bi-building-add me-1"></i>
+                                    Register Branch
+
+                                </button>
+
+                            </div>
+
+                        </form>
+
                     </div>
 
                 </div>
-            </form>
+
+            </div>
 
         </div>
+
     </div>
-</div>
-    <!-- END: Form Component Row Grid Layout -->
+
+    <!-- FOOTER -->
+    {% include 'footer.html' %}
 
 
+    <!-- PAGE STYLES -->
+    <style>
 
-{% include 'footer.html' %}
+        .branch-form-card {
+            border-radius: 12px;
+            overflow: hidden;
+            background: #ffffff;
+        }
+
+        .branch-form-header {
+            padding: 22px 25px;
+            border-bottom: 1px solid #edf0f4;
+        }
+
+        .branch-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 10px;
+            background: rgba(32, 90, 225, 0.10);
+            color: #205ae1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .form-label-custom {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #343a40;
+            margin-bottom: 9px;
+        }
+
+        .input-icon-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-icon-wrapper > i {
+            position: absolute;
+            left: 14px;
+            color: #8b95a5;
+            font-size: 16px;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .form-control-custom {
+            width: 100%;
+            min-height: 46px;
+            padding: 11px 42px 11px 42px;
+            border: 1px solid #e2e7ef;
+            border-radius: 8px;
+            background: #ffffff;
+            color: #343a40;
+            font-size: 13px;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        textarea.form-control-custom {
+            min-height: 110px;
+            resize: vertical;
+            padding-top: 13px;
+        }
+
+        .form-control-custom:focus {
+            border-color: #205ae1;
+            box-shadow: 0 0 0 3px rgba(32, 90, 225, 0.10);
+        }
+
+        .form-control-custom::placeholder {
+            color: #a6afbd;
+            font-size: 13px;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 12px;
+            border: none;
+            background: transparent;
+            color: #7b8493;
+            font-size: 17px;
+            cursor: pointer;
+            z-index: 3;
+        }
+
+        .branch-form-footer {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 10px;
+            border-top: 1px solid #edf0f4;
+        }
+
+        .branch-form-footer .btn {
+            min-height: 42px;
+            border-radius: 7px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .branch-form-footer .btn-primary {
+            background: #205ae1;
+            border-color: #205ae1;
+        }
+
+        .branch-form-footer .btn-primary:hover {
+            background: #1749bd;
+            border-color: #1749bd;
+        }
+
+        @media(max-width: 576px) {
+
+            .branch-form-header {
+                padding: 18px;
+            }
+
+            .branch-form-card .card-body {
+                padding: 20px !important;
+            }
+
+            .branch-form-footer {
+                flex-direction: column-reverse;
+                align-items: stretch;
+            }
+
+            .branch-form-footer .btn {
+                width: 100%;
+            }
+
+        }
+
+    </style>
+
+
+    <!-- PASSWORD TOGGLE -->
+    <script>
+
+        document.addEventListener("DOMContentLoaded", function () {
+
+            const passwordInput =
+                document.getElementById("branchPassword");
+
+            const togglePassword =
+                document.getElementById("togglePassword");
+
+            const resetButton =
+                document.getElementById("resetBranchForm");
+
+            const form =
+                document.getElementById("branchRegistrationForm");
+
+            // Show / Hide Password
+            togglePassword.addEventListener("click", function () {
+
+                const isPassword =
+                    passwordInput.type === "password";
+
+                passwordInput.type =
+                    isPassword ? "text" : "password";
+
+                this.innerHTML = isPassword
+                    ? '<i class="bi bi-eye-slash"></i>'
+                    : '<i class="bi bi-eye"></i>';
+
+                this.setAttribute(
+                    "aria-label",
+                    isPassword ? "Hide password" : "Show password"
+                );
+
+            });
+
+            // Reset Password Visibility
+            resetButton.addEventListener("click", function () {
+
+                passwordInput.type = "password";
+
+                togglePassword.innerHTML =
+                    '<i class="bi bi-eye"></i>';
+
+            });
+
+            // Prevent accidental multiple submissions
+            form.addEventListener("submit", function () {
+
+                const submitButton =
+                    document.getElementById("submitBranch");
+
+                if (!form.checkValidity()) {
+                    return;
+                }
+
+                submitButton.disabled = true;
+
+                submitButton.innerHTML =
+                    '<span class="spinner-border spinner-border-sm me-2"></span>Registering...';
+
+            });
+
+        });
+
+    </script>
+
+</body>
+</html>

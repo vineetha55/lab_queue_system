@@ -1,0 +1,1243 @@
+
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Branch Report | Microlab</title>
+
+    <link rel="stylesheet"
+          href="{% static 'assets/libs/bootstrap/css/bootstrap.min.css' %}">
+
+    <link rel="stylesheet"
+          href="{% static 'assets/libs/bootstrap-icons/bootstrap-icons.css' %}">
+
+    <link rel="stylesheet"
+          href="{% static 'assets/css/main.css' %}">
+
+    <style>
+
+        :root {
+            --report-primary: #205ae1;
+            --report-bg: #f5f7fb;
+            --report-border: #e8edf4;
+            --report-text: #263449;
+        }
+
+        body {
+            background: var(--report-bg);
+            color: var(--report-text);
+        }
+
+        .report-content {
+            padding: 25px;
+        }
+
+        .report-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 22px;
+        }
+
+        .page-title {
+            font-size: 25px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        /* FILTER */
+
+        .filter-card {
+            background: #fff;
+            border: 1px solid var(--report-border);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 22px;
+        }
+
+        .filter-label {
+            font-size: 12px;
+            font-weight: 700;
+            color: #64748b;
+            margin-bottom: 7px;
+        }
+
+        .filter-control {
+            min-height: 43px;
+            border: 1px solid #dce3ed;
+            border-radius: 7px;
+            font-size: 13px;
+        }
+
+        .filter-control:focus {
+            border-color: var(--report-primary);
+            box-shadow: 0 0 0 3px rgba(32,90,225,.1);
+        }
+
+        .report-action-btn {
+            border: none;
+            border-radius: 7px;
+            padding: 11px 17px;
+            background: var(--report-primary);
+            color: #fff;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            justify-content: center;
+        }
+
+        .report-action-btn:hover {
+            color: #fff;
+            background: #1748bd;
+        }
+
+        .back-btn {
+            background: #fff;
+            color: #344054;
+            border: 1px solid #dce2eb;
+        }
+
+        .back-btn:hover {
+            background: #f1f4f9;
+            color: #344054;
+        }
+
+        /* INFORMATION */
+
+        .branch-info-card,
+        .report-table-card {
+            background: #fff;
+            border: 1px solid var(--report-border);
+            border-radius: 12px;
+            padding: 22px;
+            margin-bottom: 22px;
+        }
+
+        .branch-info-title {
+            font-size: 17px;
+            font-weight: 700;
+            margin-bottom: 18px;
+        }
+
+        .info-label {
+            font-size: 12px;
+            color: #8993a5;
+            margin-bottom: 5px;
+        }
+
+        .info-value {
+            font-size: 13px;
+            font-weight: 600;
+            color: #283448;
+            overflow-wrap: anywhere;
+        }
+
+        /* SUMMARY */
+
+        .report-card {
+            background: #fff;
+            border: 1px solid var(--report-border);
+            border-radius: 12px;
+            padding: 20px;
+            height: 100%;
+        }
+
+        .report-icon {
+            width: 42px;
+            height: 42px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 9px;
+            background: #edf3ff;
+            color: var(--report-primary);
+            font-size: 20px;
+            margin-bottom: 13px;
+        }
+
+        .report-label {
+            font-size: 12px;
+            color: #778195;
+            margin-bottom: 7px;
+        }
+
+        .report-value {
+            font-size: 25px;
+            font-weight: 700;
+            color: #202b3c;
+        }
+
+        .progress {
+            height: 7px;
+            background: #edf0f5;
+            border-radius: 10px;
+        }
+
+        .progress-bar {
+            border-radius: 10px;
+        }
+
+        /* TABLE */
+
+        .report-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 1050px;
+        }
+
+        .report-table th {
+            background: #f2f5fa;
+            color: #344054;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 13px 11px;
+            border: 1px solid #e3e8f0;
+            white-space: nowrap;
+            text-align: left;
+        }
+
+        .report-table td {
+            padding: 12px 11px;
+            border: 1px solid #e9edf3;
+            font-size: 12px;
+            vertical-align: middle;
+        }
+
+        .patient-name {
+            font-weight: 700;
+            color: #25334a;
+        }
+
+        .test-item {
+            display: inline-block;
+            background: #edf3ff;
+            color: #205ae1;
+            padding: 5px 8px;
+            margin: 2px;
+            border-radius: 5px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 5px 9px;
+            border-radius: 5px;
+            font-size: 11px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .urgent-badge {
+            background: #fff0ef;
+            color: #dc3545;
+        }
+
+        .normal-badge {
+            background: #eaf8ef;
+            color: #198754;
+        }
+
+        .received-badge {
+            background: #e8f8ef;
+            color: #198754;
+        }
+
+        .pending-badge {
+            background: #fff5e5;
+            color: #b7791f;
+        }
+
+        .custom-date-field {
+            display: none;
+        }
+
+        .receipt-details {
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 5px;
+            line-height: 1.6;
+        }
+
+        .empty-message {
+            padding: 35px 15px !important;
+            color: #8993a5;
+            text-align: center;
+        }
+
+        /* PRINT */
+
+        .print-header {
+            display: none;
+        }
+
+        @media print {
+
+            @page {
+                size: A4 landscape;
+                margin: 8mm;
+            }
+
+            html, body {
+                margin: 0 !important;
+                padding: 0 !important;
+                background: white !important;
+                width: 100% !important;
+            }
+
+            body * {
+                visibility: hidden !important;
+            }
+
+            .print-area,
+            .print-area * {
+                visibility: visible !important;
+            }
+
+            .print-area {
+                position: absolute !important;
+                top: 0 !important;
+                left: 0 !important;
+                width: 100% !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+
+            .no-print,
+            .sidebar-wrapper,
+            .navbar,
+            footer,
+            .filter-card,
+            .report-heading,
+            .branch-info-card,
+            .report-summary {
+                display: none !important;
+            }
+
+            .print-header {
+                display: block !important;
+                visibility: visible !important;
+                width: 100% !important;
+                margin-bottom: 12px !important;
+                padding-bottom: 10px !important;
+                border-bottom: 2px solid #222 !important;
+            }
+
+            .print-header * {
+                visibility: visible !important;
+            }
+
+            .print-company-title {
+                font-size: 21px !important;
+                font-weight: 800 !important;
+                color: #000 !important;
+                margin-bottom: 3px !important;
+            }
+
+            .print-report-title {
+                font-size: 15px !important;
+                font-weight: 700 !important;
+                color: #000 !important;
+                margin-bottom: 8px !important;
+            }
+
+            .print-branch-details {
+                display: grid !important;
+                grid-template-columns: 1fr 1fr 1fr !important;
+                gap: 5px 15px !important;
+                margin-top: 8px !important;
+            }
+
+            .print-info {
+                font-size: 9px !important;
+                color: #000 !important;
+                line-height: 1.5 !important;
+            }
+
+            .print-period {
+                margin-top: 9px !important;
+                padding: 7px 9px !important;
+                background: #f0f0f0 !important;
+                border: 1px solid #777 !important;
+                font-size: 10px !important;
+                color: #000 !important;
+            }
+
+            .report-table-card {
+                display: block !important;
+                width: 100% !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                border: none !important;
+                box-shadow: none !important;
+            }
+
+            .table-heading {
+                display: flex !important;
+                justify-content: space-between !important;
+                margin-bottom: 7px !important;
+            }
+
+            .table-responsive {
+                overflow: visible !important;
+            }
+
+            .report-table {
+                width: 100% !important;
+                min-width: 0 !important;
+                table-layout: auto !important;
+                border-collapse: collapse !important;
+            }
+
+            .report-table thead {
+                display: table-header-group !important;
+            }
+
+            .report-table tr {
+                break-inside: avoid !important;
+                page-break-inside: avoid !important;
+            }
+
+            .report-table th {
+                background: #e9edf3 !important;
+                color: #000 !important;
+                border: 1px solid #555 !important;
+                padding: 6px 4px !important;
+                font-size: 8px !important;
+                white-space: normal !important;
+            }
+
+            .report-table td {
+                color: #000 !important;
+                border: 1px solid #777 !important;
+                padding: 5px 4px !important;
+                font-size: 8px !important;
+            }
+
+            .patient-name {
+                color: #000 !important;
+            }
+
+            .test-item,
+            .status-badge {
+                background: transparent !important;
+                color: #000 !important;
+                padding: 0 !important;
+                font-size: 8px !important;
+            }
+
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+
+        }
+
+        @media(max-width: 768px) {
+
+            .report-content {
+                padding: 15px;
+            }
+
+            .report-value {
+                font-size: 22px;
+            }
+
+            .branch-info-card,
+            .report-table-card {
+                padding: 15px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    {% include 'admin_navbar.html' %}
+
+    <!-- <div class="report-content"> -->
+
+        <!-- HEADER -->
+
+        <div class="report-heading no-print">
+
+            <div>
+
+                <h1 class="page-title">Branch Wise Report</h1>
+
+                <p class="text-muted mb-0">
+                    Patient and Sample Receipt Report
+                </p>
+
+            </div>
+
+            <div class="d-flex gap-2 flex-wrap">
+
+                <a href="{% url 'tests' %}"
+                   class="report-action-btn back-btn">
+
+                    <i class="bi bi-arrow-left"></i>
+                    Back
+
+                </a>
+
+                <button onclick="window.print()"
+                        type="button"
+                        class="report-action-btn">
+
+                    <i class="bi bi-printer"></i>
+                    Print
+
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- DATE FILTER -->
+
+        <div class="filter-card no-print">
+
+            <form method="GET"
+                  action=""
+                  id="reportFilterForm">
+
+                <div class="row g-3 align-items-end">
+
+                    <div class="col-lg-4 col-md-6">
+
+                        <label class="filter-label">
+                            Select Report Period
+                        </label>
+
+                        <select name="filter"
+                                id="dateFilter"
+                                class="form-select filter-control">
+
+                            <option value="today"
+                                {% if selected_filter == 'today' %}selected{% endif %}>
+                                Today
+                            </option>
+
+                            <option value="yesterday"
+                                {% if selected_filter == 'yesterday' %}selected{% endif %}>
+                                Yesterday
+                            </option>
+
+                            <option value="weekly"
+                                {% if selected_filter == 'weekly' %}selected{% endif %}>
+                                This Week
+                            </option>
+
+                            <option value="monthly"
+                                {% if selected_filter == 'monthly' %}selected{% endif %}>
+                                This Month
+                            </option>
+
+                            <option value="yearly"
+                                {% if selected_filter == 'yearly' %}selected{% endif %}>
+                                This Year
+                            </option>
+
+                            <option value="custom"
+                                {% if selected_filter == 'custom' %}selected{% endif %}>
+                                Custom Date Range
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="col-lg-3 col-md-6 custom-date-field"
+                         id="fromDateContainer">
+
+                        <label class="filter-label">
+                            From Date
+                        </label>
+
+                        <input type="date"
+                               name="from_date"
+                               id="fromDate"
+                               value="{{ from_date }}"
+                               class="form-control filter-control">
+
+                    </div>
+
+
+                    <div class="col-lg-3 col-md-6 custom-date-field"
+                         id="toDateContainer">
+
+                        <label class="filter-label">
+                            To Date
+                        </label>
+
+                        <input type="date"
+                               name="to_date"
+                               id="toDate"
+                               value="{{ to_date }}"
+                               class="form-control filter-control">
+
+                    </div>
+
+
+                    <div class="col-lg-2 col-md-6">
+
+                        <button type="submit"
+                                class="report-action-btn w-100">
+
+                            <i class="bi bi-funnel"></i>
+                            Apply Filter
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+                <div class="mt-3 text-muted"
+                     style="font-size:12px;">
+
+                    <i class="bi bi-calendar3 me-1"></i>
+
+                    Applied Report Period:
+
+                    <strong>
+                        {{ start_date|date:"d M Y" }}
+                        -
+                        {{ end_date|date:"d M Y" }}
+                    </strong>
+
+                </div>
+
+            </form>
+
+        </div>
+
+
+        <!-- BRANCH INFORMATION -->
+
+        <div class="branch-info-card no-print">
+
+            <div class="branch-info-title">
+                <i class="bi bi-building me-2"></i>
+                Branch Information
+            </div>
+
+            <div class="row g-4">
+
+                <div class="col-md-3">
+                    <div class="info-label">Branch ID</div>
+                    <div class="info-value">#{{ branch.id }}</div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="info-label">Branch Name</div>
+                    <div class="info-value">
+                        {{ branch.name|default:"N/A" }}
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="info-label">Email</div>
+                    <div class="info-value">
+                        {{ branch.email|default:"N/A" }}
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="info-label">Phone</div>
+                    <div class="info-value">
+                        {{ branch.phone|default:"N/A" }}
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="info-label">Address</div>
+                    <div class="info-value">
+                        {{ branch.address|default:"N/A" }}
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="info-label">Branch Created</div>
+                    <div class="info-value">
+                        {{ branch.created_at|date:"d M Y" }}
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="info-label">Report Generated</div>
+                    <div class="info-value">
+                        {{ report_generated_at|date:"d M Y, h:i A" }}
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- SUMMARY CARDS -->
+
+        <div class="report-summary no-print">
+
+            <div class="row g-3 mb-4">
+
+                <div class="col-xl-3 col-md-6">
+
+                    <div class="report-card">
+
+                        <div class="report-icon">
+                            <i class="bi bi-people"></i>
+                        </div>
+
+                        <div class="report-label">
+                            Total Patients / Bills
+                        </div>
+
+                        <div class="report-value">
+                            {{ total_patients }}
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="col-xl-3 col-md-6">
+
+                    <div class="report-card">
+
+                        <div class="report-icon">
+                            <i class="bi bi-clipboard2-pulse"></i>
+                        </div>
+
+                        <div class="report-label">
+                            Total Samples
+                        </div>
+
+                        <div class="report-value">
+                            {{ total_tests }}
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="col-xl-3 col-md-6">
+
+                    <div class="report-card">
+
+                        <div class="report-icon">
+                            <i class="bi bi-check-circle"></i>
+                        </div>
+
+                        <div class="report-label">
+                            Received Samples
+                        </div>
+
+                        <div class="report-value">
+                            {{ received_samples }}
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="col-xl-3 col-md-6">
+
+                    <div class="report-card">
+
+                        <div class="report-icon">
+                            <i class="bi bi-hourglass-split"></i>
+                        </div>
+
+                        <div class="report-label">
+                            Pending Samples
+                        </div>
+
+                        <div class="report-value">
+                            {{ pending_samples }}
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="row g-3 mb-4">
+
+                <div class="col-md-4">
+
+                    <div class="report-card">
+
+                        <div class="report-label">
+                            Urgent Patients
+                        </div>
+
+                        <div class="report-value text-danger">
+                            {{ urgent_patients }}
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="col-md-4">
+
+                    <div class="report-card">
+
+                        <div class="report-label">
+                            Normal Patients
+                        </div>
+
+                        <div class="report-value text-success">
+                            {{ normal_patients }}
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="col-md-4">
+
+                    <div class="report-card">
+
+                        <div class="report-label">
+                            Unique Patients (Phone)
+                        </div>
+
+                        <div class="report-value">
+                            {{ unique_patients }}
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- RECEIPT PROGRESS -->
+
+            <div class="report-card mb-4">
+
+                <div class="d-flex justify-content-between align-items-center mb-3">
+
+                    <strong style="font-size:14px;">
+                        Sample Receipt Progress
+                    </strong>
+
+                    <strong style="font-size:13px;">
+                        {{ completion_percentage }}%
+                    </strong>
+
+                </div>
+
+                <div class="progress mb-3">
+
+                    <div class="progress-bar bg-success"
+                         role="progressbar"
+                         style="width: {{ completion_percentage }}%;"
+                         aria-valuenow="{{ completion_percentage }}"
+                         aria-valuemin="0"
+                         aria-valuemax="100">
+                    </div>
+
+                </div>
+
+                <div class="d-flex justify-content-between flex-wrap gap-2">
+
+                    <span class="text-success" style="font-size:12px;">
+                        <i class="bi bi-check-circle-fill me-1"></i>
+                        Received: {{ received_samples }}
+                    </span>
+
+                    <span class="text-warning" style="font-size:12px;">
+                        <i class="bi bi-clock-fill me-1"></i>
+                        Pending: {{ pending_samples }}
+                    </span>
+
+                    <span class="text-muted" style="font-size:12px;">
+                        Total: {{ total_tests }}
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- PRINT AREA -->
+
+        <div class="print-area">
+
+            <!-- PRINT HEADER -->
+
+            <div class="print-header">
+
+                <div class="print-company-title">
+                    MICROLAB
+                </div>
+
+                <div class="print-report-title">
+                    BRANCH PATIENT & SAMPLE RECEIPT REPORT
+                </div>
+
+                <div class="print-branch-details">
+
+                    <div class="print-info">
+                        <strong>Branch ID:</strong> #{{ branch.id }}
+                    </div>
+
+                    <div class="print-info">
+                        <strong>Branch Name:</strong>
+                        {{ branch.name|default:"N/A" }}
+                    </div>
+
+                    <div class="print-info">
+                        <strong>Phone:</strong>
+                        {{ branch.phone|default:"N/A" }}
+                    </div>
+
+                    <div class="print-info">
+                        <strong>Email:</strong>
+                        {{ branch.email|default:"N/A" }}
+                    </div>
+
+                    <div class="print-info">
+                        <strong>Address:</strong>
+                        {{ branch.address|default:"N/A" }}
+                    </div>
+
+                    <div class="print-info">
+                        <strong>Generated:</strong>
+                        {{ report_generated_at|date:"d M Y, h:i A" }}
+                    </div>
+
+                </div>
+
+                <div class="print-period">
+
+                    <strong>FILTERED REPORT PERIOD:</strong>
+
+                    {{ start_date|date:"d M Y" }}
+                    to
+                    {{ end_date|date:"d M Y" }}
+
+                    <span style="float:right;">
+                        <strong>Total Patients:</strong>
+                        {{ total_patients }}
+                        &nbsp; | &nbsp;
+                        <strong>Samples:</strong>
+                        {{ total_tests }}
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- PATIENT DETAILS TABLE -->
+
+            <div class="report-table-card">
+
+                <div class="d-flex justify-content-between
+                            align-items-center mb-3 table-heading">
+
+                    <div class="branch-info-title mb-0">
+                        <i class="bi bi-file-earmark-medical me-2"></i>
+                        Patient and Sample Details
+                    </div>
+
+                    <div class="text-muted" style="font-size:12px;">
+                        Total {{ total_patients }} patients
+                    </div>
+
+                </div>
+
+
+                <div class="table-responsive">
+
+                    <table class="report-table">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>#</th>
+                                <th>Patient Name</th>
+                                <th>Lab Number</th>
+                                <th>Phone</th>
+                                <th>Purpose</th>
+                                <th>Sample Details</th>
+                                <th>Priority</th>
+                                <th>Registered Date</th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody>
+
+                            {% for bill in bills %}
+
+                            <tr>
+
+                                <td>
+                                    {{ forloop.counter }}
+                                </td>
+
+
+                                <td>
+
+                                    <div class="patient-name">
+                                        {{ bill.patient_name }}
+                                    </div>
+
+                                </td>
+
+
+                                <td>
+                                    {{ bill.lab_number }}
+                                </td>
+
+
+                                <td>
+                                    {{ bill.phone|default:"N/A" }}
+                                </td>
+
+
+                                <td>
+                                    {{ bill.purpose|default:"N/A"|linebreaksbr }}
+                                </td>
+
+
+                                <!-- SAMPLE RECEIPTS -->
+
+                                <td>
+
+                                    {% for receipt in bill.sample_receipts.all %}
+
+                                        <div class="mb-2">
+
+                                            <span class="test-item">
+                                                {{ receipt.sample_name }}
+                                            </span>
+
+                                            <br>
+
+                                            {% if receipt.is_received %}
+
+                                                <span class="status-badge received-badge">
+                                                    <i class="bi bi-check-circle me-1"></i>
+                                                    Received
+                                                </span>
+
+                                                <div class="receipt-details">
+
+                                                    {% if receipt.received_date %}
+                                                        {{ receipt.received_date|date:"d M Y" }}
+                                                    {% endif %}
+
+                                                    {% if receipt.received_time %}
+                                                        {{ receipt.received_time|time:"h:i A" }}
+                                                    {% endif %}
+
+                                                </div>
+
+                                            {% else %}
+
+                                                <span class="status-badge pending-badge">
+                                                    <i class="bi bi-clock me-1"></i>
+                                                    Pending
+                                                </span>
+
+                                            {% endif %}
+
+                                        </div>
+
+                                    {% empty %}
+
+                                        <span class="text-muted">
+                                            No samples
+                                        </span>
+
+                                    {% endfor %}
+
+                                </td>
+
+
+                                <!-- PRIORITY -->
+
+                                <td>
+
+                                    {% if bill.urgent %}
+
+                                        <span class="status-badge urgent-badge">
+                                            <i class="bi bi-exclamation-circle me-1"></i>
+                                            Urgent
+                                        </span>
+
+                                    {% else %}
+
+                                        <span class="status-badge normal-badge">
+                                            Normal
+                                        </span>
+
+                                    {% endif %}
+
+                                </td>
+
+
+                                <!-- REGISTERED DATE -->
+
+                                <td>
+                                    {{ bill.created_at|date:"d M Y, h:i A" }}
+                                </td>
+
+                            </tr>
+
+
+                            {% empty %}
+
+                            <tr>
+
+                                <td colspan="8" class="empty-message">
+
+                                    <i class="bi bi-inbox"
+                                       style="font-size:28px;"></i>
+
+                                    <div class="mt-2">
+                                        No patient records found for the selected date range.
+                                    </div>
+
+                                </td>
+
+                            </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    {% include 'footer.html' %}
+
+
+    <!-- JAVASCRIPT -->
+
+    <script>
+
+        document.addEventListener('DOMContentLoaded', function () {
+
+            const filter = document.getElementById('dateFilter');
+
+            const fromContainer = document.getElementById('fromDateContainer');
+
+            const toContainer = document.getElementById('toDateContainer');
+
+            const fromDate = document.getElementById('fromDate');
+
+            const toDate = document.getElementById('toDate');
+
+            const form = document.getElementById('reportFilterForm');
+
+
+            function updateDateFields() {
+
+                const isCustom = filter.value === 'custom';
+
+                fromContainer.style.display = isCustom ? 'block' : 'none';
+
+                toContainer.style.display = isCustom ? 'block' : 'none';
+
+                fromDate.required = isCustom;
+
+                toDate.required = isCustom;
+
+            }
+
+
+            filter.addEventListener('change', function () {
+
+                updateDateFields();
+
+            });
+
+
+            form.addEventListener('submit', function (event) {
+
+                if (filter.value === 'custom') {
+
+                    if (!fromDate.value || !toDate.value) {
+
+                        event.preventDefault();
+
+                        alert('Please select both From Date and To Date.');
+
+                        return;
+
+                    }
+
+                    if (fromDate.value > toDate.value) {
+
+                        event.preventDefault();
+
+                        alert('From Date cannot be greater than To Date.');
+
+                        return;
+
+                    }
+
+                }
+
+            });
+
+
+            updateDateFields();
+
+        });
+
+    </script>
+
+
+    <script src="{% static 'assets/libs/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+
+</body>
+
+</html>

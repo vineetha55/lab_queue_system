@@ -58,8 +58,8 @@
     --brand-forest-dark: #051C12;     /* Core sidebar/brand background */
     --brand-forest-medium: #072F1F;   /* Alert banner / dark card BG */
     --brand-forest-light: #1A3E30;    /* Interactive elements in dark mode */
-    --brand-lime: #B4F105;            /* Lime-yellow accent highlight */
-    --brand-lime-hover: #c1f824;      
+    --brand-lime: #EF4444;            /* Lime-yellow accent highlight */
+    --brand-lime-hover: #EF4444;      
     --brand-lime-translucent: rgba(180, 241, 5, 0.15);
     
     --text-main: #0B130F;             /* Dark headers, main labels */
@@ -68,7 +68,7 @@
     
     --card-background: #FFFFFF;
     --border-light: #E9EFEF;
-    --border-dark-green: rgba(255, 255, 255, 0.1);
+    --border-dark-green: rgba(163, 3, 3, 0.1);
     
     /* System Colors */
     --sys-green: #22C55E;
@@ -1578,12 +1578,12 @@ span.flatpickr-weekday {
     opacity: 1 !important;
 }
 
-/* Custom ApexCharts Hover Overrides for Lime-Yellow Color (#B4F105) */
-.apexcharts-bar-area[fill="#B4F105"]:hover,
-.apexcharts-bar-area[fill="#b4f105"]:hover,
-.apexcharts-pie-area[fill="#B4F105"]:hover,
-.apexcharts-pie-area[fill="#b4f105"]:hover {
-    fill: #c1f824 !important;
+/* Custom ApexCharts Hover Overrides for Lime-Yellow Color (#EF4444) */
+.apexcharts-bar-area[fill="#EF4444"]:hover,
+.apexcharts-bar-area[fill="#EF4444"]:hover,
+.apexcharts-pie-area[fill="#EF4444"]:hover,
+.apexcharts-pie-area[fill="#EF4444"]:hover {
+    fill: #EF4444 !important;
 }
 
 /* ---------------------------------------------------------------------

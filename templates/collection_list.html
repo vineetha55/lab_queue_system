@@ -1,0 +1,1251 @@
+
+{% include 'navbar.html' %}
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Collection Management</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
+    <style>
+        body {
+            background: #f3f6fa;
+            font-family: Arial, sans-serif;
+            color: #263746;
+        }
+
+        .main-container {
+            padding: 25px;
+            min-height: calc(100vh - 100px);
+        }
+
+        .collection-card {
+            background: #fff;
+            border-radius: 14px;
+            padding: 25px;
+            box-shadow: 0 3px 18px rgba(0,0,0,.05);
+        }
+
+        .collection-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 22px;
+        }
+
+        .page-title {
+            font-size: 23px;
+            font-weight: 700;
+            color: #173b59;
+        }
+
+        .collection-toolbar {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            width: 240px;
+        }
+
+        .search-box input {
+            height: 40px;
+            border-radius: 7px;
+            font-size: 12px;
+        }
+
+        .date-filter-form {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin: 0;
+        }
+
+        .filter-select,
+        .filter-date {
+            width: 140px;
+        }
+
+        .date-filter-form .form-select,
+        .date-filter-form .form-control {
+            height: 40px;
+            font-size: 12px;
+            border-radius: 7px;
+        }
+
+        .filter-btn {
+            height: 40px;
+            font-size: 12px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .custom-date {
+            display: none;
+        }
+
+        .view-toggle {
+            display: flex;
+            gap: 3px;
+            background: #edf2f7;
+            padding: 4px;
+            border-radius: 8px;
+        }
+
+        .view-toggle button {
+            border: none;
+            background: transparent;
+            padding: 7px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #64748b;
+        }
+
+        .view-toggle button.active {
+            background: #173b59;
+            color: white;
+        }
+
+        /* TABLE */
+
+        .table th {
+            background: #173b59;
+            color: white;
+            white-space: nowrap;
+            font-size: 13px;
+            padding: 14px 12px;
+        }
+
+        .table td {
+            vertical-align: middle;
+            padding: 13px 12px;
+            font-size: 13px;
+        }
+
+        .patient-name {
+            font-weight: 700;
+            color: #173b59;
+        }
+
+        .lab-number {
+            font-weight: 600;
+            color: #526579;
+        }
+
+        /* SAMPLE */
+
+        .sample-item {
+            background: #f0f7ff;
+            border-left: 3px solid #1677b8;
+            padding: 9px 10px;
+            margin-bottom: 7px;
+            border-radius: 5px;
+            min-width: 0;
+        }
+
+        .sample-name {
+            font-size: 13px;
+            font-weight: 600;
+            color: #123b5d;
+            line-height: 1.5;
+            overflow-wrap: anywhere;
+        }
+
+        .sample-date,
+        .sample-time {
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 5px;
+        }
+
+        /* SAMPLE NAME + STATUS SAME LINE */
+
+        .sample-heading-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+        }
+
+        .sample-heading-row .sample-name {
+            flex: 1;
+            min-width: 0;
+            overflow-wrap: anywhere;
+            word-break: break-word;
+        }
+
+        .sample-heading-row .sample-status {
+            flex-shrink: 0;
+            margin-top: 0;
+        }
+
+        /* INDIVIDUAL SAMPLE STATUS */
+
+        .sample-status {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            padding: 4px 9px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 700;
+            white-space: nowrap;
+            line-height: 1.3;
+        }
+
+        .status-received {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .status-pending {
+            background: #fff1d6;
+            color: #b7791f;
+        }
+
+        .pending-note {
+            display: block;
+            font-size: 11px;
+            color: #b7791f;
+            margin-top: 5px;
+        }
+
+        .pending-sample {
+            background: #fff8e8;
+            border: 1px solid #f5dfad;
+            color: #a16207;
+            padding: 6px 9px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            display: inline-block;
+            margin: 3px 0;
+        }
+
+        /* PRIORITY */
+
+        .priority-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            white-space: nowrap;
+            display: inline-block;
+        }
+
+        .urgent {
+            background: #ffe5e5;
+            color: #d32f2f;
+        }
+
+        .normal {
+            background: #e3f6eb;
+            color: #198754;
+        }
+
+        /* CARD VIEW */
+
+        #cardView {
+            display: none;
+        }
+
+        .collection-card-wrapper {
+            display: flex;
+        }
+
+        .collection-item-card {
+            border: 1px solid #e3eaf1;
+            border-radius: 12px;
+            padding: 17px;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            background: white;
+            transition: .2s;
+        }
+
+        .collection-item-card:hover {
+            border-color: #8ab7dc;
+            box-shadow: 0 5px 15px rgba(23,59,89,.08);
+            transform: translateY(-2px);
+        }
+
+        .card-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 10px;
+            padding-bottom: 13px;
+            border-bottom: 1px solid #edf1f5;
+            margin-bottom: 13px;
+        }
+
+        .card-bill {
+            font-size: 12px;
+            color: #64748b;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .card-patient {
+            font-size: 16px;
+            font-weight: 700;
+            color: #173b59;
+            overflow-wrap: anywhere;
+        }
+
+        .card-info {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 12px;
+            font-size: 13px;
+        }
+
+        .card-info-icon {
+            width: 28px;
+            height: 28px;
+            min-width: 28px;
+            background: #edf5fc;
+            color: #1677b8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+        }
+
+        .card-label {
+            color: #8492a2;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .card-value {
+            color: #34495e;
+            font-size: 12px;
+            font-weight: 600;
+            overflow-wrap: anywhere;
+        }
+
+        .card-section {
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 11px;
+            margin-bottom: 12px;
+        }
+
+        .card-section-title {
+            font-size: 11px;
+            font-weight: 700;
+            color: #526579;
+            margin-bottom: 9px;
+            text-transform: uppercase;
+        }
+
+        /* CARD FOOTER */
+
+        .card-footer-action {
+            margin-top: auto;
+            padding-top: 13px;
+            border-top: 1px solid #edf1f5;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .creation-info {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            color: #64748b;
+            font-size: 11px;
+        }
+
+        .creation-info span {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+        }
+
+        .creation-info i {
+            color: #1677b8;
+            font-size: 13px;
+        }
+
+        .receive-button-row {
+            display: flex;
+            justify-content: flex-end;
+            width: 100%;
+        }
+
+        .card-receive-btn {
+            background: #1677b8;
+            color: white;
+            border: none;
+            border-radius: 7px;
+            padding: 10px 17px;
+            font-size: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            white-space: nowrap;
+            transition: .2s;
+        }
+
+        .card-receive-btn:hover {
+            background: #123b5d;
+            color: white;
+        }
+
+        .empty-message {
+            padding: 40px 15px !important;
+            color: #64748b;
+        }
+
+        #noSearchResults {
+            display: none;
+        }
+
+        /* RESPONSIVE */
+
+        @media(max-width: 1200px) {
+            .collection-header {
+                align-items: flex-start;
+            }
+
+            .collection-toolbar {
+                justify-content: flex-start;
+            }
+        }
+
+        @media(max-width: 768px) {
+            .main-container {
+                padding: 12px;
+            }
+
+            .collection-card {
+                padding: 14px;
+                border-radius: 10px;
+            }
+
+            .collection-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .page-title {
+                font-size: 21px;
+            }
+
+            .collection-toolbar {
+                flex-direction: column;
+                align-items: stretch;
+                width: 100%;
+            }
+
+            .search-box {
+                width: 100%;
+            }
+
+            .date-filter-form {
+                width: 100%;
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .filter-select,
+            .filter-date {
+                width: 100%;
+            }
+
+            .filter-btn {
+                width: 100%;
+            }
+
+            .view-toggle {
+                width: 100%;
+            }
+
+            .view-toggle button {
+                flex: 1;
+            }
+
+            #listView {
+                display: none;
+            }
+
+            #cardView {
+                display: block;
+            }
+
+            .collection-item-card {
+                padding: 14px;
+            }
+
+            .card-patient {
+                font-size: 15px;
+            }
+        }
+
+        @media(max-width: 480px) {
+            .date-filter-form {
+                grid-template-columns: 1fr;
+            }
+
+            .receive-button-row {
+                justify-content: stretch;
+            }
+
+            .card-receive-btn {
+                width: 100%;
+            }
+
+            .sample-heading-row {
+                gap: 6px;
+            }
+
+            .sample-heading-row .sample-name {
+                font-size: 12px;
+            }
+
+            .sample-heading-row .sample-status {
+                font-size: 9px;
+                padding: 4px 7px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="collection-card">
+
+        <!-- HEADER -->
+
+        <div class="collection-header">
+
+            <div>
+                <h5 class="page-title mb-1">
+                    <i class="bi bi-collection me-1"></i>
+                    All Collections
+                </h5>
+
+                <small class="text-muted">
+                    Patient collection and sample receiving records
+                </small>
+            </div>
+
+            <div class="collection-toolbar">
+
+                <!-- SEARCH -->
+
+                <div class="search-box">
+                    <input type="text"
+                           id="collectionSearch"
+                           class="form-control"
+                           placeholder="Search patient, bill no, sample, phone...">
+                </div>
+
+                <!-- DATE FILTER -->
+
+                <form method="GET"
+                      id="dateFilterForm"
+                      class="date-filter-form">
+
+                    <select name="filter"
+                            id="filter"
+                            class="form-select filter-select"
+                            onchange="toggleCustomDate()">
+
+                        <option value="today" {% if filter_type == 'today' %}selected{% endif %}>Today</option>
+                        <option value="yesterday" {% if filter_type == 'yesterday' %}selected{% endif %}>Yesterday</option>
+                        <option value="weekly" {% if filter_type == 'weekly' %}selected{% endif %}>This Week</option>
+                        <option value="monthly" {% if filter_type == 'monthly' %}selected{% endif %}>This Month</option>
+                        <option value="yearly" {% if filter_type == 'yearly' %}selected{% endif %}>This Year</option>
+                        <option value="custom" {% if filter_type == 'custom' %}selected{% endif %}>Custom Range</option>
+                        <option value="all" {% if filter_type == 'all' %}selected{% endif %}>All Dates</option>
+
+                    </select>
+
+                    <div class="custom-date filter-date">
+                        <input type="date"
+                               name="start_date"
+                               id="start_date"
+                               class="form-control"
+                               value="{{ start_date }}"
+                               title="From Date">
+                    </div>
+
+                    <div class="custom-date filter-date">
+                        <input type="date"
+                               name="end_date"
+                               id="end_date"
+                               class="form-control"
+                               value="{{ end_date }}"
+                               title="To Date">
+                    </div>
+
+                    <button type="submit"
+                            class="btn btn-primary filter-btn">
+                        <i class="bi bi-funnel"></i> Apply
+                    </button>
+
+                    <a href="{% url 'collection_list' %}"
+                       class="btn btn-outline-secondary filter-btn d-flex align-items-center justify-content-center">
+                        <i class="bi bi-arrow-counterclockwise me-1"></i>
+                        Reset
+                    </a>
+
+                </form>
+
+                <!-- VIEW TOGGLE -->
+
+                <div class="view-toggle">
+
+                    <button type="button"
+                            id="cardToggle"
+                            onclick="changeView('card')">
+                        <i class="bi bi-grid-3x3-gap-fill"></i>
+                        Card View
+                    </button>
+
+                    <button type="button"
+                            id="listToggle"
+                            onclick="changeView('list')">
+                        <i class="bi bi-list-ul"></i>
+                        List View
+                    </button>
+
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ================= CARD VIEW ================= -->
+
+        <div id="cardView">
+
+            <div class="row g-3" id="cardContainer">
+
+                {% for item in collections %}
+
+                <div class="col-12 col-md-6 col-xl-4 collection-card-wrapper">
+
+                    <div class="collection-item-card collection-search-item">
+
+                        <!-- CARD HEADER -->
+
+                        <div class="card-top">
+
+                            <div>
+                                <div class="card-bill">
+                                    <i class="bi bi-receipt"></i>
+                                    Bill No: {{ item.lab_number }}
+                                </div>
+
+                                <div class="card-patient">
+                                    {{ item.patient_name }}
+                                </div>
+                            </div>
+
+                            {% if item.urgent %}
+                                <span class="priority-badge urgent">
+                                    <i class="bi bi-exclamation-circle-fill"></i>
+                                    URGENT
+                                </span>
+                            {% else %}
+                                <span class="priority-badge normal">
+                                    <i class="bi bi-check-circle-fill"></i>
+                                    NORMAL
+                                </span>
+                            {% endif %}
+
+                        </div>
+
+                        <!-- PHONE -->
+
+                        <div class="card-info">
+
+                            <div class="card-info-icon">
+                                <i class="bi bi-telephone"></i>
+                            </div>
+
+                            <div>
+                                <div class="card-label">Phone Number</div>
+                                <div class="card-value">
+                                    {{ item.phone|default:"No phone number" }}
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- SAMPLE COLLECTED -->
+
+                        <div class="card-section">
+
+                            <div class="card-section-title">
+                                <i class="bi bi-box-arrow-in-down"></i>
+                                Sample Collected
+                            </div>
+
+                            {% if item.purpose_list %}
+
+                                {% for purpose in item.purpose_list %}
+
+                                    <div class="sample-item">
+                                        <div class="sample-name">
+                                            <i class="bi bi-check-circle-fill text-success"></i>
+                                            {{ purpose }}
+                                        </div>
+                                    </div>
+
+                                {% endfor %}
+
+                            {% else %}
+
+                                <span class="pending-sample">
+                                    No Tests recorded
+                                </span>
+
+                            {% endif %}
+
+                        </div>
+
+                        <!-- SAMPLE RECEIVED STATUS -->
+
+                        <div class="card-section">
+
+                            <div class="card-section-title">
+                                <i class="bi bi-check2-circle"></i>
+                                Sample Received Status
+                            </div>
+
+                            {% with receipts=item.sample_receipts.all %}
+
+                                {% if receipts %}
+
+                                    {% for sample in receipts %}
+
+                                        <div class="sample-item">
+
+                                            <!-- NAME LEFT + STATUS RIGHT -->
+
+                                            <div class="sample-heading-row">
+
+                                                <div class="sample-name">
+                                                    <i class="bi bi-droplet-half"></i>
+                                                    {{ sample.sample_name }}
+                                                </div>
+
+                                                {% if sample.is_received %}
+
+                                                    <span class="sample-status status-received">
+                                                        <i class="bi bi-check-circle-fill"></i>
+                                                        RECEIVED
+                                                    </span>
+
+                                                {% else %}
+
+                                                    <span class="sample-status status-pending">
+                                                        <i class="bi bi-hourglass-split"></i>
+                                                        PENDING
+                                                    </span>
+
+                                                {% endif %}
+
+                                            </div>
+
+                                            {% if sample.is_received %}
+
+                                                <div class="sample-date">
+                                                    <i class="bi bi-calendar3"></i>
+                                                    <strong>Date:</strong>
+
+                                                    {% if sample.received_date %}
+                                                        {{ sample.received_date|date:"d-m-Y" }}
+                                                    {% else %}
+                                                        -
+                                                    {% endif %}
+                                                </div>
+
+                                                <div class="sample-time">
+                                                    <i class="bi bi-clock"></i>
+                                                    <strong>Time:</strong>
+
+                                                    {% if sample.received_time %}
+                                                        {{ sample.received_time|time:"h:i:s A" }}
+                                                    {% else %}
+                                                        -
+                                                    {% endif %}
+                                                </div>
+
+                                            {% else %}
+
+                                                <span class="pending-note">
+                                                    <i class="bi bi-info-circle"></i>
+                                                    Not received yet
+                                                </span>
+
+                                            {% endif %}
+
+                                        </div>
+
+                                    {% endfor %}
+
+                                {% else %}
+
+                                    <span class="pending-sample">
+                                        No sample records available
+                                    </span>
+
+                                {% endif %}
+
+                            {% endwith %}
+
+                        </div>
+
+                        <!-- CARD FOOTER -->
+
+                        <div class="card-footer-action">
+
+                            <div class="creation-info">
+
+                                <span>
+                                    <i class="bi bi-calendar3"></i>
+                                    <strong>Created Date:</strong>
+
+                                    {% if item.created_at %}
+                                        {{ item.created_at|date:"d-m-Y" }}
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </span>
+
+                                <span>
+                                    <i class="bi bi-clock"></i>
+                                    <strong>Created Time:</strong>
+
+                                    {% if item.created_at %}
+                                        {{ item.created_at|date:"h:i:s A" }}
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </span>
+
+                            </div>
+
+                            <div class="receive-button-row">
+
+                                <a href="{% url 'collection_detail' item.id %}"
+                                   class="card-receive-btn">
+
+                                    <i class="bi bi-box-arrow-in-right"></i>
+                                    Receive Samples
+
+                                </a>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                {% empty %}
+
+                    <div class="col-12 text-center empty-message">
+                        <i class="bi bi-inbox fs-1 d-block mb-2"></i>
+                        <h5>No collections found.</h5>
+                        <p>Collection records will appear here.</p>
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+        <!-- ================= LIST VIEW ================= -->
+
+        <div id="listView">
+
+            <div class="table-responsive">
+
+                <table class="table table-bordered table-hover align-middle">
+
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Bill No</th>
+                            <th>Patient Name</th>
+                            <th>Phone No</th>
+                            <th>Sample Collected</th>
+                            <th>Sample Received</th>
+                            <th>Priority</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="collectionTable">
+
+                        {% for item in collections %}
+
+                        <tr class="collection-row">
+
+                            <td>{{ forloop.counter }}</td>
+
+                            <td>
+                                <div class="lab-number">
+                                    {{ item.lab_number }}
+                                </div>
+                            </td>
+
+                            <td>
+                                <div class="patient-name">
+                                    {{ item.patient_name }}
+                                </div>
+                            </td>
+
+                            <td>
+                                {{ item.phone|default:"No phone number" }}
+                            </td>
+
+                            <!-- SAMPLE COLLECTED -->
+
+                            <td style="min-width:220px;">
+
+                                {% if item.purpose_list %}
+
+                                    {% for purpose in item.purpose_list %}
+
+                                        <div class="sample-item">
+                                            <div class="sample-name">
+                                                <!-- <i class="bi bi-check-circle-fill text-success"></i> -->
+                                                {{ purpose }}
+                                            </div>
+                                        </div>
+
+                                    {% endfor %}
+
+                                {% else %}
+
+                                    <span class="pending-sample">
+                                        No purpose recorded
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+                            <!-- SAMPLE RECEIVED STATUS -->
+
+                            <td style="min-width:240px;">
+
+                                {% with receipts=item.sample_receipts.all %}
+
+                                    {% if receipts %}
+
+                                        {% for sample in receipts %}
+
+                                            <div class="sample-item">
+
+                                                <!-- NAME LEFT + STATUS RIGHT -->
+
+                                                <div class="sample-heading-row">
+
+                                                    <div class="sample-name">
+                                                        <!-- <i class="bi bi-droplet-half"></i> -->
+                                                        {{ sample.sample_name }}
+                                                    </div>
+
+                                                    {% if sample.is_received %}
+
+                                                        <span class="sample-status status-received">
+                                                            <i class="bi bi-check-circle-fill"></i>
+                                                            RECEIVED
+                                                        </span>
+
+                                                    {% else %}
+
+                                                        <span class="sample-status status-pending">
+                                                            <i class="bi bi-hourglass-split"></i>
+                                                            PENDING
+                                                        </span>
+
+                                                    {% endif %}
+
+                                                </div>
+
+                                                {% if sample.is_received %}
+
+                                                    <div class="sample-date">
+                                                        <!-- <i class="bi bi-calendar3"></i> -->
+                                                        <strong>Date:</strong>
+
+                                                        {% if sample.received_date %}
+                                                            {{ sample.received_date|date:"d-m-Y" }}
+                                                        {% else %}
+                                                            -
+                                                        {% endif %}
+                                                    </div>
+
+                                                    <div class="sample-time">
+                                                        <!-- <i class="bi bi-clock"></i> -->
+                                                        <strong>Time:</strong>
+
+                                                        {% if sample.received_time %}
+                                                            {{ sample.received_time|time:"h:i:s A" }}
+                                                        {% else %}
+                                                            -
+                                                        {% endif %}
+                                                    </div>
+
+                                                {% else %}
+
+                                                    <span class="pending-note">
+                                                        <i class="bi bi-info-circle"></i>
+                                                        Not received yet
+                                                    </span>
+
+                                                {% endif %}
+
+                                            </div>
+
+                                        {% endfor %}
+
+                                    {% else %}
+
+                                        <span class="pending-sample">
+                                            No sample records available
+                                        </span>
+
+                                    {% endif %}
+
+                                {% endwith %}
+
+                            </td>
+
+                            <!-- PRIORITY -->
+
+                            <td>
+
+                                {% if item.urgent %}
+
+                                    <span class="priority-badge urgent">
+                                        <i class="bi bi-exclamation-circle-fill"></i>
+                                        URGENT
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="priority-badge normal">
+                                        <i class="bi bi-check-circle-fill"></i>
+                                        NORMAL
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+                            <!-- ACTION -->
+
+                            <td>
+
+                                <a href="{% url 'collection_detail' item.id %}"
+                                   class="btn btn-primary btn-sm">
+
+                                    <i class="bi bi-box-arrow-in-right"></i>
+                                    Receive
+
+                                </a>
+
+                            </td>
+
+                        </tr>
+
+                        {% empty %}
+
+                        <tr>
+                            <td colspan="8" class="text-center empty-message">
+                                No collections found.
+                            </td>
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+        <!-- SEARCH EMPTY MESSAGE -->
+
+        <div id="noSearchResults" class="text-center text-muted py-5">
+
+            <i class="bi bi-search fs-2 d-block mb-2"></i>
+
+            <h6>No matching collections found.</h6>
+
+            <small>Try another patient name, bill number or sample.</small>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- JAVASCRIPT -->
+
+<script>
+
+    /* DATE FILTER */
+
+    function toggleCustomDate() {
+
+        const filter = document.getElementById("filter");
+
+        const startDate = document.getElementById("start_date");
+        const endDate = document.getElementById("end_date");
+
+        const dateFields = document.querySelectorAll(".custom-date");
+
+        const isCustom = filter.value === "custom";
+
+        dateFields.forEach(function(field) {
+            field.style.display = isCustom ? "block" : "none";
+        });
+
+        startDate.required = isCustom;
+        endDate.required = isCustom;
+
+    }
+
+
+    /* CARD / LIST TOGGLE */
+
+    function changeView(view) {
+
+        const cardView = document.getElementById("cardView");
+        const listView = document.getElementById("listView");
+
+        const cardToggle = document.getElementById("cardToggle");
+        const listToggle = document.getElementById("listToggle");
+
+        if (view === "card") {
+
+            cardView.style.display = "block";
+            listView.style.display = "none";
+
+            cardToggle.classList.add("active");
+            listToggle.classList.remove("active");
+
+        } else {
+
+            cardView.style.display = "none";
+            listView.style.display = "block";
+
+            listToggle.classList.add("active");
+            cardToggle.classList.remove("active");
+
+        }
+
+        applySearch();
+
+    }
+
+
+    /* SEARCH BOTH VIEWS */
+
+    function applySearch() {
+
+        const searchInput = document.getElementById("collectionSearch");
+
+        const searchValue = searchInput.value.toLowerCase().trim();
+
+        const cardItems = document.querySelectorAll(".collection-search-item");
+        const tableRows = document.querySelectorAll(".collection-row");
+
+        let visibleCount = 0;
+
+        cardItems.forEach(function(card) {
+
+            const matches = card.innerText.toLowerCase().includes(searchValue);
+
+            card.closest(".collection-card-wrapper").style.display =
+                matches ? "" : "none";
+
+            if (matches) {
+                visibleCount++;
+            }
+
+        });
+
+        tableRows.forEach(function(row) {
+
+            const matches = row.innerText.toLowerCase().includes(searchValue);
+
+            row.style.display = matches ? "" : "none";
+
+        });
+
+        const noResults = document.getElementById("noSearchResults");
+
+        noResults.style.display =
+            (searchValue !== "" && visibleCount === 0) ? "block" : "none";
+
+    }
+
+
+    /* INITIALIZATION */
+
+    document.addEventListener("DOMContentLoaded", function() {
+
+        toggleCustomDate();
+
+        const searchInput = document.getElementById("collectionSearch");
+
+        searchInput.addEventListener("input", applySearch);
+
+        if (window.innerWidth <= 768) {
+            changeView("card");
+        } else {
+            changeView("list");
+        }
+
+    });
+
+</script>
+
+<footer class="page-footer">
+    {% include "footer_1.html" %}
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

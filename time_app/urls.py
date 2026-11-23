@@ -9,18 +9,9 @@ urlpatterns = [
         views.review_bill,
         name="review_bill",
     ),
-path(
-    "waiting-dashboard/",
-    views.waiting_dashboard,
-    name="waiting_dashboard",
-),
-path(
-    "stop-timer/<int:bill_id>/",
-    views.stop_timer,
-    name="stop-timer",
-),
-    path("Login/",views.login_view, name="login_view"),
-    path("Logout/",views.logout_view, name="logout_view"),
+
+    path("login_view/",views.login_view, name="login_view"),
+    path("logout_view/",views.logout_view, name="logout_view"),
     path("admin_home/", views.admin_home, name="admin_home"),
     path("branch_dashboard/", views.branch_dashboard, name="branch_dashboard"),
     path("branch/", views.branch, name="branch"),
@@ -38,42 +29,51 @@ path(
         name="check_bill_number"
     ),
     path(
-        "send-sms/<int:bill_id>/",
-        views.send_waiting_sms,
-        name="send-waiting-sms"
+    'bill-confirmation/<int:bill_id>/',
+    views.bill_confirmation,
+    name='bill-confirmation'
+),
+    path(
+        'tests',
+        views.tests,
+        name='tests'
+    ),
+    path(
+        'branch_report/<int:branch_id>/',
+        views.branch_report,
+        name='branch_report'
+    ),
+path(
+    "patient-status/<int:bill_id>/",
+    views.patient_status,
+    name="patient-status"
+),
+    path(
+        "collections/",
+        views.collection_list,
+        name="collection_list"
     ),
 
     path(
-        "patient-status/<uuid:token>/",
-        views.patient_status,
-        name="patient-status"
+        "collection/details/<int:collection_id>/",
+        views.collection_detail,
+        name="collection_detail"
     ),
-path('search-bill/', views.search_bill, name='search_bill'),
-path(
-    "collection-dashboard/",
-    views.collection_dashboard,
-    name="collection_dashboard",
-),
 
+    path(
+        "collection/edit/<int:collection_id>/",
+        views.collection_edit,
+        name="collection_edit"
+    ),
 path(
-    "update-collection/<int:collection_id>/",
-    views.update_collection_status,
-    name="update_collection_status",
+    'collection/details/<int:collection_id>/',
+    views.collection_detail,
+    name='collection_detail'
 ),
-path(
-    "add-collection-test/<int:bill_id>/",
-    views.add_collection_test,
-    name="add_collection_test",
-),
-path(
-    "inside-lab-dashboard/",
-    views.inside_lab_dashboard,
-    name="inside_lab_dashboard",
-),
-path(
-    "collection-tv-display/",
-    views.collection_tv_display,
-    name="collection_tv_display"
-),
+    path(
+        "collection/delete/<int:collection_id>/",
+        views.collection_delete,
+        name="collection_delete"
+    ),
 
 ]

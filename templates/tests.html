@@ -1,0 +1,321 @@
+
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Microlab | Branch Management</title>
+
+    <link rel="icon" href="{% static 'assets/images/favicon.ico' %}">
+
+    <link rel="stylesheet" href="{% static 'assets/libs/bootstrap/css/bootstrap.min.css' %}">
+
+    <link rel="stylesheet" href="{% static 'assets/libs/bootstrap-icons/bootstrap-icons.css' %}">
+
+    <link rel="stylesheet" href="{% static 'assets/css/main.css' %}">
+
+    <style>
+
+        .branch-report-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 9px 17px;
+            background: #205ae1;
+            color: #fff;
+            border-radius: 7px;
+            font-size: 13px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: .2s ease;
+            white-space: nowrap;
+        }
+
+        .branch-report-btn:hover {
+            background: #1748bd;
+            color: #fff;
+            transform: translateY(-1px);
+        }
+
+        .branch-report-btn i {
+            font-size: 15px;
+        }
+
+        .table-user-name {
+            font-weight: 600;
+        }
+
+        @media(max-width: 768px) {
+
+            .table-header-control {
+                flex-wrap: wrap;
+                gap: 12px;
+            }
+
+            .table-search-box {
+                width: 100%;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <!-- ADMIN NAVBAR -->
+    {% include 'admin_navbar.html' %}
+
+        <!-- PAGE HEADER -->
+        <div class="page-header">
+
+            <div>
+
+                <h1 class="page-title">
+                 Reports
+                </h1>
+
+                <p class="text-muted mb-0">
+                    Manage and monitor all registered branch Reports.
+                </p>
+
+            </div>
+
+            <nav aria-label="breadcrumb">
+
+                <ol class="breadcrumb mb-0">
+
+                    <li class="breadcrumb-item">
+                        <a href="/admin_home/"
+                           class="text-decoration-none text-muted-green">
+                            Home
+                        </a>
+                    </li>
+
+                    <li class="breadcrumb-item active text-main">
+                        Branch
+                    </li>
+
+                </ol>
+
+            </nav>
+
+        </div>
+
+
+        <!-- BRANCH TABLE CARD -->
+        <div class="table-card-custom">
+
+            <!-- TABLE HEADER -->
+            <div class="table-header-control">
+
+                <div class="table-search-box">
+
+                    <i class="bi bi-search table-search-icon"></i>
+
+                    <input type="text"
+                           id="branchSearch"
+                           class="table-search-input"
+                           placeholder="Search branches..."
+                           autocomplete="off">
+
+                </div>
+
+
+            </div>
+
+
+            <!-- TABLE -->
+            <div class="table-responsive">
+
+                <table class="table-custom" id="branchTable">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Branch ID</th>
+                            <th>Branch Name</th>
+                            <th>Address</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Created Date</th>
+                            <th class="text-center">Reports</th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody id="branchTableBody">
+
+                        {% for i in data %}
+
+                        <tr class="branch-row">
+
+                            <td class="table-order-id">
+                                #{{ i.id }}
+                            </td>
+
+                            <td>
+
+                                <div class="table-user-cell">
+
+                                    <div class="table-user-name">
+                                        {{ i.name|default:"N/A" }}
+                                    </div>
+
+                                </div>
+
+                            </td>
+
+                            <td class="table-product-name" style="width: 150px; max-width: 150px; white-space: normal; overflow-wrap: anywhere;">
+                                {{ i.address|default:"N/A" }}
+                            </td>
+
+                            <td>
+                                {{ i.email|default:"N/A" }}
+                            </td>
+
+                            <td>
+                                {{ i.phone|default:"N/A" }}
+                            </td>
+
+                            <td>
+                                {{ i.created_at|date:"d M Y"|default:"N/A" }}
+                            </td>
+
+                            <td class="text-center">
+
+                                <a href="{% url 'branch_report' i.id %}"
+                                   class="branch-report-btn">
+
+                                    <i class="bi bi-file-earmark-bar-graph"></i>
+
+                                   View Reports
+
+                                </a>
+
+                            </td>
+
+                        </tr>
+
+                        {% empty %}
+
+                        <tr>
+                            <td colspan="7" class="text-center py-5">
+
+                                <i class="bi bi-inbox fs-2 d-block mb-2"></i>
+
+                                No branches found.
+
+                            </td>
+                        </tr>
+
+                        {% endfor %}
+
+
+                        <tr id="noSearchResults" style="display:none;">
+
+                            <td colspan="7" class="text-center py-5">
+
+                                <i class="bi bi-search fs-2 d-block mb-2"></i>
+
+                                No matching branches found.
+
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+
+            <!-- TABLE FOOTER -->
+            <div class="table-footer-control">
+
+                <span id="branchCount"
+                      class="table-pagination-info">
+
+                    Total {{ data|length }} branches
+
+                </span>
+
+            </div>
+
+        </div>
+
+        {% include 'footer.html' %}
+
+    </div>
+
+
+    <!-- SEARCH SCRIPT -->
+    <script>
+
+        document.addEventListener("DOMContentLoaded", function () {
+
+            const searchInput = document.getElementById("branchSearch");
+
+            const branchRows = document.querySelectorAll(".branch-row");
+
+            const branchCount = document.getElementById("branchCount");
+
+            const noResults = document.getElementById("noSearchResults");
+
+            const totalBranches = branchRows.length;
+
+            if (!searchInput) return;
+
+            searchInput.addEventListener("input", function () {
+
+                const searchValue = this.value.toLowerCase().trim();
+
+                let visibleCount = 0;
+
+                branchRows.forEach(function (row) {
+
+                    const matches = row.textContent
+                        .toLowerCase()
+                        .includes(searchValue);
+
+                    row.style.display = matches ? "" : "none";
+
+                    if (matches) {
+                        visibleCount++;
+                    }
+
+                });
+
+                if (noResults) {
+
+                    noResults.style.display =
+                        searchValue !== "" && visibleCount === 0
+                        ? ""
+                        : "none";
+
+                }
+
+                branchCount.textContent = searchValue === ""
+                    ? "Total " + totalBranches + " branches"
+                    : "Showing " + visibleCount + " of " + totalBranches + " branches";
+
+            });
+
+        });
+
+    </script>
+
+</body>
+
+</html>

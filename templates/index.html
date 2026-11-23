@@ -1,767 +1,324 @@
-
 {% load static %}
-
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Check Bill Status | Microlab Laboratories</title>
+    <title>MicroLab | Staff Login</title>
 
-    <meta name="theme-color" content="#205ae1">
-    <meta name="description" content="Check your Microlab laboratory bill and patient waiting status securely.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+          rel="stylesheet">
 
-    <!-- Bootstrap Icons -->
-    <link
-        rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
-    >
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
     <style>
         :root {
-            --primary: #205ae1;
-            --primary-dark: #1748bf;
-            --primary-light: #edf3ff;
-            --text: #172033;
-            --muted: #64748b;
-            --border: #e3e9f2;
-            --surface: #ffffff;
-            --page-bg: #f5f7fb;
-            --danger: #dc3545;
-            --success: #16805d;
+            --primary: #087f8c;
+            --primary-dark: #066570;
+            --text-dark: #173042;
+            --text-muted: #748494;
+            --border: #dce7ec;
+            --white: #ffffff;
         }
 
         * {
+            margin: 0;
+            padding: 0;
             box-sizing: border-box;
         }
 
-        html {
-            width: 100%;
-            min-height: 100%;
-            scroll-behavior: smooth;
-        }
-
         body {
+    position: relative;
+    min-height: 100vh;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 16px;
+    font-family: 'Inter', sans-serif;
+    color: var(--text-dark);
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+
+    background-image:
+        linear-gradient(rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.55)),
+        url("{% static 'login_bg.jpg' %}");
+
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    z-index: -1;
+}
+
+        /* Login panel */
+
+        .login-container {
             width: 100%;
-            min-height: 100vh;
-            min-height: 100dvh;
-            margin: 0;
-            font-family: Arial, Helvetica, sans-serif;
-            color: var(--text);
-            background: var(--page-bg);
+            
+            max-width: 460px;
+            padding: 35px 36px;
+            background: var(--white);
+            border: 1px solid #e5edf1;
+            border-radius: 18px;
+            box-shadow: 0 15px 45px rgba(23, 48, 66, 0.08);
         }
 
-        button,
-        input {
-            font: inherit;
-        }
+        /* Large logo */
 
-        button {
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        .bill-page {
-            display: flex;
-            flex-direction: column;
+        .brand {
             width: 100%;
-            min-height: 100vh;
-            min-height: 100dvh;
-        }
-
-        /* =====================================
-           HEADER
-        ===================================== */
-
-        .bill-navbar {
-            position: relative;
-            z-index: 10;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 20px;
-            width: 100%;
-            min-height: 100px;
-            padding: 10px 5%;
-            background: #fff;
-            border-bottom: 1px solid var(--border);
-            box-shadow: 0 3px 15px rgba(23, 42, 82, 0.035);
-        }
-
-        .bill-brand {
-            display: inline-flex;
-            align-items: center;
-            gap: 15px;
-            min-width: 0;
-            text-decoration: none;
-            color: var(--text);
-        }
-
-        .bill-logo {
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 85px;
-            height: 85px;
-            flex-shrink: 0;
-            overflow: hidden;
-            background: #fff;
-            border-radius: 12px;
+            margin-bottom: 22px;
         }
 
-        .bill-logo img {
+        .brand-logo {
             display: block;
             width: 100%;
-            height: 100%;
+            max-width: 200px;
+            height: 150px;
             object-fit: contain;
+            object-position: center;
         }
 
-        .bill-brand-text {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-            min-width: 0;
+        /* Heading */
+
+        .login-heading {
+            margin-bottom: 28px;
+            text-align: center;
         }
 
-        .bill-brand-name {
-            margin: 0;
-            font-size: 24px;
-            line-height: 1.2;
+        .login-heading h1 {
+            margin-bottom: 8px;
+            font-size: 28px;
             font-weight: 800;
-            letter-spacing: -0.6px;
-            overflow-wrap: anywhere;
+            letter-spacing: -0.7px;
         }
 
-        .bill-brand-caption {
-            color: var(--muted);
-            font-size: 12px;
-            font-weight: 600;
-            letter-spacing: 0.7px;
-        }
-
-        .bill-header-right {
-            display: flex;
-            align-items: center;
-            gap: 9px;
-            color: #334155;
+        .login-heading p {
             font-size: 13px;
-            font-weight: 700;
-            white-space: nowrap;
+            line-height: 1.7;
+            color: var(--text-muted);
         }
 
-        .bill-header-right i {
-            color: var(--success);
-            font-size: 21px;
-        }
+        /* Django messages */
 
-        /* =====================================
-           MAIN LAYOUT
-        ===================================== */
-
-        .bill-main {
-            display: flex;
-            flex: 1;
-            align-items: center;
-            justify-content: center;
-            width: 100%;
-            padding: 45px 5%;
-            background:
-                radial-gradient(
-                    circle at 10% 15%,
-                    rgba(32, 90, 225, 0.055),
-                    transparent 32%
-                ),
-                var(--page-bg);
-        }
-
-        .pbs-container {
-            width: 100%;
-            max-width: 1450px;
-            margin: 0 auto;
-        }
-
-        .pbs-card {
-            position: relative;
-            isolation: isolate;
-            overflow: hidden;
-            display: grid;
-            grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-            align-items: center;
-            gap: clamp(35px, 6vw, 100px);
-            width: 100%;
-            min-height: 440px;
-            padding: clamp(35px, 5vw, 85px);
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 26px;
-            box-shadow: 0 20px 65px rgba(23, 42, 82, 0.07);
-        }
-
-        .pbs-decoration {
-            position: absolute;
-            z-index: -1;
-            pointer-events: none;
-            border-radius: 50%;
-        }
-
-        .pbs-decoration-one {
-            width: 340px;
-            height: 340px;
-            top: -210px;
-            right: -80px;
-            background: rgba(32, 90, 225, 0.055);
-        }
-
-        .pbs-decoration-two {
-            width: 230px;
-            height: 230px;
-            bottom: -175px;
-            left: 35%;
-            background: rgba(32, 90, 225, 0.035);
-        }
-
-        /* =====================================
-           LEFT CONTENT
-        ===================================== */
-
-        .pbs-header {
-            display: flex;
-            align-items: flex-start;
-            gap: 22px;
-            min-width: 0;
-        }
-
-        .pbs-icon {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            width: 68px;
-            height: 68px;
-            border-radius: 18px;
-            border: 1px solid #e0eaff;
-            background: var(--primary-light);
-            color: var(--primary);
-            font-size: 29px;
-        }
-
-        .pbs-heading-content {
-            min-width: 0;
-        }
-
-        .pbs-eyebrow {
-            display: inline-block;
-            margin-bottom: 13px;
-            color: var(--primary);
-            font-size: 11px;
-            font-weight: 800;
-            letter-spacing: 1.8px;
-        }
-
-        .pbs-heading-content h1 {
-            margin: 0 0 16px;
-            font-size: clamp(29px, 3.1vw, 49px);
-            line-height: 1.2;
-            letter-spacing: -1.4px;
-            font-weight: 800;
-            overflow-wrap: anywhere;
-        }
-
-        .pbs-heading-content p {
-            max-width: 540px;
-            margin: 0;
-            color: var(--muted);
-            font-size: 16px;
-            line-height: 1.9;
-        }
-
-        /* =====================================
-           ERROR MESSAGE FROM DJANGO
-        ===================================== */
-
-        .pbs-error {
-            display: flex;
-            align-items: flex-start;
-            gap: 10px;
-            margin-bottom: 20px;
-            padding: 14px 15px;
-            color: #b42332;
-            background: #fff1f2;
-            border: 1px solid #fecdd3;
-            border-radius: 12px;
-            font-size: 14px;
+        .message {
+            padding: 12px 14px;
+            margin-bottom: 18px;
+            border: 1px solid transparent;
+            border-radius: 9px;
+            font-size: 13px;
             line-height: 1.6;
         }
 
-        .pbs-error i {
-            margin-top: 2px;
-            font-size: 18px;
+        .message.error {
+            background: #fff0f0;
+            color: #b42318;
+            border-color: #ffd4d4;
         }
 
-        /* =====================================
-           SEARCH FORM
-        ===================================== */
-
-        .pbs-form {
-            width: 100%;
-            min-width: 0;
+        .message.success {
+            background: #eaf9f0;
+            color: #167342;
+            border-color: #c8efd6;
         }
 
-        .pbs-label {
+        .message.warning {
+            background: #fff8e8;
+            color: #8a5a00;
+            border-color: #f6e2a8;
+        }
+
+        .message.info {
+            background: #eaf5ff;
+            color: #175b91;
+            border-color: #cce4fa;
+        }
+
+        /* Form fields */
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
             display: block;
-            margin-bottom: 11px;
-            color: #273449;
-            font-size: 14px;
-            font-weight: 700;
+            margin-bottom: 9px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #31485a;
         }
 
-        .pbs-required {
-            color: var(--danger);
+        .input-wrapper {
+            position: relative;
         }
 
-        .pbs-input-wrapper {
-            display: flex;
-            align-items: center;
+        .input-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #8295a3;
+            font-size: 17px;
+            pointer-events: none;
+        }
+
+        .input-wrapper input {
             width: 100%;
-            min-height: 60px;
-            border: 1px solid #dce4ef;
-            border-radius: 12px;
-            background: #fff;
+            height: 50px;
+            padding: 0 44px;
+            border: 1px solid var(--border);
+            border-radius: 9px;
+            outline: none;
+            background: #fbfdfe;
+            color: var(--text-dark);
+            font-family: inherit;
+            font-size: 13px;
             transition: border-color 0.2s, box-shadow 0.2s;
         }
 
-        .pbs-input-wrapper:focus-within {
+        .input-wrapper input::placeholder {
+            color: #9aa9b5;
+        }
+
+        .input-wrapper input:focus {
             border-color: var(--primary);
-            box-shadow: 0 0 0 4px rgba(32, 90, 225, 0.10);
+            background: white;
+            box-shadow: 0 0 0 3px rgba(8, 127, 140, 0.10);
         }
 
-        .pbs-input-icon {
-            flex-shrink: 0;
-            margin-left: 17px;
-            color: #8190a6;
-            font-size: 19px;
-        }
+        /* Password visibility */
 
-        .pbs-input {
-            width: 100%;
-            min-width: 0;
-            min-height: 58px;
-            padding: 12px 14px;
-            border: 0;
-            outline: none;
+        .password-toggle {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            padding: 5px;
+            border: none;
             background: transparent;
-            color: var(--text);
-            font-family: inherit;
-            font-size: 15px;
-        }
-
-        .pbs-input::placeholder {
-            color: #99a4b5;
-            opacity: 1;
-        }
-
-        .pbs-clear {
-            flex-shrink: 0;
-            margin-right: 10px;
-            padding: 7px;
-            border: 0;
-            background: transparent;
-            color: #8491a5;
-            font-size: 18px;
+            color: #8295a3;
             cursor: pointer;
+            font-size: 17px;
         }
 
-        .pbs-clear:hover {
-            color: var(--danger);
+        .password-toggle:hover {
+            color: var(--primary);
         }
 
-        .pbs-clear[hidden] {
-            display: none !important;
-        }
+        /* Login button */
 
-        .pbs-submit {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
+        .login-btn {
             width: 100%;
-            min-height: 60px;
-            margin-top: 15px;
-            padding: 14px 20px;
-            border: 1px solid var(--primary);
-            border-radius: 12px;
-            background: var(--primary);
-            color: #fff;
-            font-family: inherit;
-            font-size: 15px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: background 0.2s, box-shadow 0.2s;
-        }
-
-        .pbs-submit:hover {
-            background: var(--primary-dark);
-            border-color: var(--primary-dark);
-            box-shadow: 0 8px 20px rgba(32, 90, 225, 0.2);
-        }
-
-        .pbs-submit:disabled {
-            opacity: 0.7;
-            cursor: wait;
-            box-shadow: none;
-        }
-
-        .pbs-submit i {
-            font-size: 19px;
-            transition: transform 0.2s;
-        }
-
-        .pbs-submit:not(:disabled):hover i {
-            transform: translateX(4px);
-        }
-
-        .pbs-submit:focus-visible,
-        .pbs-clear:focus-visible {
-            outline: 3px solid rgba(32, 90, 225, 0.4);
-            outline-offset: 3px;
-        }
-
-        .pbs-footer {
-            display: flex;
-            align-items: flex-start;
-            gap: 9px;
-            margin-top: 18px;
-            color: var(--muted);
-            font-size: 12px;
-            line-height: 1.7;
-        }
-
-        .pbs-footer-icon {
-            flex-shrink: 0;
-            color: var(--success);
-            font-size: 16px;
-        }
-
-        /* =====================================
-           FOOTER
-        ===================================== */
-
-        .bill-footer {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 7px;
-            width: 100%;
-            padding: 16px 20px;
-            background: #fff;
-            border-top: 1px solid var(--border);
-            color: var(--muted);
-            text-align: center;
-            font-size: 12px;
-        }
-
-        /* =====================================
-           POPUP WIZARD
-        ===================================== */
-
-        .bill-popup-overlay {
-            position: fixed;
-            inset: 0;
-            z-index: 99999;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            background: rgba(15, 23, 42, 0.65);
-            backdrop-filter: blur(6px);
-            -webkit-backdrop-filter: blur(6px);
-            opacity: 0;
-            visibility: hidden;
-            pointer-events: none;
-            transition: opacity 0.22s ease, visibility 0.22s ease;
-        }
-
-        .bill-popup-overlay.active {
-            opacity: 1;
-            visibility: visible;
-            pointer-events: auto;
-        }
-
-        .bill-popup {
-            position: relative;
-            width: 100%;
-            max-width: 430px;
-            padding: 34px 28px 28px;
-            text-align: center;
-            background: #fff;
-            border: 1px solid rgba(255, 255, 255, 0.7);
-            border-radius: 24px;
-            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.25);
-            transform: translateY(18px) scale(0.96);
-            transition: transform 0.22s ease;
-        }
-
-        .bill-popup-overlay.active .bill-popup {
-            transform: translateY(0) scale(1);
-        }
-
-        .bill-popup-icon {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 78px;
-            height: 78px;
-            margin: 0 auto 21px;
-            color: var(--danger);
-            background: #fff0f0;
-            border: 1px solid #ffe0e0;
-            border-radius: 50%;
-            font-size: 36px;
-        }
-
-        .bill-popup h2 {
-            margin: 0 0 12px;
-            color: var(--text);
-            font-size: 25px;
-            line-height: 1.3;
-            font-weight: 800;
-        }
-
-        .bill-popup p {
-            margin: 0 0 25px;
-            color: var(--muted);
-            font-size: 15px;
-            line-height: 1.8;
-            overflow-wrap: anywhere;
-        }
-
-        .bill-popup-button {
+            height: 50px;
+            margin-top: 5px;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 9px;
-            width: 100%;
-            min-height: 51px;
-            padding: 13px 18px;
-            border: 0;
-            border-radius: 12px;
+            border: none;
+            border-radius: 9px;
             background: var(--primary);
-            color: #fff;
-            font-size: 15px;
+            color: white;
+            font-family: inherit;
+            font-size: 14px;
             font-weight: 700;
             cursor: pointer;
             transition: background 0.2s;
         }
 
-        .bill-popup-button:hover {
+        .login-btn:hover {
             background: var(--primary-dark);
         }
 
-        .bill-popup-button:focus-visible {
-            outline: 3px solid rgba(32, 90, 225, 0.4);
+        .login-btn:focus-visible,
+        .password-toggle:focus-visible {
+            outline: 3px solid #80d4da;
             outline-offset: 3px;
         }
 
-        /* =====================================
-           TABLET
-        ===================================== */
+        /* Security note */
 
-        @media (max-width: 900px) {
-            .bill-navbar {
-                padding: 10px 24px;
+        .security-note {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-top: 22px;
+            padding: 12px;
+            border: 1px solid #e5f0f2;
+            border-radius: 9px;
+            background: #f5fafb;
+        }
+
+        .security-note i {
+            color: var(--primary);
+            font-size: 17px;
+        }
+
+        .security-note p {
+            font-size: 11px;
+            line-height: 1.7;
+            color: var(--text-muted);
+        }
+
+        .copyright {
+            margin-top: 22px;
+            text-align: center;
+            font-size: 11px;
+            line-height: 1.8;
+            color: #98a7b2;
+        }
+
+        /* Tablet */
+
+        @media (max-width: 768px) {
+            .login-container {
+                max-width: 440px;
+                padding: 30px;
             }
 
-            .bill-main {
-                padding: 35px 24px;
-            }
-
-            .pbs-card {
-                grid-template-columns: minmax(0, 1fr);
-                gap: 30px;
-                padding: 38px;
-                min-height: auto;
-            }
-
-            .pbs-heading-content h1 {
-                font-size: 36px;
-            }
-
-            .pbs-heading-content p {
-                max-width: 650px;
+            .brand-logo {
+                max-width: 340px;
+                height: 130px;
             }
         }
 
-        /* =====================================
-           MOBILE
-        ===================================== */
+        /* Mobile */
 
-        @media (max-width: 576px) {
-            .bill-navbar {
-                min-height: 78px;
-                gap: 10px;
-                padding: 8px 14px;
+        @media (max-width: 480px) {
+            body {
+                padding: 15px;
             }
 
-            .bill-brand {
-                gap: 9px;
+            .login-container {
+                padding: 25px 20px;
+                border-radius: 14px;
             }
 
-            .bill-logo {
-                width: 62px;
-                height: 62px;
-                border-radius: 9px;
+            .brand {
+                margin-bottom: 18px;
             }
 
-            .bill-brand-name {
-                font-size: 18px;
-                letter-spacing: -0.3px;
+            .brand-logo {
+                max-width: 100%;
+                height: 110px;
             }
 
-            .bill-brand-caption {
-                font-size: 9px;
-                letter-spacing: 0.3px;
+            .login-heading {
+                margin-bottom: 24px;
             }
 
-            .bill-header-right {
-                gap: 5px;
-                font-size: 10px;
-            }
-
-            .bill-header-right i {
-                font-size: 16px;
-            }
-
-            .bill-main {
-                padding: 22px 12px;
-            }
-
-            .pbs-card {
-                gap: 25px;
-                padding: 23px 17px;
-                border-radius: 18px;
-            }
-
-            .pbs-header {
-                gap: 12px;
-            }
-
-            .pbs-icon {
-                width: 46px;
-                height: 46px;
-                border-radius: 12px;
-                font-size: 21px;
-            }
-
-            .pbs-eyebrow {
-                margin-bottom: 7px;
-                font-size: 9px;
-                letter-spacing: 1.2px;
-            }
-
-            .pbs-heading-content h1 {
-                margin-bottom: 9px;
-                font-size: 24px;
-                line-height: 1.28;
-                letter-spacing: -0.6px;
-            }
-
-            .pbs-heading-content p {
-                font-size: 13px;
-                line-height: 1.75;
-            }
-
-            .pbs-label {
-                margin-bottom: 9px;
-                font-size: 13px;
-            }
-
-            .pbs-input-wrapper {
-                min-height: 51px;
-                border-radius: 10px;
-            }
-
-            .pbs-input {
-                min-height: 49px;
-                padding: 10px;
-                font-size: 14px;
-            }
-
-            .pbs-input-icon {
-                margin-left: 12px;
-                font-size: 16px;
-            }
-
-            .pbs-submit {
-                min-height: 51px;
-                margin-top: 12px;
-                padding: 12px 9px;
-                border-radius: 10px;
-                font-size: 13px;
-            }
-
-            .pbs-footer {
-                margin-top: 14px;
-                font-size: 11px;
-            }
-
-            .bill-footer {
-                padding: 13px 12px;
-                font-size: 10px;
-            }
-
-            .bill-popup {
-                max-width: 380px;
-                padding: 29px 20px 22px;
-                border-radius: 20px;
-            }
-
-            .bill-popup-icon {
-                width: 67px;
-                height: 67px;
-                margin-bottom: 17px;
-                font-size: 30px;
-            }
-
-            .bill-popup h2 {
-                font-size: 22px;
-            }
-
-            .bill-popup p {
-                font-size: 14px;
-            }
-        }
-
-        @media (max-width: 360px) {
-            .bill-header-right span {
-                display: none;
-            }
-
-            .bill-header-right i {
-                font-size: 20px;
-            }
-
-            .bill-brand-name {
-                font-size: 16px;
-            }
-
-            .pbs-card {
-                padding: 19px 13px;
-            }
-
-            .pbs-heading-content h1 {
-                font-size: 21px;
-            }
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-            *,
-            *::before,
-            *::after {
-                scroll-behavior: auto !important;
-                animation-duration: 0.01ms !important;
-                transition-duration: 0.01ms !important;
+            .login-heading h1 {
+                font-size: 25px;
             }
         }
     </style>
@@ -769,568 +326,135 @@
 
 <body>
 
-<div class="bill-page">
+<div class="login-container">
 
-    <!-- =====================================
-         HEADER WITH MICROLAB LOGO
-    ====================================== -->
+    <!-- MicroLab logo -->
+    <div class="brand">
+        <a href="javascript:history.back();" 
+        class="brand-logo-link"
+        aria-label="Go back">
+     
+         <img
+             src="https://microlabchengannur.com/static/logo.png"
+             alt="MicroLab Logo"
+             class="brand-logo"
+         >
+     
+     </a>
+    </div>
 
-    <header class="bill-navbar">
+    <!-- Heading -->
+    <div class="login-heading">
+        <h1>Welcome Back!</h1>
+        <!-- <p>Sign in to access the Patient Queue Management System.</p> -->
+    </div>
 
-        <a href="/" class="bill-brand" aria-label="Microlab Home">
+    <!-- Django messages -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="message {{ message.tags }}">
+                <i class="bi bi-info-circle"></i>
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
 
-            <div class="bill-logo">
-                <img
-                    src="https://microlabchengannur.com/static/logo.png"
-                    alt="Microlab Laboratories Logo"
+    <form method="POST" action="{% url 'login_view' %}">
+        {% csrf_token %}
+    
+
+        <div class="form-group">
+            <label for="username">Username</label>
+
+            <div class="input-wrapper">
+                <i class="bi bi-person input-icon"></i>
+
+                <input
+                    type="text"
+                    id="username"
+                    name="username"
+                    placeholder="Enter your username"
+                    autocomplete="username"
+                    required
+                    autofocus
                 >
             </div>
-
-
-        </a>
-
-
-        <div class="bill-header-right">
-
-        
-            <a href="/Login/" class="nav-btn staff-btn" style="background-color: #4d9dc9;color:white">
-                <i class="bi bi-person-circle"style="color: #fff;" aria-hidden="true"></i>
-                <span>Login</span>
-            </a>
         </div>
 
-        <style>
-            
-/* Header right section */
-.bill-header-right {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    gap: 16px;
-    flex-shrink: 0;
-}
+        <div class="form-group">
+            <label for="password">Password</label>
 
-/* Security icon */
-.security-icon {
-    color: #16805d;
-    font-size: 22px;
-}
+            <div class="input-wrapper">
+                <i class="bi bi-lock input-icon"></i>
 
-/* Staff portal button */
-.staff-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 9px;
-    min-height: 44px;
-    padding: 11px 19px;
-
-    color: #205ae1;
-    background: #edf3ff;
-    border: 1px solid #d6e3ff;
-    border-radius: 10px;
-
-    font-size: 14px;
-    font-weight: 700;
-    text-decoration: none;
-    white-space: nowrap;
-
-    transition: all 0.2s ease;
-}
-
-.staff-btn i {
-    font-size: 18px;
-}
-
-.staff-btn:hover {
-    color: #ffffff;
-    background: #205ae1;
-    border-color: #205ae1;
-    box-shadow: 0 5px 15px rgba(32, 90, 225, 0.18);
-    transform: translateY(-1px);
-}
-
-.staff-btn:focus-visible {
-    outline: 3px solid rgba(32, 90, 225, 0.35);
-    outline-offset: 3px;
-}
-
-/* Mobile responsive */
-@media (max-width: 576px) {
-    .bill-header-right {
-        gap: 9px;
-    }
-
-    .security-icon {
-        font-size: 18px;
-    }
-
-    .staff-btn {
-        min-height: 39px;
-        gap: 6px;
-        padding: 9px 11px;
-        border-radius: 9px;
-        font-size: 12px;
-    }
-
-    .staff-btn i {
-        font-size: 16px;
-    }
-}
-
-@media (max-width: 360px) {
-    .security-icon {
-        display: none;
-    }
-
-    .staff-btn {
-        padding: 9px;
-        font-size: 11px;
-    }
-}
-
-        </style>
-    </header>
-
-    <!-- =====================================
-         MAIN BILL SEARCH CONTENT
-    ====================================== -->
-
-    <main class="bill-main" id="bill-search">
-
-        <div class="pbs-container">
-
-            <section class="pbs-card" aria-labelledby="bill-heading">
-
-                <div class="pbs-decoration pbs-decoration-one"></div>
-                <div class="pbs-decoration pbs-decoration-two"></div>
-
-                <!-- Introduction -->
-
-                <div class="pbs-header">
-
-                    <div class="pbs-icon">
-                        <i class="bi bi-receipt-cutoff"></i>
-                    </div>
-
-                    <div class="pbs-heading-content">
-
-                        <span class="pbs-eyebrow">
-                            PATIENT SERVICES
-                        </span>
-
-                        <h1 id="bill-heading">
-                            Check Your Bill Status
-                        </h1>
-
-                        <p>
-                            Track your laboratory visit and check your
-                            current waiting status in just a few seconds.
-                            Enter your correct laboratory bill number
-                            to continue.
-                        </p>
-
-                    </div>
-
-                </div>
-
-                <!-- =====================================
-                     BILL SEARCH FORM
-                ====================================== -->
-
-                <form
-                    class="pbs-form"
-                    id="bill-search-form"
-                    method="GET"
-                    action="{% url 'search_bill' %}"
-                    data-check-url="{% url 'check_bill_number' %}"
+                <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    placeholder="Enter your password"
+                    autocomplete="current-password"
+                    required
                 >
 
-                    <!-- Existing server-side error support -->
-
-                    {% if error %}
-                        <div
-                            class="pbs-error"
-                            role="alert"
-                            aria-live="polite"
-                        >
-                            <i class="bi bi-exclamation-circle-fill"></i>
-                            <span>{{ error }}</span>
-                        </div>
-                    {% endif %}
-
-                    <label
-                        class="pbs-label"
-                        for="pbs-bill-number"
-                    >
-                        Laboratory Bill Number
-                        <span class="pbs-required">*</span>
-                    </label>
-
-                    <div class="pbs-input-wrapper">
-
-                        <i class="bi bi-search pbs-input-icon"></i>
-
-                        <input
-                            type="text"
-                            id="pbs-bill-number"
-                            name="bill_number"
-                            class="pbs-input"
-                            placeholder="Enter your bill number"
-                            aria-label="Laboratory bill number"
-                            aria-describedby="bill-input-help"
-                            autocomplete="off"
-                            autocapitalize="characters"
-                            spellcheck="false"
-                            value="{{ bill_number|default:'' }}"
-                            required
-                        >
-
-                        <button
-                            type="button"
-                            class="pbs-clear"
-                            id="pbs-clear-input"
-                            aria-label="Clear bill number"
-                            title="Clear bill number"
-                            hidden
-                        >
-                            <i class="bi bi-x-circle"></i>
-                        </button>
-
-                    </div>
-
-                    <button
-                        type="submit"
-                        class="pbs-submit"
-                        id="pbs-submit-button"
-                    >
-                        <span>Check Waiting Status</span>
-                        <i class="bi bi-arrow-right"></i>
-                    </button>
-
-                    <div class="pbs-footer" id="bill-input-help">
-
-                        <div class="pbs-footer-icon">
-                            <i class="bi bi-shield-check"></i>
-                        </div>
-
-                        <span>
-                            Enter your bill number to view your status
-                            securely and conveniently.
-                        </span>
-
-                    </div>
-
-                </form>
-
-            </section>
-
+                <button
+                    type="button"
+                    class="password-toggle"
+                    id="togglePassword"
+                    aria-label="Show password"
+                    title="Show password"
+                >
+                    <i class="bi bi-eye" id="passwordIcon"></i>
+                </button>
+            </div>
         </div>
 
-    </main>
-
-    <!-- =====================================
-         FOOTER
-    ====================================== -->
-
-    <footer class="bill-footer">
-        <span>
-            &copy; 2026 Microlab Laboratories. All Rights Reserved.
-        </span>
-    </footer>
-
-</div>
-
-<!-- =====================================
-     INCORRECT BILL POPUP WIZARD
-====================================== -->
-
-<div
-    class="bill-popup-overlay"
-    id="bill-error-popup"
-    role="dialog"
-    aria-modal="true"
-    aria-labelledby="bill-popup-title"
-    aria-describedby="bill-popup-message"
-    aria-hidden="true"
->
-    <div class="bill-popup">
-
-        <div class="bill-popup-icon" id="bill-popup-icon">
-            <i class="bi bi-exclamation-circle-fill"></i>
-        </div>
-
-        <h2 id="bill-popup-title">
-            Incorrect Bill Number
-        </h2>
-
-        <p id="bill-popup-message">
-            The bill number you entered could not be found.
-            Please check it and try again.
-        </p>
-
-        <button
-            type="button"
-            class="bill-popup-button"
-            id="bill-popup-close"
-        >
-            <i class="bi bi-arrow-repeat"></i>
-            <span>Check Again</span>
+        <button type="submit" class="login-btn">
+            <span>Sign In</span>
+            <i class="bi bi-arrow-right"></i>
         </button>
+    </form>
 
+    <!-- Security note -->
+    <!-- <div class="security-note">
+        <i class="bi bi-shield-lock"></i>
+
+        <p>
+            <strong>Secure Staff Login</strong><br>
+            Keep your login credentials confidential.
+        </p>
+    </div> -->
+
+    <!-- Footer -->
+    <div class="copyright">
+        &copy; 2026 Developed by Aslam. All rights reserved.
     </div>
-</div>
 
-<!-- =====================================
-     JAVASCRIPT
-====================================== -->
+</div>
 
 <script>
-(function () {
-    "use strict";
+    const passwordInput = document.getElementById("password");
+    const togglePassword = document.getElementById("togglePassword");
+    const passwordIcon = document.getElementById("passwordIcon");
 
-    document.addEventListener("DOMContentLoaded", function () {
+    togglePassword.addEventListener("click", function () {
+        const showPassword = passwordInput.type === "password";
 
-        const form = document.getElementById("bill-search-form");
-        const input = document.getElementById("pbs-bill-number");
-        const clearButton = document.getElementById("pbs-clear-input");
-        const submitButton = document.getElementById("pbs-submit-button");
+        passwordInput.type = showPassword ? "text" : "password";
 
-        const popup = document.getElementById("bill-error-popup");
-        const popupTitle = document.getElementById("bill-popup-title");
-        const popupMessage = document.getElementById("bill-popup-message");
-        const popupIcon = document.getElementById("bill-popup-icon");
-        const closeButton = document.getElementById("bill-popup-close");
+        passwordIcon.className = showPassword
+            ? "bi bi-eye-slash"
+            : "bi bi-eye";
 
-        if (
-            !form ||
-            !input ||
-            !clearButton ||
-            !submitButton ||
-            !popup ||
-            !popupTitle ||
-            !popupMessage ||
-            !popupIcon ||
-            !closeButton
-        ) {
-            return;
-        }
+        togglePassword.setAttribute(
+            "aria-label",
+            showPassword ? "Hide password" : "Show password"
+        );
 
-        let checkingBill = false;
-        let lastFocusedElement = null;
-
-        const originalButtonHTML = submitButton.innerHTML;
-
-        /* =====================================
-           INPUT CLEAR BUTTON
-        ====================================== */
-
-        function updateClearButton() {
-            clearButton.hidden = input.value.length === 0;
-        }
-
-        input.addEventListener("input", updateClearButton);
-
-        clearButton.addEventListener("click", function () {
-            input.value = "";
-            updateClearButton();
-            input.focus();
-        });
-
-        updateClearButton();
-
-        /* =====================================
-           POPUP CONTROLS
-        ====================================== */
-
-        function showPopup(title, message, type) {
-            lastFocusedElement = document.activeElement;
-
-            popupTitle.textContent = title;
-            popupMessage.textContent = message;
-
-            if (type === "error") {
-                popupIcon.innerHTML =
-                    '<i class="bi bi-exclamation-circle-fill"></i>';
-                popupIcon.style.color = "#dc3545";
-                popupIcon.style.background = "#fff0f0";
-                popupIcon.style.borderColor = "#ffe0e0";
-            } else {
-                popupIcon.innerHTML =
-                    '<i class="bi bi-wifi-off"></i>';
-                popupIcon.style.color = "#b7791f";
-                popupIcon.style.background = "#fff8e7";
-                popupIcon.style.borderColor = "#ffedbd";
-            }
-
-            popup.classList.add("active");
-            popup.setAttribute("aria-hidden", "false");
-
-            closeButton.focus();
-        }
-
-        function closePopup() {
-            popup.classList.remove("active");
-            popup.setAttribute("aria-hidden", "true");
-
-            if (
-                lastFocusedElement &&
-                document.contains(lastFocusedElement)
-            ) {
-                lastFocusedElement.focus();
-            } else {
-                input.focus();
-            }
-        }
-
-        closeButton.addEventListener("click", function () {
-            closePopup();
-        });
-
-        popup.addEventListener("click", function (event) {
-            if (event.target === popup) {
-                closePopup();
-            }
-        });
-
-        document.addEventListener("keydown", function (event) {
-            if (
-                event.key === "Escape" &&
-                popup.classList.contains("active")
-            ) {
-                closePopup();
-            }
-        });
-
-        /* =====================================
-           SUBMIT BUTTON LOADING STATE
-        ====================================== */
-
-        function setLoading(isLoading) {
-            submitButton.disabled = isLoading;
-            input.readOnly = isLoading;
-            clearButton.disabled = isLoading;
-
-            if (isLoading) {
-                submitButton.innerHTML =
-                    '<i class="bi bi-hourglass-split"></i>' +
-                    '<span>Checking Bill...</span>';
-            } else {
-                submitButton.innerHTML = originalButtonHTML;
-                updateClearButton();
-            }
-        }
-
-        /* =====================================
-           VERIFY BILL NUMBER IN DJANGO
-        ====================================== */
-
-        form.addEventListener("submit", async function (event) {
-            event.preventDefault();
-
-            if (checkingBill) {
-                return;
-            }
-
-            const billNumber = input.value.trim();
-
-            if (!billNumber) {
-                showPopup(
-                    "Bill Number Required",
-                    "Please enter your laboratory bill number.",
-                    "error"
-                );
-                return;
-            }
-
-            // Normalize surrounding whitespace only.
-            input.value = billNumber;
-            updateClearButton();
-
-            checkingBill = true;
-            setLoading(true);
-
-            try {
-                const checkUrl = form.dataset.checkUrl;
-
-                if (!checkUrl) {
-                    throw new Error(
-                        "Bill verification URL is not configured."
-                    );
-                }
-
-                const url = new URL(
-                    checkUrl,
-                    window.location.origin
-                );
-
-                url.searchParams.set("bill_number", billNumber);
-
-                const response = await fetch(url.toString(), {
-                    method: "GET",
-                    headers: {
-                        "X-Requested-With": "XMLHttpRequest",
-                        "Accept": "application/json"
-                    },
-                    credentials: "same-origin"
-                });
-
-                if (!response.ok) {
-                    throw new Error(
-                        "The server could not verify this bill."
-                    );
-                }
-
-                const data = await response.json();
-
-                if (data.exists === true) {
-
-                    /*
-                     * Bill exists in LabBill.
-                     * Submit the original Django search form.
-                     * This invokes the existing search_bill view.
-                     */
-
-                    HTMLFormElement.prototype.submit.call(form);
-                    return;
-
-                } else {
-
-                    /*
-                     * Bill does not exist.
-                     * Show the incorrect bill popup.
-                     */
-
-                    showPopup(
-                        "Incorrect Bill Number",
-                        data.message ||
-                        "The bill number you entered is incorrect. " +
-                        "Please check the number and try again.",
-                        "error"
-                    );
-                }
-
-            } catch (error) {
-
-                console.error("Bill verification error:", error);
-
-                showPopup(
-                    "Unable to Verify Bill",
-                    "We could not verify your bill number right now. " +
-                    "Please check your internet connection and try again.",
-                    "connection"
-                );
-
-            } finally {
-
-                checkingBill = false;
-                setLoading(false);
-
-            }
-        });
-
+        togglePassword.setAttribute(
+            "title",
+            showPassword ? "Hide password" : "Show password"
+        );
     });
-})();
 </script>
 
 </body>

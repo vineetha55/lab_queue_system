@@ -1,6 +1,8 @@
+
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,7 +16,7 @@
           rel="stylesheet">
 
     <style>
-:root {
+        :root {
             --primary: #1769e0;
             --primary-dark: #124bb0;
             --teal: #08a6a6;
@@ -25,61 +27,38 @@
             --white: #ffffff;
         }
 
-        * {
-            box-sizing: border-box;
+        * { box-sizing: border-box; }
+
+        html {
+            width: 100%;
+            min-height: 100%;
+            overflow-x: hidden;
         }
 
         body {
+            width: 100%;
+            min-height: 100vh;
+            min-height: 100dvh;
             margin: 0;
-            background: var(--background);
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            background: white;
             color: var(--text);
             font-family: Inter, "Segoe UI", Arial, sans-serif;
         }
 
-        /* Navbar */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        /* Main dashboard */
         .dashboard {
+            width: 100%;
             max-width: 1160px;
             margin: 0 auto;
             padding: 38px 20px 45px;
+            flex: 1 0 auto;
         }
 
         .page-header {
             margin-bottom: 30px;
             text-align: center;
-        }
-
-        .welcome-label {
-            margin-bottom: 9px;
-            color: var(--primary);
-            font-size: 12px;
-            font-weight: 800;
-            letter-spacing: 1.6px;
-            text-transform: uppercase;
         }
 
         .page-title {
@@ -98,11 +77,11 @@
             line-height: 1.8;
         }
 
-        /* Error message */
         .error-message {
             display: flex;
             align-items: flex-start;
             gap: 10px;
+            width: 100%;
             max-width: 780px;
             margin: 0 auto 22px;
             padding: 14px 16px;
@@ -111,11 +90,12 @@
             background: #fff1f2;
             color: #a61b2b;
             font-size: 13px;
+            overflow-wrap: anywhere;
         }
 
-        /* Centered upload card */
         .scanner-card {
             width: 100%;
+            min-width: 0;
             padding: 30px;
             border: 1px solid var(--border);
             border-radius: 20px;
@@ -150,16 +130,9 @@
             font-weight: 800;
         }
 
-        .card-description {
-            margin-bottom: 25px;
-            color: var(--muted);
-            font-size: 13px;
-            line-height: 1.8;
-            text-align: center;
-        }
-
-        /* Upload area */
         .upload-area {
+            width: 100%;
+            min-width: 0;
             padding: 32px 18px;
             border: 2px dashed #bdcde3;
             border-radius: 16px;
@@ -200,9 +173,7 @@
             line-height: 1.7;
         }
 
-        .file-input-hidden {
-            display: none;
-        }
+        .file-input-hidden { display: none; }
 
         .file-btn,
         .camera-btn,
@@ -226,8 +197,7 @@
             color: var(--white);
         }
 
-        .file-btn:hover,
-        .file-btn:focus {
+        .file-btn:hover {
             background: var(--primary-dark);
             color: var(--white);
         }
@@ -244,7 +214,6 @@
             overflow-wrap: anywhere;
         }
 
-        /* Divider */
         .divider-text {
             display: flex;
             align-items: center;
@@ -264,24 +233,24 @@
             background: var(--border);
         }
 
-        /* Camera button */
         .camera-btn {
             width: 100%;
+            min-height: 48px;
             padding: 14px;
             border: 1px solid #ccefeb;
             background: #e8f9f7;
             color: #087f79;
         }
 
-        .camera-btn:hover,
-        .camera-btn:focus {
+        .camera-btn:hover {
             background: #d5f4ef;
             color: #066b65;
         }
 
-        /* Image preview */
         .preview-wrapper {
             display: none;
+            width: 100%;
+            min-width: 0;
             margin-top: 22px;
             padding: 14px;
             border: 1px solid var(--border);
@@ -293,6 +262,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
+            flex-wrap: wrap;
             gap: 10px;
             margin-bottom: 13px;
             font-size: 13px;
@@ -301,6 +271,7 @@
 
         #preview {
             display: block;
+            width: 100%;
             max-width: 100%;
             max-height: 350px;
             margin: 0 auto;
@@ -318,13 +289,9 @@
             cursor: pointer;
         }
 
-        .remove-image:hover {
-            color: #a61b2b;
-        }
-
-        /* Scan button */
         .scan-btn {
             width: 100%;
+            min-height: 52px;
             margin-top: 22px;
             padding: 16px;
             background: linear-gradient(100deg, var(--primary), #1455bd);
@@ -351,425 +318,1378 @@
             text-align: center;
         }
 
-        /* Footer */
-        .footer {
-            padding: 28px 10px 0;
-            color: #96a2b4;
-            font-size: 12px;
-            text-align: center;
+        .page-footer {
+            width: 100%;
+            margin-top: auto;
+            flex-shrink: 0;
         }
 
-        /* Responsive */
+        /* Workflow selection */
+
+        .scanner-card.workflow-selection-mode {
+            min-height: clamp(340px, calc(100vh - 260px), 520px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .workflow-selector {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            align-items: stretch;
+            width: 100%;
+            max-width: 820px;
+            gap: 24px;
+            margin: 0 auto;
+        }
+
+        .workflow-option {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 16px;
+            min-width: 0;
+            min-height: 150px;
+            padding: 24px;
+            border: 1px solid #dce5f1;
+            border-radius: 18px;
+            background: linear-gradient(145deg, #ffffff, #f9fbff);
+            color: var(--text);
+            text-align: left;
+            cursor: pointer;
+            box-shadow: 0 8px 24px rgba(31, 57, 90, .07);
+            transition: transform .22s ease, box-shadow .22s ease,
+                        border-color .22s ease, background .22s ease;
+        }
+
+        .workflow-option:hover {
+            border-color: var(--primary);
+            transform: translateY(-4px);
+            box-shadow: 0 14px 30px rgba(23,105,224,.13);
+        }
+
+        .workflow-option.active {
+            border: 2px solid var(--primary);
+            background: #f1f6ff;
+        }
+
+        .workflow-option .option-icon {
+            display: grid;
+            place-items: center;
+            flex: 0 0 54px;
+            width: 54px;
+            height: 54px;
+            border-radius: 16px;
+            background: #eaf2ff;
+            color: var(--primary);
+            font-size: 25px;
+        }
+
+        .workflow-option.manual .option-icon {
+            background: #e8f9f7;
+            color: #087f79;
+        }
+
+        .workflow-option strong {
+            display: block;
+            margin-bottom: 7px;
+            font-size: 16px;
+            font-weight: 800;
+            line-height: 1.35;
+        }
+
+        .workflow-option small {
+            display: block;
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.65;
+        }
+
+        .workflow-selector.hidden { display: none; }
+
+        .workflow-panel { display: none; }
+
+        .workflow-panel.active { display: block; }
+
+        .workflow-back-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            min-height: 42px;
+            margin: 0 0 20px;
+            padding: 10px 16px;
+            border: 1px solid #cbd5e1;
+            border-radius: 9px;
+            background: #fff;
+            color: #334155;
+            font-size: 13px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: .2s ease;
+        }
+
+        .workflow-back-button:hover {
+            border-color: var(--primary);
+            background: #f1f6ff;
+            color: var(--primary);
+        }
+
+        .manual-form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 16px;
+        }
+
+        .manual-field { min-width: 0; }
+
+        .manual-field.full-width { grid-column: 1 / -1; }
+
+        .manual-field label {
+            display: block;
+            margin-bottom: 8px;
+            color: #263b59;
+            font-size: 14px;
+            font-weight: 800;
+        }
+
+        .manual-field label .required { color: #dc3545; }
+
+        .manual-field .form-control,
+        .manual-field .form-select {
+            min-height: 50px;
+            padding: 11px 13px;
+            border: 1px solid #cbd5e1;
+            border-radius: 9px;
+            color: var(--text);
+            font-size: 14px;
+            box-shadow: none;
+        }
+
+        .manual-field .field-help {
+            margin-top: 7px;
+            color: #8793a5;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        .manual-field textarea.form-control {
+            min-height: 105px;
+            resize: vertical;
+        }
+
+        .manual-field .form-control:focus,
+        .manual-field .form-select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(23,105,224,.10);
+        }
+
+        /* Test checkbox styling */
+
+        .test-checkbox-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .test-checkbox {
+            position: relative;
+            min-width: 0;
+        }
+
+        .test-checkbox input {
+            position: absolute;
+            opacity: 0;
+            width: 1px;
+            height: 1px;
+        }
+
+        .test-checkbox label {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 10px;
+            min-height: 52px;
+            margin: 0;
+            padding: 12px 14px;
+            border: 1px solid #dce5f1;
+            border-radius: 10px;
+            background: #fff;
+            color: #34445e;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: .2s ease;
+        }
+
+        .test-checkbox label:hover {
+            border-color: var(--primary);
+            background: #f5f8ff;
+        }
+
+        .test-checkbox .check-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 19px;
+            height: 19px;
+            flex-shrink: 0;
+            border: 1.5px solid #b9c6d7;
+            border-radius: 5px;
+            background: #fff;
+            color: transparent;
+            font-size: 13px;
+            transition: .2s;
+        }
+
+        .test-checkbox input:checked + label {
+            border-color: var(--primary);
+            background: #eff5ff;
+            color: var(--primary-dark);
+        }
+
+        .test-checkbox input:checked + label .check-icon {
+            border-color: var(--primary);
+            background: var(--primary);
+            color: white;
+        }
+
+        .test-checkbox input:focus-visible + label {
+            outline: 3px solid rgba(23,105,224,.2);
+            outline-offset: 2px;
+        }
+
+        .manual-submit {
+            width: 100%;
+            min-height: 52px;
+            margin-top: 22px;
+            padding: 14px;
+            border: 0;
+            border-radius: 10px;
+            background: linear-gradient(100deg, #087f79, #08a6a6);
+            color: #fff;
+            font-size: 14px;
+            font-weight: 800;
+            transition: .2s;
+        }
+
+        .manual-submit:hover {
+            filter: brightness(.95);
+            transform: translateY(-1px);
+        }
+
+        .manual-submit:disabled {
+            opacity: .7;
+            cursor: wait;
+        }
+
         @media (max-width: 767px) {
 
-
-
-
-
-
-
-
-
-
-
-
-
-
             .dashboard {
-                padding: 28px 14px 35px;
+                width: 100%;
+                max-width: 100%;
+                padding: 20px 12px 28px;
             }
 
             .page-header {
-                margin-bottom: 24px;
+                margin-bottom: 20px;
+                padding: 0 5px;
+            }
+
+            .page-title {
+                font-size: 25px;
+                line-height: 1.3;
+            }
+
+            .page-subtitle { font-size: 13px; }
+
+            .error-message {
+                margin-bottom: 16px;
+                padding: 12px;
+                font-size: 12px;
+            }
+
+            .row.justify-content-center {
+                margin-left: 0;
+                margin-right: 0;
+            }
+
+            .row.justify-content-center > div {
+                padding-left: 0;
+                padding-right: 0;
             }
 
             .scanner-card {
-                padding: 22px;
+                padding: 20px 15px;
+                border-radius: 15px;
             }
 
+            .scanner-card.workflow-selection-mode {
+                min-height: clamp(330px, calc(100dvh - 230px), 480px);
+                padding: 22px 16px;
+            }
+
+            .workflow-selector {
+                grid-template-columns: 1fr;
+                max-width: 460px;
+                gap: 16px;
+            }
+
+            .workflow-option {
+                min-height: 118px;
+                padding: 19px;
+                gap: 14px;
+                border-radius: 15px;
+            }
+
+            .workflow-option .option-icon {
+                flex-basis: 48px;
+                width: 48px;
+                height: 48px;
+                font-size: 22px;
+            }
+
+            .workflow-option strong { font-size: 14px; }
+            .workflow-option small { font-size: 11px; }
+
+            .card-heading { gap: 10px; }
+
+            .heading-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 19px;
+            }
+
+            .card-heading h2 { font-size: 18px; }
+
             .upload-area {
-                padding: 27px 13px;
+                padding: 24px 12px;
+                border-radius: 13px;
+            }
+
+            .upload-icon {
+                width: 55px;
+                height: 55px;
+                font-size: 25px;
+            }
+
+            .upload-area h3 { font-size: 15px; }
+
+            .upload-area p {
+                max-width: 260px;
+                margin: 0 auto 16px;
+                font-size: 12px;
+            }
+
+            .file-btn {
+                width: 100%;
+                max-width: 230px;
+                min-height: 44px;
+            }
+
+            .divider-text {
+                gap: 9px;
+                margin: 19px 0;
+                font-size: 10px;
+            }
+
+            .camera-btn {
+                min-height: 48px;
+                padding: 12px 8px;
+                font-size: 12px;
+            }
+
+            .preview-wrapper {
+                margin-top: 16px;
+                padding: 10px;
+            }
+
+            .preview-heading { font-size: 12px; }
+
+            #preview { max-height: 280px; }
+
+            .scan-btn {
+                min-height: 49px;
+                margin-top: 18px;
+                padding: 13px;
+            }
+
+            .hint { font-size: 11px; }
+
+            .manual-form-grid {
+                grid-template-columns: 1fr;
+                gap: 13px;
+            }
+
+            .manual-field.full-width { grid-column: auto; }
+
+            .test-checkbox-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 9px;
+            }
+
+            .test-checkbox label {
+                min-height: 48px;
+                padding: 10px;
+                font-size: 12px;
             }
         }
 
         @media (max-width: 420px) {
-
-
-
-
-
-
-
-
-            .scanner-card {
-                padding: 18px;
-            }
-
-            .card-heading h2 {
-                font-size: 17px;
-            }
-
-            .page-subtitle {
-                font-size: 13px;
-            }
+            .dashboard { padding: 16px 10px 24px; }
+            .page-title { font-size: 22px; }
+            .scanner-card { padding: 17px 12px; }
+            .card-heading h2 { font-size: 16px; }
+            .upload-area { padding: 21px 10px; }
+            #preview { max-height: 240px; }
         }
+
+        @media (max-width: 350px) {
+            .dashboard {
+                padding-left: 8px;
+                padding-right: 8px;
+            }
+
+            .scanner-card { padding: 14px 10px; }
+            .card-heading h2 { font-size: 15px; }
+            .page-title { font-size: 20px; }
+            .test-checkbox-grid { grid-template-columns: 1fr; }
+        }
+
     </style>
 </head>
 
 <body>
 
-{% include "navbar.html" %}
+    <!-- Navbar -->
 
-<!-- Main Dashboard -->
-<main class="dashboard">
+    {% include "navbar.html" %}
 
-    <!-- Page heading -->
-    <header class="page-header">
+    <!-- Main Dashboard -->
 
- 
+    <main class="dashboard">
 
-        <h1 class="page-title">{{ b.name }}</h1>
+        <header class="page-header">
+            <h1 class="page-title">{{ b.name }}</h1>
+        </header>
 
- 
-    </header>
+        <!-- Error Message -->
 
-    <!-- Django error message -->
-    {% if error %}
+        {% if error %}
         <div class="error-message" role="alert">
             <i class="bi bi-exclamation-triangle-fill"></i>
             <div>{{ error }}</div>
         </div>
-    {% endif %}
+        {% endif %}
 
-    <!-- Centered scanner card -->
-    <div class="row justify-content-center">
-        <div class="col-12 col-lg-9 col-xl-8">
+        <!-- Django Messages -->
 
-            <section class="scanner-card">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show"
+                     role="alert"
+                     style="max-width:780px;margin:0 auto 18px;border-radius:12px;font-size:13px;">
 
-                <div class="card-heading">
-
-                    <div class="heading-icon">
-                        <i class="bi bi-cloud-arrow-up-fill"></i>
-                    </div>
-
-                    <h2>Upload Laboratory Bill</h2>
-
-                </div>
-<br>
-
-                <form id="scanForm"
-                      method="POST"
-                      action="{% url 'home' %}"
-                      enctype="multipart/form-data">
-
-                    {% csrf_token %}
-
-                    <!-- File upload area -->
-                    <div class="upload-area" id="uploadArea" aria-label="Upload laboratory bill image">
-
-                        <div class="upload-icon">
-                            <i class="bi bi-file-earmark-image"></i>
-                        </div>
-
-                        <h3>Upload Bill</h3>
-
-                        <p>
-                            Drag and drop your image here, or browse files.
-                        </p>
-
-                        <input type="file"
-                               name="bill_image"
-                               id="billImage"
-                               class="file-input-hidden"
-                               accept="image/jpeg,image/png,image/webp"
-                               required>
-
-                        <button type="button"
-                                class="file-btn"
-                                id="browseButton">
-                            <i class="bi bi-folder2-open"></i>
-                            Browse Files
-                        </button>
-
-                        <div class="file-name"
-                             id="fileName"
-                             aria-live="polite"></div>
-
-                    </div>
-
-                    <!-- Divider -->
-                    <div class="divider-text">
-                        OR USE YOUR CAMERA
-                    </div>
-
-                    <!-- Camera input -->
-                    <input type="file"
-                           id="cameraImage"
-                           class="file-input-hidden"
-                           accept="image/*"
-                           capture="environment">
+                    {{ message }}
 
                     <button type="button"
-                            class="camera-btn"
-                            id="cameraButton">
-                        <i class="bi bi-camera-fill"></i>
-                        Take a Picture of the Bill
-                    </button>
+                            class="btn-close"
+                            data-bs-dismiss="alert"
+                            aria-label="Close"></button>
 
-                    <!-- Image preview -->
-                    <div class="preview-wrapper" id="previewWrapper">
+                </div>
+            {% endfor %}
+        {% endif %}
 
-                        <div class="preview-heading">
+        <!-- Scanner -->
 
-                            <span>
-                                <i class="bi bi-eye me-1"></i>
-                                Image Preview
+        <div class="row justify-content-center">
+
+            <div class="col-12 col-lg-9 col-xl-8">
+
+                <section class="scanner-card workflow-selection-mode"
+                         style="box-shadow:none;border:none;">
+
+                    <!-- Workflow Selection -->
+
+                    <div class="workflow-selector"
+                         role="group"
+                         aria-label="Select bill processing method">
+
+                        <button type="button"
+                                class="workflow-option"
+                                id="ocrWorkflowButton"
+                                aria-pressed="false">
+
+                            <span class="option-icon">
+                                <i class="bi bi-camera-fill"></i>
                             </span>
 
-                            <button type="button"
-                                    class="remove-image"
-                                    id="removeImage">
-                                <i class="bi bi-trash3 me-1"></i>
-                                Remove
-                            </button>
+                            <span>
+                                <strong>Camera Mode</strong>
+                            </span>
 
-                        </div>
+                        </button>
 
-                        <img id="preview"
-                             alt="Selected laboratory bill preview">
+                        <button type="button"
+                                class="workflow-option manual"
+                                id="manualWorkflowButton"
+                                aria-pressed="false">
+
+                            <span class="option-icon">
+                                <i class="bi bi-pencil-square"></i>
+                            </span>
+
+                            <span>
+                                <strong>Manual Mode</strong>
+                            </span>
+
+                        </button>
 
                     </div>
 
-                    <!-- Submit -->
-                    <button type="submit"
-                            class="scan-btn"
-                            id="scanButton">
+                    <!-- OCR Workflow -->
 
-                        <i class="bi bi-upc-scan"></i>
-                        Submit
+                    <div class="workflow-panel" id="ocrWorkflowPanel">
 
-                    </button>
+                        <button type="button"
+                                class="workflow-back-button"
+                                id="ocrBackButton">
 
-                    <p class="hint">
-                        <i class="bi bi-info-circle me-1"></i>
-                        Supported formats: JPG, PNG and WEBP.
-                        Use a clear, well-lit image for better text recognition.
-                    </p>
+                            <i class="bi bi-arrow-left"></i> Back
 
-                </form>
+                        </button>
 
-            </section>
+                        <form id="scanForm"
+                              method="POST"
+                              action="{% url 'home' %}"
+                              enctype="multipart/form-data">
+
+                            {% csrf_token %}
+
+                            <input type="hidden"
+                                   name="processing_mode"
+                                   value="ocr">
+
+                            <div class="upload-area"
+                                 id="uploadArea"
+                                 aria-label="Upload laboratory bill image">
+
+                                <div class="upload-icon">
+                                    <i class="bi bi-cloud-arrow-up-fill"></i>
+                                </div>
+
+                                <h3>Upload Laboratory Bill</h3>
+
+                                <p>
+                                    Drag and drop the bill image here,
+                                    or browse files from your device.
+                                </p>
+
+                                <input type="file"
+                                       name="bill_image"
+                                       id="billImage"
+                                       class="file-input-hidden"
+                                       accept="image/jpeg,image/png,image/webp"
+                                       required>
+
+                                <button type="button"
+                                        class="file-btn"
+                                        id="browseButton">
+
+                                    <i class="bi bi-folder2-open"></i>
+                                    Browse Files
+
+                                </button>
+
+                                <div class="file-name"
+                                     id="fileName"
+                                     aria-live="polite"></div>
+
+                            </div>
+
+                            <div class="divider-text">
+                                OR CAPTURE USING DEVICE CAMERA
+                            </div>
+
+                            <input type="file"
+                                   id="cameraImage"
+                                   class="file-input-hidden"
+                                   accept="image/jpeg,image/png,image/webp"
+                                   capture="environment">
+
+                            <button type="button"
+                                    class="camera-btn"
+                                    id="cameraButton">
+
+                                <i class="bi bi-camera-fill"></i>
+                                Open Camera
+
+                            </button>
+
+                            <!-- Image Preview -->
+
+                            <div class="preview-wrapper"
+                                 id="previewWrapper">
+
+                                <div class="preview-heading">
+
+                                    <span>
+                                        <i class="bi bi-eye me-1"></i>
+                                        Image Preview
+                                    </span>
+
+                                    <button type="button"
+                                            class="remove-image"
+                                            id="removeImage">
+
+                                        <i class="bi bi-trash3 me-1"></i>
+                                        Remove Image
+
+                                    </button>
+
+                                </div>
+
+                                <img id="preview"
+                                     alt="Selected laboratory bill preview">
+
+                            </div>
+
+                            <button type="submit"
+                                    class="scan-btn"
+                                    id="scanButton">
+
+                                <i class="bi bi-upc-scan"></i>
+                                Submit
+
+                            </button>
+
+                            <p class="hint">
+                                <i class="bi bi-info-circle me-1"></i>
+                                Supported formats: JPG, PNG and WEBP.
+                                Use a clear, well-lit image for improved text recognition.
+                            </p>
+
+                        </form>
+
+                    </div>
+
+                    <!-- Manual Workflow -->
+
+                    <div class="workflow-panel" id="manualWorkflowPanel">
+
+                        <button type="button"
+                                class="workflow-back-button"
+                                id="manualBackButton">
+
+                            <i class="bi bi-arrow-left"></i> Back
+
+                        </button>
+
+                        <div class="card-heading">
+
+                            <div class="heading-icon"
+                                 style="background:#e8f9f7;color:#087f79;">
+
+                                <i class="bi bi-card-text"></i>
+
+                            </div>
+
+                            <h2>Manual Sample Entry</h2>
+
+                        </div>
+
+                        <form id="manualForm"
+                              method="POST"
+                              action="{% url 'home' %}">
+
+                            {% csrf_token %}
+
+                            <input type="hidden"
+                                   name="processing_mode"
+                                   value="manual">
+
+                            <div class="manual-form-grid">
+
+                                <!-- Patient Name -->
+
+                                <div class="manual-field full-width">
+
+                                    <label for="patientName">
+                                        Patient Name
+                                        <span class="required">*</span>
+                                    </label>
+
+                                    <input type="text"
+                                           class="form-control"
+                                           id="patientName"
+                                           name="patient_name"
+                                           placeholder="Enter patient full name"
+                                           maxlength="150"
+                                           autocomplete="name"
+                                           required>
+
+                                </div>
+
+                                <!-- Bill Number -->
+
+                                <div class="manual-field">
+
+                                    <label for="invoiceNo">
+                                        Bill Number
+                                        <span class="required">*</span>
+                                    </label>
+
+                                    <input type="text"
+                                           class="form-control"
+                                           id="invoiceNo"
+                                           name="lab_number"
+                                           placeholder="Enter Bill number"
+                                           maxlength="50"
+                                           required>
+
+                                </div>
+
+                                <!-- Phone -->
+
+                                <div class="manual-field">
+
+                                    <label for="patientPhone">
+                                        Phone Number
+                                    </label>
+
+                                    <input type="tel"
+                                           class="form-control"
+                                           id="patientPhone"
+                                           name="phone"
+                                           placeholder="Enter phone number"
+                                           maxlength="20"
+                                           autocomplete="tel">
+
+                                </div>
+
+                                <!-- Purpose / Test Type Checkboxes -->
+
+                                <div class="manual-field full-width">
+
+                                    <label>
+                                        Tests
+                                        <span class="required">*</span>
+                                    </label>
+
+                                    <div class="test-checkbox-grid">
+
+                                        <div class="test-checkbox">
+                                            <input type="checkbox"
+                                                   id="testFastSugar"
+                                                   name="purpose"
+                                                   value="Fast Sugar"
+                                                   required>
+
+                                            <label for="testFastSugar">
+                                                <span class="check-icon">
+                                                    <i class="bi bi-check"></i>
+                                                </span>
+                                                Fast Sugar
+                                            </label>
+                                        </div>
+
+                                        <div class="test-checkbox">
+                                            <input type="checkbox"
+                                                   id="testLPT"
+                                                   name="purpose"
+                                                   value="LPT">
+
+                                            <label for="testLPT">
+                                                <span class="check-icon">
+                                                    <i class="bi bi-check"></i>
+                                                </span>
+                                                LPT
+                                            </label>
+                                        </div>
+
+                                        <div class="test-checkbox">
+                                            <input type="checkbox"
+                                                   id="testTFT"
+                                                   name="purpose"
+                                                   value="TFT">
+
+                                            <label for="testTFT">
+                                                <span class="check-icon">
+                                                    <i class="bi bi-check"></i>
+                                                </span>
+                                                TFT
+                                            </label>
+                                        </div>
+
+                                        <div class="test-checkbox">
+                                            <input type="checkbox"
+                                                   id="testECG"
+                                                   name="purpose"
+                                                   value="ECG">
+
+                                            <label for="testECG">
+                                                <span class="check-icon">
+                                                    <i class="bi bi-check"></i>
+                                                </span>
+                                                ECG
+                                            </label>
+                                        </div>
+
+                                        <div class="test-checkbox">
+                                            <input type="checkbox"
+                                                   id="testXray"
+                                                   name="purpose"
+                                                   value="X-Ray">
+
+                                            <label for="testXray">
+                                                <span class="check-icon">
+                                                    <i class="bi bi-check"></i>
+                                                </span>
+                                                X-Ray
+                                            </label>
+                                        </div>
+
+                                        <div class="test-checkbox">
+                                            <input type="checkbox"
+                                                   id="testURF"
+                                                   name="purpose"
+                                                   value="URF">
+
+                                            <label for="testURF">
+                                                <span class="check-icon">
+                                                    <i class="bi bi-check"></i>
+                                                </span>
+                                                URF
+                                            </label>
+                                        </div>
+
+                                        <div class="test-checkbox">
+                                            <input type="checkbox"
+                                                   id="testPPBS"
+                                                   name="purpose"
+                                                   value="PPBS">
+
+                                            <label for="testPPBS">
+                                                <span class="check-icon">
+                                                    <i class="bi bi-check"></i>
+                                                </span>
+                                                PPBS
+                                            </label>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="field-help">
+                                        Select one or more tests applicable to the patient.
+                                    </div>
+
+                                </div>
+
+                                <!-- Urgent -->
+
+                                <div class="manual-field">
+
+                                    <label for="urgent">
+                                        Urgent Case?
+                                    </label>
+
+                                    <select class="form-select"
+                                            id="urgent"
+                                            name="urgent">
+
+                                        <option value="no" selected>
+                                            No — Normal Priority
+                                        </option>
+
+                                        <option value="yes">
+                                            Yes — Urgent
+                                        </option>
+
+                                    </select>
+
+                                    <div class="field-help">
+                                        Mark urgent when the patient needs priority handling.
+                                    </div>
+
+                                </div>
+
+                                <!-- Note -->
+
+                                <div class="manual-field">
+
+                                    <label for="note">
+                                        Additional Note
+                                    </label>
+
+                                    <input type="text"
+                                           class="form-control"
+                                           id="note"
+                                           name="note"
+                                           placeholder="Enter additional note (optional)"
+                                           maxlength="150">
+
+                                </div>
+
+                            </div>
+
+                            <!-- Submit -->
+
+                            <button type="submit"
+                                    class="manual-submit"
+                                    id="manualSubmitButton">
+
+                                <i class="bi bi-check2-circle me-2"></i>
+                                Submit
+
+                            </button>
+
+                        </form>
+
+                    </div>
+
+                </section>
+
+            </div>
 
         </div>
-    </div>
 
+    </main>
 
-</main>
+    <!-- Footer -->
 
-<script>
-    (() => {
-        const billInput = document.getElementById("billImage");
-        const cameraInput = document.getElementById("cameraImage");
-        const preview = document.getElementById("preview");
-        const previewWrapper = document.getElementById("previewWrapper");
-        const fileName = document.getElementById("fileName");
-        const scanForm = document.getElementById("scanForm");
-        const scanButton = document.getElementById("scanButton");
-        const uploadArea = document.getElementById("uploadArea");
+    <footer class="page-footer">
 
-        const allowedTypes = [
-            "image/jpeg",
-            "image/png",
-            "image/webp"
-        ];
+        {% include "footer_1.html" %}
 
-        const defaultButtonHTML = '<i class="bi bi-upc-scan"></i> Submit';
+    </footer>
 
-        let previewUrl = null;
-        let isSubmitting = false;
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-        function resetSubmitState() {
-            isSubmitting = false;
-            scanButton.disabled = false;
-            scanButton.innerHTML = defaultButtonHTML;
-        }
+    <!-- JavaScript -->
 
-        function clearPreview() {
-            if (previewUrl) {
-                URL.revokeObjectURL(previewUrl);
-                previewUrl = null;
+    <script>
+        (() => {
+
+            "use strict";
+
+            const ocrButton = document.getElementById("ocrWorkflowButton");
+            const manualButton = document.getElementById("manualWorkflowButton");
+
+            const ocrPanel = document.getElementById("ocrWorkflowPanel");
+            const manualPanel = document.getElementById("manualWorkflowPanel");
+
+            const workflowSelector = document.querySelector(".workflow-selector");
+            const scannerCard = document.querySelector(".scanner-card");
+
+            const ocrBackButton = document.getElementById("ocrBackButton");
+            const manualBackButton = document.getElementById("manualBackButton");
+
+            const billInput = document.getElementById("billImage");
+            const cameraInput = document.getElementById("cameraImage");
+
+            const preview = document.getElementById("preview");
+            const previewWrapper = document.getElementById("previewWrapper");
+            const fileName = document.getElementById("fileName");
+
+            const scanForm = document.getElementById("scanForm");
+            const scanButton = document.getElementById("scanButton");
+
+            const uploadArea = document.getElementById("uploadArea");
+            const browseButton = document.getElementById("browseButton");
+            const cameraButton = document.getElementById("cameraButton");
+            const removeButton = document.getElementById("removeImage");
+
+            const manualForm = document.getElementById("manualForm");
+            const manualSubmitButton = document.getElementById("manualSubmitButton");
+
+            const allowedTypes = [
+                "image/jpeg",
+                "image/png",
+                "image/webp"
+            ];
+
+            const defaultScanButtonHTML =
+                '<i class="bi bi-upc-scan"></i> Submit';
+
+            const defaultManualButtonHTML =
+                '<i class="bi bi-check2-circle me-2"></i> Submit';
+
+            let previewUrl = null;
+            let isOcrSubmitting = false;
+            let isManualSubmitting = false;
+
+            /* Workflow selection */
+
+            function activateWorkflow(workflow) {
+
+                const showOcr = workflow === "ocr";
+
+                workflowSelector.classList.add("hidden");
+
+                scannerCard.classList.remove("workflow-selection-mode");
+
+                ocrButton.classList.toggle("active", showOcr);
+                manualButton.classList.toggle("active", !showOcr);
+
+                ocrButton.setAttribute("aria-pressed", String(showOcr));
+                manualButton.setAttribute("aria-pressed", String(!showOcr));
+
+                ocrPanel.classList.toggle("active", showOcr);
+                manualPanel.classList.toggle("active", !showOcr);
+
             }
 
-            preview.removeAttribute("src");
-            previewWrapper.style.display = "none";
-            fileName.style.display = "none";
-            fileName.replaceChildren();
-        }
+            ocrButton.addEventListener("click", () => {
+                activateWorkflow("ocr");
+            });
 
-        function showPreview(file) {
-            if (!file) {
-                return false;
+            manualButton.addEventListener("click", () => {
+                activateWorkflow("manual");
+            });
+
+            /* Back to selection */
+
+            function returnToWorkflowSelection() {
+
+                workflowSelector.classList.remove("hidden");
+
+                scannerCard.classList.add("workflow-selection-mode");
+
+                ocrPanel.classList.remove("active");
+                manualPanel.classList.remove("active");
+
+                ocrButton.classList.remove("active");
+                manualButton.classList.remove("active");
+
+                ocrButton.setAttribute("aria-pressed", "false");
+                manualButton.setAttribute("aria-pressed", "false");
+
+                workflowSelector.scrollIntoView({
+                    behavior: "smooth",
+                    block: "center"
+                });
+
             }
 
-            if (!allowedTypes.includes(file.type)) {
-                alert("Please select a JPG, PNG, or WEBP image.");
-                return false;
+            ocrBackButton.addEventListener(
+                "click",
+                returnToWorkflowSelection
+            );
+
+            manualBackButton.addEventListener(
+                "click",
+                returnToWorkflowSelection
+            );
+
+            /* Reset OCR button */
+
+            function resetOcrSubmitState() {
+
+                isOcrSubmitting = false;
+
+                scanButton.disabled = false;
+
+                scanButton.innerHTML = defaultScanButtonHTML;
+
             }
 
-            clearPreview();
+            /* Clear preview */
 
-            previewUrl = URL.createObjectURL(file);
-            preview.src = previewUrl;
+            function clearPreview() {
 
-            previewWrapper.style.display = "block";
-            fileName.style.display = "block";
+                if (previewUrl) {
 
-            const icon = document.createElement("i");
-            icon.className = "bi bi-check-circle-fill me-2";
+                    URL.revokeObjectURL(previewUrl);
 
-            fileName.appendChild(icon);
-            fileName.appendChild(document.createTextNode(file.name));
+                    previewUrl = null;
 
-            resetSubmitState();
-
-            return true;
-        }
-
-        function selectFile(file) {
-            if (!file) {
-                return;
-            }
-
-            if (!allowedTypes.includes(file.type)) {
-                alert("Please select a JPG, PNG, or WEBP image.");
-
-                if (file === billInput.files[0]) {
-                    billInput.value = "";
                 }
 
-                return;
+                preview.removeAttribute("src");
+
+                previewWrapper.style.display = "none";
+
+                fileName.style.display = "none";
+
+                fileName.replaceChildren();
+
             }
 
-            try {
-                const transfer = new DataTransfer();
-                transfer.items.add(file);
+            /* Image preview */
 
-                billInput.files = transfer.files;
-                cameraInput.value = "";
+            function showPreview(file) {
 
-                showPreview(file);
-            } catch (error) {
-                alert("Unable to select this image. Please try again.");
+                if (!file) return false;
+
+                if (!allowedTypes.includes(file.type)) {
+
+                    alert("Please select a JPG, PNG, or WEBP image.");
+
+                    return false;
+
+                }
+
+                clearPreview();
+
+                previewUrl = URL.createObjectURL(file);
+
+                preview.src = previewUrl;
+
+                previewWrapper.style.display = "block";
+
+                fileName.style.display = "block";
+
+                const icon = document.createElement("i");
+
+                icon.className = "bi bi-check-circle-fill me-2";
+
+                fileName.appendChild(icon);
+
+                fileName.appendChild(
+                    document.createTextNode(file.name)
+                );
+
+                resetOcrSubmitState();
+
+                return true;
+
             }
-        }
 
-        // Browse files
-        document.getElementById("browseButton")
-            .addEventListener("click", () => {
+            /* Select image */
+
+            function selectFile(file) {
+
+                if (!file) return;
+
+                if (!allowedTypes.includes(file.type)) {
+
+                    alert("Please select a JPG, PNG, or WEBP image.");
+
+                    return;
+
+                }
+
+                try {
+
+                    const transfer = new DataTransfer();
+
+                    transfer.items.add(file);
+
+                    billInput.files = transfer.files;
+
+                    cameraInput.value = "";
+
+                    if (!showPreview(file)) {
+
+                        billInput.value = "";
+
+                        clearPreview();
+
+                    }
+
+                } catch (error) {
+
+                    console.error("Image selection failed:", error);
+
+                    alert("Unable to select this image. Please try again.");
+
+                }
+
+            }
+
+            /* Browse */
+
+            browseButton.addEventListener("click", () => {
                 billInput.click();
             });
 
-        // Open camera
-        document.getElementById("cameraButton")
-            .addEventListener("click", () => {
+            /* Camera */
+
+            cameraButton.addEventListener("click", () => {
                 cameraInput.click();
             });
 
-        // Handle file selection
-        billInput.addEventListener("change", () => {
-            if (!billInput.files.length) {
-                return;
-            }
+            /* File selection */
 
-            const file = billInput.files[0];
+            billInput.addEventListener("change", () => {
 
-            if (!showPreview(file)) {
+                if (!billInput.files.length) return;
+
+                const file = billInput.files[0];
+
+                if (!showPreview(file)) {
+
+                    billInput.value = "";
+
+                    clearPreview();
+
+                }
+
+            });
+
+            /* Camera capture */
+
+            cameraInput.addEventListener("change", () => {
+
+                if (cameraInput.files.length) {
+
+                    selectFile(cameraInput.files[0]);
+
+                }
+
+            });
+
+            /* Remove image */
+
+            removeButton.addEventListener("click", () => {
+
                 billInput.value = "";
-                clearPreview();
-            }
-        });
 
-        // Handle camera capture
-        cameraInput.addEventListener("change", () => {
-            if (cameraInput.files.length) {
-                selectFile(cameraInput.files[0]);
-            }
-        });
-
-        // Remove selected image
-        document.getElementById("removeImage")
-            .addEventListener("click", () => {
-                billInput.value = "";
                 cameraInput.value = "";
 
                 clearPreview();
-                resetSubmitState();
+
+                resetOcrSubmitState();
+
             });
 
-        // Drag over
-        uploadArea.addEventListener("dragover", (event) => {
-            event.preventDefault();
-            uploadArea.classList.add("dragover");
-        });
+            /* Drag and drop */
 
-        // Drag leave
-        uploadArea.addEventListener("dragleave", (event) => {
-            if (!uploadArea.contains(event.relatedTarget)) {
+            uploadArea.addEventListener("dragover", (event) => {
+
+                event.preventDefault();
+
+                uploadArea.classList.add("dragover");
+
+            });
+
+            uploadArea.addEventListener("dragleave", (event) => {
+
+                if (!uploadArea.contains(event.relatedTarget)) {
+
+                    uploadArea.classList.remove("dragover");
+
+                }
+
+            });
+
+            uploadArea.addEventListener("drop", (event) => {
+
+                event.preventDefault();
+
                 uploadArea.classList.remove("dragover");
-            }
-        });
 
-        // Drop image
-        uploadArea.addEventListener("drop", (event) => {
-            event.preventDefault();
-            uploadArea.classList.remove("dragover");
+                const file = event.dataTransfer.files[0];
 
-            const file = event.dataTransfer.files[0];
+                if (file) selectFile(file);
 
-            if (file) {
-                selectFile(file);
-            }
-        });
+            });
 
-        // Validate and submit form
-        scanForm.addEventListener("submit", (event) => {
-            if (isSubmitting) {
-                event.preventDefault();
-                return;
-            }
+            /* OCR submission */
 
-            if (!billInput.files.length) {
-                event.preventDefault();
-                alert("Please select or capture a bill image first.");
-                return;
-            }
+            scanForm.addEventListener("submit", (event) => {
 
-            const file = billInput.files[0];
+                if (isOcrSubmitting) {
 
-            if (!allowedTypes.includes(file.type)) {
-                event.preventDefault();
-                alert("Please select a JPG, PNG, or WEBP image.");
-                return;
-            }
+                    event.preventDefault();
 
-            isSubmitting = true;
-            scanButton.disabled = true;
+                    return;
 
-            scanButton.innerHTML =
-                '<span class="spinner-border spinner-border-sm me-2" ' +
-                'aria-hidden="true"></span>Scanning Bill...';
-        });
+                }
 
-        // Release preview resources when navigating away
-        window.addEventListener("pagehide", () => {
-            if (previewUrl) {
-                URL.revokeObjectURL(previewUrl);
-                previewUrl = null;
-            }
-        });
-    })();
-</script>
+                if (!billInput.files.length) {
+
+                    event.preventDefault();
+
+                    alert("Please browse or capture a laboratory bill image first.");
+
+                    return;
+
+                }
+
+                const file = billInput.files[0];
+
+                if (!allowedTypes.includes(file.type)) {
+
+                    event.preventDefault();
+
+                    alert("Please select a JPG, PNG, or WEBP image.");
+
+                    return;
+
+                }
+
+                isOcrSubmitting = true;
+
+                scanButton.disabled = true;
+
+                scanButton.innerHTML =
+                    '<span class="spinner-border spinner-border-sm me-2" ' +
+                    'aria-hidden="true"></span>Extracting Bill Text...';
+
+            });
+
+            /* Manual submission */
+
+            manualForm.addEventListener("submit", (event) => {
+
+                if (isManualSubmitting) {
+
+                    event.preventDefault();
+
+                    return;
+
+                }
+
+                const selectedTests = manualForm.querySelectorAll(
+                    'input[name="purpose"]:checked'
+                );
+
+                if (selectedTests.length === 0) {
+
+                    event.preventDefault();
+
+                    alert("Please select at least one test purpose.");
+
+                    return;
+
+                }
+
+                if (!manualForm.reportValidity()) {
+
+                    event.preventDefault();
+
+                    return;
+
+                }
+
+                isManualSubmitting = true;
+
+                manualSubmitButton.disabled = true;
+
+                manualSubmitButton.innerHTML =
+                    '<span class="spinner-border spinner-border-sm me-2" ' +
+                    'aria-hidden="true"></span>Submitting Details...';
+
+            });
+
+            /* Release image preview URL */
+
+            window.addEventListener("pagehide", () => {
+
+                if (previewUrl) {
+
+                    URL.revokeObjectURL(previewUrl);
+
+                    previewUrl = null;
+
+                }
+
+            });
+
+        })();
+    </script>
 
 </body>
 </html>

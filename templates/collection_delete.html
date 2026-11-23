@@ -1,0 +1,105 @@
+
+{% include 'navbar.html' %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Delete Collection</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            background: #f4f7fb;
+            font-family: Arial, sans-serif;
+        }
+
+        .main-container {
+            max-width: 550px;
+            margin: 90px auto;
+            padding: 20px;
+        }
+
+        .delete-card {
+            background: white;
+            padding: 35px;
+            border-radius: 14px;
+            text-align: center;
+            box-shadow: 0 4px 18px rgba(0,0,0,0.07);
+        }
+
+        .delete-icon {
+            font-size: 55px;
+            color: #dc3545;
+            margin-bottom: 15px;
+        }
+
+        .patient-name {
+            color: #173b59;
+            font-weight: 700;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container main-container">
+
+    <div class="delete-card">
+
+        <div class="delete-icon">
+            &#9888;
+        </div>
+
+        <h3 class="fw-bold text-danger mb-3">
+            Delete Collection?
+        </h3>
+
+        <p class="text-muted">
+            Are you sure you want to permanently delete this collection?
+            This action cannot be undone.
+        </p>
+
+        <div class="bg-light rounded p-3 my-4">
+
+            <h5 class="patient-name">
+                {{ collection.patient_name }}
+            </h5>
+
+            <p class="mb-1">
+                Lab Number: <strong>{{ collection.lab_number }}</strong>
+            </p>
+
+            <p class="mb-0">
+                Purpose: {{ collection.purpose }}
+            </p>
+
+        </div>
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+            <div class="d-flex justify-content-center gap-2 flex-wrap">
+
+                <button type="submit" class="btn btn-danger px-4">
+                    Yes, Delete
+                </button>
+
+                <a href="{% url 'collection_list' %}"
+                   class="btn btn-outline-secondary px-4">
+                    Cancel
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+</body>
+</html>

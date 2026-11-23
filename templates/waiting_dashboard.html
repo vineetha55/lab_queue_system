@@ -1,845 +1,246 @@
-
-<!DOCTYPE html>
+{% load static %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Patient Waiting Dashboard | Microlab</title>
-    <style>
-        /* Compact dashboard table */
-.table-responsive {
-    overflow-x: auto;
-    width: 100%;
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 12px !important;
-}
-
-/* Table headings */
-table thead th {
-    font-size: 11px !important;
-    padding: 7px 6px !important;
-    white-space: nowrap;
-    line-height: 1.2;
-}
-
-/* Table cells */
-table tbody td {
-    font-size: 11px !important;
-    padding: 6px !important;
-    line-height: 1.3;
-    vertical-align: middle;
-}
-
-/* Compact buttons and links */
-table .edit-btn,
-table .stop-timer-btn,
-table button,
-table a {
-    font-size: 10px !important;
-    padding: 4px 7px !important;
-    line-height: 1.2;
-    white-space: nowrap;
-}
-
-/* Reduce form spacing inside table cells */
-table td form {
-    margin: 0;
-    padding: 0;
-}
-
-/* Keep timer statuses readable */
-table .balance-cell {
-    font-size: 11px !important;
-    font-weight: 600;
-    white-space: nowrap;
-}
-
-/* Reduce unnecessary row height */
-table tbody tr {
-    height: auto;
-}
-
-/* Compact spacing on smaller screens */
-@media (max-width: 768px) {
-    table {
-        font-size: 10px !important;
-    }
-
-    table thead th {
-        font-size: 10px !important;
-        padding: 5px 4px !important;
-    }
-
-    table tbody td {
-        font-size: 10px !important;
-        padding: 5px 4px !important;
-    }
-
-    table .edit-btn,
-    table .stop-timer-btn,
-    table button,
-    table a {
-        font-size: 9px !important;
-        padding: 3px 5px !important;
-    }
-}
-    </style>
-    <style>
-
-.status-on-time {
-    color: #15803d;
-    font-weight: 700;
-}
-
-.status-over {
-    color: #dc2626;
-    font-weight: 700;
-}
-
-.status-near {
-    color: #d97706;
-    font-weight: 700;
-}
-
-.status-waiting {
-    color: #2563eb;
-    font-weight: 700;
-}
-
-.warning-row {
-    animation: rowBlink 1s linear infinite;
-}
-
-@keyframes rowBlink {
-    0%, 100% {
-        background-color: #ffffff;
-    }
-
-    50% {
-        background-color: #ffe0a3;
-    }
-}
-
-@media (prefers-reduced-motion: reduce) {
-    .warning-row {
-        animation: none;
-        background-color: #ffe0a3;
-    }
-}
-
-    </style>
-<style>
-    .stop-timer-btn {
-    border: none;
-    border-radius: 7px;
-    padding: 8px 12px;
-    background: #dc3545;
-    color: white;
-    font-weight: 600;
-    cursor: pointer;
-}
-
-.stop-timer-btn:hover {
-    background: #b02a37;
-}
-
-.stop-timer-btn:disabled {
-    background: #94a3b8;
-    cursor: not-allowed;
-}
-
-.status-on-time {
-    display: inline-block;
-    padding: 6px 10px;
-    border-radius: 20px;
-    background: #d1fae5;
-    color: #065f46;
-    font-weight: 700;
-}
-
-.warning-row {
-    animation: rowBlink 1s linear infinite;
-}
-
-@keyframes rowBlink {
-    0%, 100% {
-        background-color: #fff;
-    }
-    50% {
-        background-color: #ffe0a3;
-    }
-}
-
-.sound-btn {
-    border: 0;
-    border-radius: 8px;
-    padding: 10px 15px;
-    background: #1769e0;
-    color: white;
-    cursor: pointer;
-    margin-bottom: 15px;
-}
-
-@media (prefers-reduced-motion: reduce) {
-    .warning-row {
-        animation: none;
-        background-color: #ffe0a3;
-    }
-}
-</style>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f4f7fb;
-            padding: 25px;
-            color: #23364d;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: auto;
-        }
-
-        .summary, .table-wrap {
-            background: white;
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 3px 12px rgba(0,0,0,0.04);
-        }
-
-        .table-wrap {
-            overflow-x: auto;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        th, td {
-            padding: 15px;
-            text-align: left;
-            border-bottom: 1px solid #e5eaf0;
-            white-space: nowrap;
-        }
-
-        th {
-            background: #eaf1f8;
-        }
-
-        .balance {
-            font-weight: bold;
-            color: #087f8c;
-        }
-
-        .expired {
-            color: #c62828;
-            font-weight: bold;
-        }
-
-        .end-time {
-            color: #475569;
-        }
-
-        .edit-btn {
-            display: inline-block;
-            padding: 8px 16px;
-            background: #1769e0;
-            color: white;
-            text-decoration: none;
-            border-radius: 6px;
-            font-size: 14px;
-        }
-
-        .edit-btn:hover {
-            background: #0d4fb3;
-        }
-
-        .empty {
-            text-align: center;
-            color: #777;
-            padding: 25px;
-        }
-
-        @media (max-width: 600px) {
-            body {
-                padding: 12px;
-            }
-
-            .summary, .table-wrap {
-                padding: 12px;
-            }
-
-            th, td {
-                padding: 11px;
-            }
-        }
-    </style>
-
-     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-          rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
-          rel="stylesheet">
+    <link href="[https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css](https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css)" rel="stylesheet">
+    <link href="[https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css](https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css)" rel="stylesheet">
     <style>
         :root {
             --primary: #1769e0;
             --primary-dark: #124bb0;
-            --teal: #08a6a6;
-            --background: #f3f7fc;
-            --text: #172b4d;
-            --muted: #718198;
+            --ink: #172b4d;
+            --muted: #64748b;
+            --page: #f4f7fb;
+            --border: #e3eaf3;
+            --danger: #b42332;
+            --success: #087f5b;
         }
-
-        * {
-            box-sizing: border-box;
-        }
-
+        * { box-sizing: border-box; }
         body {
             margin: 0;
-            background: var(--background);
-            color: var(--text);
+            padding: 0;
+            background: var(--page);
+            color: var(--ink);
             font-family: Inter, "Segoe UI", Arial, sans-serif;
         }
-
-      
-
-        /* Main layout */
-        .dashboard {
-            max-width: 1160px;
+        .dashboard-container {
+            width: 100%;
+            max-width: none;
             margin: 0 auto;
-            padding: 36px 20px 50px;
+            padding: 30px clamp(14px, 2.4vw, 38px) 44px;
         }
-
-        .welcome-label {
-            color: var(--primary);
-            font-size: 12px;
-            font-weight: 800;
-            letter-spacing: 1.8px;
-            text-transform: uppercase;
-            margin-bottom: 10px;
-        }
-
-        .page-title {
-            font-size: clamp(27px, 4vw, 36px);
-            font-weight: 800;
-            letter-spacing: -1px;
-            margin: 0 0 10px;
-        }
-
-        .page-subtitle {
-            color: var(--muted);
-            font-size: 15px;
-            line-height: 1.8;
-            max-width: 650px;
-            margin-bottom: 28px;
-        }
-
-        /* Hero banner */
-        .hero {
-            position: relative;
-            overflow: hidden;
-            background: linear-gradient(120deg, #123b80, #1769e0 65%, #08a6a6);
-            border-radius: 22px;
-            padding: 30px;
-            color: white;
-            margin-bottom: 28px;
-            box-shadow: 0 12px 32px rgba(23, 105, 224, .16);
-        }
-
-        .hero h2 {
-            font-size: 23px;
-            font-weight: 750;
-            margin-bottom: 10px;
-        }
-
-        .hero p {
-            font-size: 14px;
-            color: #e3edff;
-            max-width: 530px;
-            line-height: 1.8;
-            margin-bottom: 0;
-        }
-
-        .hero-art {
-            position: absolute;
-            right: 45px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 100px;
-            color: rgba(255, 255, 255, .17);
-        }
-
-        .hero-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 7px;
-            border: 1px solid rgba(255,255,255,.3);
-            background: rgba(255,255,255,.12);
-            padding: 7px 12px;
-            border-radius: 30px;
-            font-size: 12px;
-            margin-bottom: 17px;
-        }
-
-        /* Cards */
-        .section-heading {
-            font-size: 19px;
-            font-weight: 750;
-            margin: 0 0 18px;
-        }
-
-        .scanner-card,
-        .info-card {
-            background: #fff;
-            border: 1px solid #e8eef6;
-            border-radius: 18px;
-            box-shadow: 0 5px 22px rgba(31, 57, 90, .045);
-        }
-
-        .scanner-card {
-            padding: 28px;
-            height: 100%;
-        }
-
-        .card-heading {
+        .page-heading {
             display: flex;
             align-items: center;
+            flex-wrap: wrap;
             gap: 12px;
-            margin-bottom: 8px;
-        }
-
-        .heading-icon {
-            width: 44px;
-            height: 44px;
-            border-radius: 13px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 21px;
-            flex-shrink: 0;
-        }
-
-        .icon-blue {
-            background: #eaf2ff;
-            color: var(--primary);
-        }
-
-        .icon-teal {
-            background: #e4f9f7;
-            color: #078b88;
-        }
-
-        .card-heading h3 {
-            font-size: 17px;
-            font-weight: 750;
-            margin: 0;
-        }
-
-        .card-description {
-            font-size: 13px;
-            color: var(--muted);
-            line-height: 1.7;
-            margin-bottom: 23px;
-        }
-
-        /* Upload area */
-        .upload-area {
-            border: 2px dashed #bdcde3;
-            border-radius: 15px;
-            padding: 27px 16px;
-            text-align: center;
-            background: #f9fbff;
-            transition: .2s;
-        }
-
-        .upload-area:hover,
-        .upload-area.dragover {
-            border-color: var(--primary);
-            background: #eff6ff;
-        }
-
-        .upload-icon {
-            width: 62px;
-            height: 62px;
-            border-radius: 18px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: #e6efff;
-            color: var(--primary);
-            font-size: 29px;
-            margin: 0 auto 15px;
-        }
-
-        .upload-area h4 {
-            font-size: 15px;
-            font-weight: 750;
-            margin-bottom: 8px;
-        }
-
-        .upload-area p {
-            font-size: 12px;
-            color: var(--muted);
-            margin-bottom: 16px;
-        }
-
-        .file-btn,
-        .camera-btn,
-        .scan-btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            border: 0;
-            border-radius: 10px;
-            padding: 12px 17px;
-            font-size: 13px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: .2s;
-        }
-
-        .file-btn {
-            background: var(--primary);
-            color: white;
-        }
-
-        .file-btn:hover {
-            background: var(--primary-dark);
-        }
-
-        .camera-btn {
-            width: 100%;
-            background: #e8f9f7;
-            color: #087f79;
-            border: 1px solid #ccefeb;
-        }
-
-        .camera-btn:hover {
-            background: #d5f4ef;
-        }
-
-        .file-input-hidden {
-            display: none;
-        }
-
-        .file-name {
-            display: none;
-            margin-top: 14px;
-            padding: 10px 12px;
-            border-radius: 9px;
-            background: #edf8f3;
-            color: #168052;
-            font-size: 12px;
-            overflow-wrap: anywhere;
-        }
-
-        .divider-text {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            color: #a1adbd;
-            font-size: 11px;
-            margin: 18px 0;
-        }
-
-        .divider-text::before,
-        .divider-text::after {
-            content: "";
-            flex: 1;
-            height: 1px;
-            background: #e7edf5;
-        }
-
-        /* Image preview */
-        .preview-wrapper {
-            display: none;
-            margin-top: 20px;
-            border: 1px solid #e4ebf4;
-            border-radius: 13px;
-            padding: 12px;
-            background: #fff;
-        }
-
-        .preview-heading {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            font-size: 12px;
-            font-weight: 700;
-            margin-bottom: 10px;
-        }
-
-        #preview {
-            display: block;
-            max-width: 100%;
-            max-height: 300px;
-            margin: auto;
-            border-radius: 9px;
-            object-fit: contain;
-        }
-
-        .remove-image {
-            border: none;
-            background: transparent;
-            color: #dc3545;
-            font-size: 12px;
-            font-weight: 600;
-            cursor: pointer;
-        }
-
-        /* Submit */
-        .scan-btn {
-            width: 100%;
-            background: linear-gradient(100deg, #1769e0, #1455bd);
-            color: white;
-            padding: 15px;
-            margin-top: 20px;
-            box-shadow: 0 5px 14px rgba(23, 105, 224, .15);
-        }
-
-        .scan-btn:hover:not(:disabled) {
-            transform: translateY(-1px);
-            box-shadow: 0 8px 18px rgba(23, 105, 224, .22);
-        }
-
-        .scan-btn:disabled {
-            opacity: .7;
-            cursor: wait;
-        }
-
-        .hint {
-            font-size: 11px;
-            color: var(--muted);
-            text-align: center;
-            margin-top: 13px;
-            line-height: 1.7;
-        }
-
-        /* Instructions */
-        .steps {
-            display: flex;
-            flex-direction: column;
-            gap: 23px;
-            margin-top: 27px;
-        }
-
-        .step {
-            display: flex;
-            gap: 13px;
-            align-items: flex-start;
-        }
-
-        .step-number {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 35px;
-            height: 35px;
-            flex-shrink: 0;
-            border-radius: 11px;
-            background: #eaf2ff;
-            color: var(--primary);
-            font-size: 13px;
-            font-weight: 800;
-        }
-
-        .step h4 {
-            font-size: 13px;
-            font-weight: 750;
-            margin: 2px 0 6px;
-        }
-
-        .step p {
-            color: var(--muted);
-            font-size: 12px;
-            line-height: 1.7;
-            margin: 0;
-        }
-
-        .privacy-note {
-            margin-top: 25px;
-            border-radius: 12px;
-            padding: 14px;
-            background: #f0faf6;
-            color: #23785b;
-            font-size: 12px;
-            line-height: 1.7;
-        }
-
-        .privacy-note i {
-            margin-right: 6px;
-        }
-
-        /* Footer */
-        .footer {
-            text-align: center;
-            padding: 25px 10px 0;
-            color: #96a2b4;
-            font-size: 12px;
-        }
-
-        .error {
-            display: flex;
-            align-items: flex-start;
-            gap: 10px;
-            padding: 14px 16px;
-            border-radius: 12px;
-            background: #fff0f0;
-            color: #a61b1b;
-            border: 1px solid #f7d6d6;
-            font-size: 13px;
-            margin-bottom: 20px;
-        }
-
-        @media (max-width: 767px) {
-            .dashboard {
-                padding: 25px 14px 35px;
-            }
-
-            .hero {
-                padding: 25px 21px;
-            }
-
-            .hero-art {
-                right: 10px;
-                font-size: 70px;
-                opacity: .6;
-            }
-
-            .hero h2,
-            .hero p,
-            .hero-badge {
-                position: relative;
-                z-index: 1;
-            }
-
-            .scanner-card {
-                padding: 21px;
-            }
-
-
-
-            .brand {
-                font-size: 17px;
-            }
-
-            .logout-btn {
-                padding: 9px 11px;
-            }
-        }
-    </style>
-
-    <style>
-        /* Premium full-width Patient Waiting Dashboard */
-        :root {
-            --pwd-primary: #1769e0;
-            --pwd-primary-dark: #124bb0;
-            --pwd-ink: #172b4d;
-            --pwd-muted: #64748b;
-            --pwd-border: #e2e8f0;
-            --pwd-surface: #ffffff;
-            --pwd-page: #f4f7fb;
-            --pwd-danger: #dc3545;
-            --pwd-success: #087f5b;
-            --pwd-warning: #b45309;
-        }
-
-        html { min-height: 100%; }
-        body {
-            margin: 0 !important;
-            padding: 0 !important;
-            background: var(--pwd-page) !important;
-            color: var(--pwd-ink);
-            font-family: Inter, "Segoe UI", Arial, sans-serif;
-        }
-
-        /* Use the available screen width instead of Bootstrap's fixed container width */
-        .container.mt-5 {
-            width: 100% !important;
-            max-width: none !important;
-            margin: 0 auto !important;
-            padding: 30px clamp(14px, 2.4vw, 38px) 44px !important;
-        }
-
-        .container.mt-5 > h2 {
             margin: 0 0 20px;
             color: #132746;
             font-size: clamp(25px, 2.5vw, 34px);
             line-height: 1.2;
-            font-weight: 800;
-            letter-spacing: -.7px;
-        }
-
-        #enable-sound {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 9px;
-            margin: 0 12px 18px 0;
-            padding: 11px 17px;
-            border: 0;
-            border-radius: 10px;
-            background: var(--pwd-primary);
-            color: #fff;
-            font-size: 14px;
             font-weight: 700;
-            box-shadow: 0 5px 14px rgba(23,105,224,.16);
-            transition: background .2s ease, transform .2s ease;
+            letter-spacing: -.5px;
         }
-        #enable-sound:hover { background: var(--pwd-primary-dark); transform: translateY(-1px); }
-        #sound-status { color: var(--pwd-muted); font-size: 13px; }
-
-        .summary {
-            width: 100%;
-            margin: 0 0 22px !important;
-            padding: 24px 26px !important;
-            border: 1px solid #e6edf5;
-            border-radius: 18px !important;
-            background: var(--pwd-surface);
-            box-shadow: 0 8px 28px rgba(22, 42, 72, .055) !important;
+        .date-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 7px 12px;
+            border-radius: 20px;
+            background: #eaf2ff;
+            color: var(--primary);
+            font-size: 13px;
+            font-weight: 500;
+            letter-spacing: 0;
         }
-        .summary h3 {
-            margin: 0 0 12px;
-            color: #132746;
-            font-size: 21px;
-            font-weight: 800;
+        .summary-header {
+            display: grid;
+            grid-template-columns: minmax(220px, 1fr) minmax(260px, 420px) minmax(250px, 310px);
+            align-items: center;
+            gap: 24px;
+            margin-bottom: 16px;
+            padding: 22px;
+            border: 1px solid #e5eaf1;
+            border-radius: 14px;
+            background: #fff;
         }
-        #patient-count {
+        .summary-title {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            min-width: 0;
+        }
+        .summary-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 48px;
+            height: 48px;
+            flex: 0 0 48px;
+            border-radius: 12px;
+            background: #eff6ff;
+            color: #2563eb;
+            font-size: 22px;
+        }
+        .summary-heading {
+            margin: 0;
+            color: #111827;
+            font-size: 20px;
+            font-weight: 600;
+        }
+        .summary-subtitle {
+            display: flex;
+            align-items: flex-start;
+            gap: 7px;
+            margin: 7px 0 0;
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.5;
+        }
+        .summary-subtitle .bi { margin-top: 1px; }
+        .sound-control {
+            display: flex;
+            flex-direction: column;
+            gap: 11px;
+            padding: 15px;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            background: #f8fafc;
+        }
+        .sound-control-title {
+            margin: 0;
+            color: #1e293b;
+            font-size: 13px;
+            font-weight: 600;
+        }
+        .sound-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 9px;
+        }
+        .sound-btn {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            min-width: 36px;
-            min-height: 32px;
-            margin-left: 5px;
-            padding: 3px 10px;
+            gap: 7px;
+            min-height: 41px;
+            padding: 9px 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            background: #e2e8f0;
+            color: #64748b;
+            font-size: 13px;
+            font-weight: 500;
+            opacity: .55;
+            cursor: pointer;
+            transition: .2s ease;
+        }
+        .sound-btn:not(.active):hover { opacity: .8; }
+        #enable-sound.active {
+            border-color: #15803d;
+            background: #15803d;
+            color: #fff;
+            opacity: 1;
+        }
+        #disable-sound.active {
+            border-color: #dc2626;
+            background: #dc2626;
+            color: #fff;
+            opacity: 1;
+        }
+        .table-tools {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+            margin: 0 0 14px;
+            padding: 14px 16px;
+            border: 1px solid var(--border);
+            border-radius: 13px;
+            background: #fff;
+        }
+        .table-search {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: min(100%, 520px);
+            min-height: 44px;
+            padding: 0 12px;
+            border: 1px solid #cfd9e6;
             border-radius: 9px;
-            background: #eaf2ff;
-            color: var(--pwd-primary);
+            background: #fff;
+            color: var(--muted);
         }
-        .summary p {
-            margin: 7px 0 0;
-            color: var(--pwd-muted);
-            font-size: 14px;
-            line-height: 1.65;
+        .table-search:focus-within {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(23, 105, 224, .10);
         }
-        #updated-time { color: #334155; font-weight: 700; }
-
+        .table-search input {
+            width: 100%;
+            min-width: 0;
+            border: 0;
+            outline: 0;
+            background: transparent;
+            color: #24364b;
+            font-size: 13px;
+        }
+        .table-search input::placeholder { color: #94a3b8; }
+        .clear-search {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            flex: 0 0 28px;
+            border: 0;
+            border-radius: 6px;
+            background: #f1f5f9;
+            color: #64748b;
+            cursor: pointer;
+        }
+        .clear-search:hover { background: #e2e8f0; color: #1e293b; }
+        .table-tools-info {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            flex-wrap: wrap;
+            gap: 12px;
+            color: var(--muted);
+            font-size: 12px;
+            text-align: right;
+        }
+        .sort-help { color: #8492a6; }
+        .clear-sorting-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            min-height: 42px;
+            padding: 9px 15px;
+            border: 1px solid #cbd5e1;
+            border-radius: 9px;
+            background: #f8fafc;
+            color: #334155;
+            font-size: 13px;
+            font-weight: 500;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: .2s ease;
+        }
+        .clear-sorting-btn:hover {
+            border-color: var(--primary);
+            background: #edf4ff;
+            color: var(--primary-dark);
+        }
         .table-wrap {
             width: 100%;
             max-width: 100%;
-            margin: 0 !important;
-            padding: 0 !important;
             overflow-x: auto;
-            border: 1px solid #e3eaf3;
-            border-radius: 18px;
+            border: 1px solid var(--border);
+            border-radius: 16px;
             background: #fff;
-            box-shadow: 0 8px 28px rgba(22, 42, 72, .055);
             -webkit-overflow-scrolling: touch;
         }
         .table-wrap table {
@@ -849,90 +250,122 @@ table tbody tr {
             border-collapse: separate;
             border-spacing: 0;
             color: #24364b;
-            font-size: 13px !important;
+            font-size: 13px;
         }
         .table-wrap thead th {
             position: sticky;
             top: 0;
             z-index: 1;
-            padding: 16px 14px !important;
+            padding: 15px 13px;
             border: 0;
             border-bottom: 1px solid #dfe7f1;
             background: #edf3fb;
             color: #334b68;
             text-align: left;
             text-transform: uppercase;
-            letter-spacing: .45px;
-            font-size: 11px !important;
-            font-weight: 800;
-            line-height: 1.45;
+            letter-spacing: .35px;
+            font-size: 11px;
+            font-weight: 600;
             white-space: nowrap;
         }
-        .table-wrap thead th:first-child { padding-left: 20px !important; }
         .table-wrap tbody td {
-            padding: 15px 14px !important;
+            padding: 14px 13px;
             border: 0;
             border-bottom: 1px solid #edf1f6;
             background: #fff;
             color: #334155;
-            font-size: 13px !important;
+            font-size: 13px;
             line-height: 1.5;
             vertical-align: middle;
             white-space: nowrap;
         }
         .table-wrap tbody tr:last-child td { border-bottom: 0; }
-        /* Keep all table rows background-free; only Pending rows are highlighted. */
-        .table-wrap tbody tr:hover td { background: transparent; }
+        .table-wrap tbody td:first-child { padding-left: 18px; color: #64748b; }
+        .urgent-label {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 72px;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        .urgent-yes { background: #fff0f0; color: #b42332; }
+        .urgent-no { background: #eef2f6; color: #64748b; }
+        /* Active timers are pending. The final ten minutes use a soft red alert. */
         .table-wrap tbody tr.pending-highlight td {
-            background: #fff3cd !important;
-            color: #664d03 !important;
+            background: #fff8e8;
         }
-        .table-wrap tbody tr.pending-highlight:hover td {
-            background: #ffe8a1 !important;
+        @keyframes tenMinuteAlertBlink {
+            0%, 100% {
+                background-color: #fff1f2;
+                box-shadow: inset 4px 0 0 #f87171;
+            }
+            50% {
+                background-color: #ffe4e6;
+                box-shadow: inset 4px 0 0 #ef4444;
+            }
         }
-        .table-wrap tbody td:first-child { padding-left: 20px !important; color: #64748b; font-weight: 700; }
-
-        .edit-btn,
-        .table-wrap a.edit-btn {
+        .table-wrap tbody tr.near-deadline td {
+            background: #fff1f2;
+            color: #991b1b;
+            animation: tenMinuteAlertBlink 1.2s ease-in-out infinite;
+        }
+        .table-wrap tbody td.expected-end-time:hover,
+        .table-wrap tbody td.time-ended:hover {
+            color: #000 !important;
+        }
+        .balance-cell {
+            min-width: 155px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        .balance-cell.on-time { color: var(--success); }
+        .balance-cell.time-over { color: #c62828; }
+        .balance-cell.near-deadline { color: #991b1b; }
+        .edit-btn {
             display: inline-flex;
             align-items: center;
             justify-content: center;
             min-height: 35px;
-            padding: 8px 14px !important;
+            padding: 8px 13px;
             border: 1px solid #cfe0ff;
-            border-radius: 9px;
+            border-radius: 8px;
             background: #edf4ff;
             color: #1557b0;
             text-decoration: none;
-            font-size: 12px !important;
-            font-weight: 800;
+            font-size: 12px;
+            font-weight: 400;
+            white-space: nowrap;
             transition: .2s ease;
         }
-        .edit-btn:hover,
-        .table-wrap a.edit-btn:hover {
-            border-color: var(--pwd-primary);
-            background: var(--pwd-primary);
+        .edit-btn:hover {
+            border-color: var(--primary);
+            background: var(--primary);
             color: #fff;
         }
-
         .stop-timer-btn {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            min-height: 35px;
-            padding: 8px 12px !important;
+            min-height: 40px;
+            padding: 9px 13px;
             border: 1px solid #f3c9cd;
             border-radius: 9px;
             background: #fff0f1;
-            color: #b42332;
-            font-size: 12px !important;
-            font-weight: 800;
-            line-height: 1.3;
+            color: var(--danger);
+            font-size: 12px;
+            font-weight: 500;
             white-space: nowrap;
             cursor: pointer;
             transition: .2s ease;
         }
-        .stop-timer-btn:hover:not(:disabled) { background: #dc3545; color: #fff; }
+        .stop-timer-btn:hover:not(:disabled) {
+            border-color: var(--primary);
+            background: #dc3545;
+            color: #fff;
+        }
         .stop-timer-btn:disabled {
             border-color: #dbe3ec;
             background: #eef2f6;
@@ -940,644 +373,435 @@ table tbody tr {
             cursor: not-allowed;
         }
         .table-wrap form { margin: 0; padding: 0; }
-
-        .balance-cell { min-width: 155px; font-weight: 800; white-space: nowrap; }
-        .balance-cell.on-time {
-            display: table-cell;
-            color: var(--pwd-success);
-            font-weight: 800;
-        }
-        .balance-cell.time-over { color: #c62828; font-weight: 800; }
-        .balance-cell.near-deadline { color: var(--pwd-warning); font-weight: 800; }
-        /* No background colors for non-pending rows. */
-        .table-wrap tr.near-deadline td { background: transparent; }
-        .table-wrap tr.near-deadline:hover td { background: transparent; }
-        .table-wrap tr.bg-info td {
-            background: transparent !important;
-            color: inherit !important;
-        }
         .empty {
             padding: 38px 20px !important;
             color: #64748b !important;
             text-align: center;
-            font-size: 14px !important;
         }
-
-        @keyframes rowBlink {
-            0%, 100% { box-shadow: inset 4px 0 0 #f59e0b; }
-            50% { box-shadow: inset 4px 0 0 #fcd34d; }
+        .table-wrap tbody tr.search-hidden { display: none !important; }
+        .table-wrap tbody tr.no-search-results td {
+            padding: 28px 16px;
+            background: #fff;
+            color: #64748b;
+            text-align: center;
         }
-        .table-wrap tr.near-deadline td { animation: rowBlink 1.4s ease-in-out infinite; }
-        @media (prefers-reduced-motion: reduce) {
-            .table-wrap tr.near-deadline td { animation: none; }
-            *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }
+        .table-wrap thead th.sortable {
+            cursor: pointer;
+            user-select: none;
+            transition: background .18s ease, color .18s ease;
         }
-
-        @media (max-width: 768px) {
-            .container.mt-5 { padding: 22px 12px 30px !important; }
-            .container.mt-5 > h2 { margin-bottom: 16px; font-size: 25px; }
-            #enable-sound { margin-bottom: 10px; }
-            #sound-status { display: inline-block; margin-bottom: 12px; }
-            .summary { padding: 18px !important; border-radius: 14px !important; }
-            .summary h3 { font-size: 18px; }
-            .summary p { font-size: 13px; }
-            .table-wrap { border-radius: 13px; }
-            .table-wrap table { min-width: 1120px; }
-            .table-wrap thead th { padding: 13px 11px !important; font-size: 10px !important; }
-            .table-wrap tbody td { padding: 12px 11px !important; font-size: 12px !important; }
-            .table-wrap tbody td:first-child { padding-left: 14px !important; }
+        .table-wrap thead th.sortable:hover {
+            background: #dce9fa;
+            color: #174ea6;
         }
-    </style>
-
-</head>
-
-<body>
-    {% include "navbar.html" %}
-
-<div class="container mt-5">
-
-    <h2>Patient Waiting Dashboard <span style="display:inline-block;font-size:13px;font-weight:700;color:#1769e0;background:#eaf2ff;border-radius:20px;padding:7px 12px;vertical-align:middle;letter-spacing:0;">Today: {{ today|date:"d M Y" }}</span></h2>
-
-
-<style>
-    .summary-header {
-        display: grid;
-        grid-template-columns: minmax(0, 1fr) auto;
-        align-items: center;
-        gap: 24px;
-        padding-bottom: 20px;
-        border-bottom: 1px solid #edf0f4;
-    }
-
-    .summary-title {
-        display: flex;
-        align-items: center;
-        gap: 14px;
-        min-width: 0;
-    }
-
-    .summary-right {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-end;
-        justify-content: center;
-        gap: 8px;
-    }
-
-    .sound-btn {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 9px;
-        min-height: 44px;
-        padding: 11px 18px;
-        background: #ffffff;
-        color: #1d4ed8;
-        border: 1px solid #2563eb;
-        border-radius: 10px;
-        font-size: 14px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.2s ease;
-    }
-
-    .sound-btn:hover {
-        background: #2563eb;
-        color: #ffffff;
-        box-shadow: 0 4px 10px rgba(37, 99, 235, 0.15);
-    }
-
-    #sound-status {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        color: #64748b;
-        font-size: 12px;
-        text-align: right;
-    }
-
-    @media (max-width: 576px) {
-        .summary-header {
-            grid-template-columns: 1fr;
-            gap: 18px;
+        .table-wrap thead th.sortable:focus-visible {
+            outline: 2px solid var(--primary);
+            outline-offset: -3px;
         }
-
-        .summary-right {
-            align-items: stretch;
-            width: 100%;
+        .sort-indicator {
+            display: inline-block;
+            margin-left: 5px;
+            color: #8b9bb0;
+            font-size: 13px;
+            font-weight: 400;
         }
-
-        .sound-btn {
-            width: 100%;
+        .table-wrap thead th.sortable[aria-sort="ascending"] .sort-indicator,
+        .table-wrap thead th.sortable[aria-sort="descending"] .sort-indicator {
+            color: var(--primary);
         }
-
-        #sound-status {
-            justify-content: flex-end;
-            text-align: right;
+        /* Premium confirmation wizard for marking a bill as received */
+        .received-wizard {
+            width: min(440px, calc(100% - 28px));
+            max-width: 440px;
+            padding: 0;
+            border: 1px solid #e2e8f0;
+            border-radius: 18px;
+            background: #fff;
+            color: var(--ink);
+            box-shadow: 0 24px 70px rgba(15, 23, 42, .24);
         }
-    }
-</style>
-
-
-<style>
-    .summary-header {
-        display: grid;
-        grid-template-columns: minmax(0, 1fr) auto;
-        align-items: center;
-        gap: 24px;
-        padding: 22px;
-        background: #ffffff;
-        border: 1px solid #e5e7eb;
-        border-radius: 14px;
-        box-shadow: 0 3px 12px rgba(15, 23, 42, 0.04);
-    }
-
-    .summary-title {
-        display: flex;
-        align-items: flex-start;
-        gap: 14px;
-        min-width: 0;
-    }
-
-    .summary-icon {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 48px;
-        height: 48px;
-        flex-shrink: 0;
-        background: #eff6ff;
-        color: #2563eb;
-        border-radius: 12px;
-        font-size: 22px;
-    }
-
-    .summary-heading {
-        margin: 0;
-        color: #111827;
-        font-size: 20px;
-        font-weight: 700;
-    }
-
-    .summary-subtitle {
-        margin: 6px 0 0;
-        color: #64748b;
-        font-size: 13px;
-    }
-
-    .patient-count-badge {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        min-width: 32px;
-        height: 28px;
-        padding: 0 9px;
-        margin-left: 6px;
-        background: #eff6ff;
-        color: #1d4ed8;
-        border-radius: 7px;
-        font-size: 14px;
-        font-weight: 700;
-    }
-
-    /* Alert Control Box */
-
-    .summary-right {
-        display: flex;
-        flex-direction: column;
-        align-items: stretch;
-        gap: 12px;
-        min-width: 260px;
-        padding: 16px;
-        background: #f8fafc;
-        border: 1px solid #e2e8f0;
-        border-radius: 12px;
-    }
-
-    .sound-control-heading {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        margin: 0;
-        color: #1e293b;
-        font-size: 13px;
-        font-weight: 700;
-    }
-
-    .sound-buttons {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 9px;
-    }
-
-    .sound-btn {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 7px;
-        min-height: 40px;
-        padding: 9px 12px;
-        border: 1px solid #dbe3ec;
-        border-radius: 8px;
-        background: #f1f5f9;
-        color: #64748b;
-        font-size: 13px;
-        font-weight: 700;
-        opacity: .45;
-        cursor: pointer;
-        transition: background .2s ease, color .2s ease, opacity .2s ease,
-                    border-color .2s ease, box-shadow .2s ease, transform .2s ease;
-    }
-
-    .sound-btn:not(.active):hover {
-        opacity: .75;
-        transform: translateY(-1px);
-    }
-
-    .sound-btn:focus-visible {
-        outline: 3px solid #bfdbfe;
-        outline-offset: 2px;
-    }
-
-    /* Inactive buttons use muted colors and reduced opacity. */
-    #enable-sound:not(.active) {
-        background: #e2e8f0 !important;
-        color: #64748b !important;
-        border-color: #cbd5e1 !important;
-        box-shadow: none !important;
-        opacity: .45;
-    }
-
-    #disable-sound:not(.active) {
-        background: #f1f5f9 !important;
-        color: #64748b !important;
-        border-color: #cbd5e1 !important;
-        box-shadow: none !important;
-        opacity: .45;
-    }
-
-    /* Active button is vivid; inactive button remains faded. */
-    #enable-sound.active {
-        background: #15803d;
-        color: #ffffff;
-        border-color: #15803d;
-        opacity: 1;
-        box-shadow: 0 4px 12px rgba(21, 128, 61, .2);
-    }
-
-    #enable-sound.active:hover {
-        background: #166534;
-    }
-
-    #disable-sound.active {
-        background: #dc2626;
-        color: #ffffff;
-        border-color: #dc2626;
-        opacity: 1;
-        box-shadow: 0 4px 12px rgba(220, 38, 38, .18);
-    }
-
-    #disable-sound.active:hover {
-        background: #b91c1c;
-    }
-
-    #sound-status {
-        display: flex;
-        align-items: flex-start;
-        gap: 7px;
-        margin: 0;
-        color: #64748b;
-        font-size: 12px;
-        line-height: 1.5;
-    }
-
-    #sound-status .bi {
-        margin-top: 1px;
-        flex-shrink: 0;
-    }
-
-    @media (max-width: 768px) {
-        .summary-header {
-            grid-template-columns: 1fr;
-            gap: 20px;
-            padding: 18px;
+        .received-wizard::backdrop {
+            background: rgba(15, 23, 42, .58);
+            backdrop-filter: blur(3px);
         }
-
-        .summary-right {
-            min-width: 0;
-            width: 100%;
-            box-sizing: border-box;
+        .wizard-content { padding: 28px; text-align: center; }
+        .wizard-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 66px;
+            height: 66px;
+            margin: 0 auto 18px;
+            border-radius: 50%;
+            background: #eaf2ff;
+            color: var(--primary);
+            font-size: 29px;
         }
-    }
-
-    @media (max-width: 400px) {
-        .summary-title {
+        .wizard-title {
+            margin: 0 0 9px;
+            color: #172b4d;
+            font-size: 21px;
+            font-weight: 650;
+        }
+        .wizard-message {
+            margin: 0 auto 22px;
+            max-width: 340px;
+            color: #64748b;
+            font-size: 14px;
+            line-height: 1.65;
+        }
+        .wizard-bill-reference {
+            display: block;
+            margin-top: 8px;
+            color: #334155;
+            font-weight: 600;
+        }
+        .wizard-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
             gap: 10px;
         }
-
-        .summary-heading {
-            font-size: 17px;
+        .wizard-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            min-height: 44px;
+            padding: 10px 14px;
+            border-radius: 9px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: .18s ease;
         }
-
-        .summary-icon {
-            width: 40px;
-            height: 40px;
-            font-size: 19px;
+        .wizard-cancel {
+            border: 1px solid #cbd5e1;
+            background: #fff;
+            color: #475569;
         }
-
-        .sound-buttons {
-            grid-template-columns: 1fr;
+        .wizard-cancel:hover { background: #f1f5f9; }
+        .wizard-confirm {
+            border: 1px solid #1769e0;
+            background: #1769e0;
+            color: #fff;
         }
-    }
-</style>
-<br>
-<div class="summary-header">
+        .wizard-confirm:hover {
+            border-color: #124bb0;
+            background: #124bb0;
+        }
+        .wizard-confirm:disabled {
+            opacity: .65;
+            cursor: wait;
+        }
+        @media (max-width: 420px) {
+            .wizard-content { padding: 24px 18px; }
+            .wizard-actions { grid-template-columns: 1fr; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .table-wrap tbody tr.near-deadline td { animation: none; }
+            *, *::before, *::after { transition-duration: .01ms !important; }
+        }
+        @media (max-width: 768px) {
+            .dashboard-container { padding: 22px 12px 30px; }
+            .page-heading { font-size: 25px; }
+            .summary-header {
+                grid-template-columns: 1fr;
+                gap: 18px;
+                padding: 18px;
+            }
+            .sound-control { width: 100%; }
+            .summary-header .table-search { width: 100%; }
+            .table-tools {
+                align-items: stretch;
+                flex-direction: column;
+                padding: 12px;
+            }
+            .table-search { width: 100%; }
+            .table-tools-info {
+                justify-content: space-between;
+                text-align: left;
+            }
+            .clear-sorting-btn {
+                width: 100%;
+            }
+            .sort-help { display: none; }
+            .table-wrap { border-radius: 13px; }
+            .table-wrap table { min-width: 1120px; }
+            .table-wrap thead th { padding: 13px 11px; font-size: 10px; }
+            .table-wrap tbody td { padding: 12px 11px; font-size: 12px; }
+        }
+        @media (max-width: 400px) {
+            .summary-title { gap: 10px; }
+            .summary-heading { font-size: 17px; }
+            .summary-icon { width: 40px; height: 40px; flex-basis: 40px; font-size: 19px; }
+            .sound-buttons { grid-template-columns: 1fr 1fr; }
+        }
+    </style>
+</head>
+<body>
+    {% include "navbar.html" %}
+    <main class="dashboard-container">
+        <section class="summary-header" aria-label="Patient waiting summary and sound settings">
+            <div class="summary-title">
 
-    <!-- Patient summary -->
-    <div class="summary-title">
-        <div class="summary-icon" aria-hidden="true">
-            <i class="bi bi-clipboard2-pulse"></i>
-        </div>
-        <div>
-            <h3 class="summary-heading">Patient Waiting Summary</h3>
-            <p class="summary-subtitle" id="sound-status" role="status" aria-live="polite">
-                <i class="bi bi-info-circle" aria-hidden="true"></i>
-                Alert sound is disabled. Select Enable to allow sound alerts.
-            </p>
-        </div>
-    </div>
-
-
-        <div class="sound-buttons" role="group" aria-label="Sound alert controls">
-            <button
-                type="button"
-                id="enable-sound"
-                class="sound-btn"
-                aria-pressed="false"
-            >
-                <i class="bi bi-volume-up-fill" aria-hidden="true"></i>
-                Enable
-            </button>
-
-            <button
-                type="button"
-                id="disable-sound"
-                class="sound-btn active"
-                aria-pressed="true"
-            >
-                <i class="bi bi-volume-mute-fill" aria-hidden="true"></i>
-                Disable
-            </button>
-        </div>
-
-
-
-</div>
-
-    <div class="table-wrap">
-        <table>
-            <thead>
-                <tr>
-                    <th>Sl No</th>
-                    <th>Name</th>
-                    <th>Bill Number</th>
-                    <th>Purpose</th>
-                    <th>Time Balance</th>
-                    <th>Expected End Time</th>
-                    <th>Time Ended</th>
-                    <th>Total Waiting Time</th>
-                    <th>Edit</th>
-                    <th>Stop Timer</th>
-                </tr>
-            </thead>
-
-            <tbody>
-                {% for bill in bills %}
-              <tr data-bill-id="{{ bill.id }}">
-    <td>{{ forloop.counter }}</td>
-    <td>{{ bill.patient_name }}</td>
-    <td>{{ bill.lab_number }}</td>
-    <td>{{ bill.purpose }}</td>
-
-  <td
-        class="balance-cell"
-        data-bill-id="{{ bill.id }}"
-        data-created="{{ bill.created_at|date:'c' }}"
-        data-waiting="{{ bill.waiting_time|default_if_none:'' }}"
-        data-stopped="{{ bill.timer_stopped|yesno:'true,false' }}"
-        data-stopped-at="{{ bill.timer_stopped_at|date:'c'|default:'' }}"
-    >
-        Calculating...
-    </td>
-
-    <!-- Expected End Time -->
-    <td class="expected-end-time">
-        Calculating...
-    </td>
-
-    <!-- Time Ended -->
-    <td class="time-ended">
-        —
-    </td>
-
-    <!-- Total Waiting Time -->
-    <td>
-        {{ bill.waiting_time }} minutes
-    </td>
-
-    <!-- Edit -->
-    <td>
-        <a href="{% url 'review_bill' bill.id %}" class="edit-btn">
-            Edit
-        </a>
-    </td>
-
-    <!-- Stop Timer -->
-    <td>
-        {% if bill.timer_stopped %}
-            <button type="button" class="stop-timer-btn" disabled>
-                Timer Stopped
-            </button>
-        {% else %}
-            <form method="POST" action="{% url 'stop-timer' bill.id %}">
-                {% csrf_token %}
-                <button
-                    type="submit"
-                    class="stop-timer-btn"
-                    onclick="return confirm('Stop this timer?');"
+                <div>
+                    <h2 class="summary-heading">Patient Waiting Summary</h2>
+                    <p class="summary-subtitle" id="sound-status" role="status" aria-live="polite">
+                        <i class="bi bi-info-circle" aria-hidden="true"></i>
+                        Alert sound is disabled by default. Click Enable to turn on sound alerts.
+                    </p>
+                </div>
+            </div>
+            <div class="table-search">
+                <i class="bi bi-search" aria-hidden="true"></i>
+                <input
+                    type="search"
+                    id="patientTableSearch"
+                    placeholder="Search patient, purpose, bill number or status..."
+                    autocomplete="off"
+                    aria-label="Search patients in the table"
                 >
-                    Stop Timer
+
+
+            </div>
+
+            <div class="sound-buttons" role="group" aria-label="Sound alert controls">
+                <button type="button" id="enable-sound" class="sound-btn" aria-pressed="false">
+                    <i class="bi bi-volume-up-fill" aria-hidden="true"></i> Enable
                 </button>
-            </form>
-        {% endif %}
-    </td>
-</tr>
 
-                {% empty %}
-                <tr>
-                    <td colspan="10" class="empty">
-                        No bills found for today.
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
+                <button type="button" id="disable-sound" class="sound-btn active" aria-pressed="true">
+                    <i class="bi bi-volume-mute-fill" aria-hidden="true"></i> Disable
+                </button>
 
-</div>
+            </div>
+        </section>
+        <div class="table-tools">
+            <div class="table-tools-info">
+                <span id="tableResultCount" aria-live="polite">Showing all patients</span>
+                <span class="sort-help"><i class="bi bi-arrow-down-up"></i> Select a column heading to sort</span>
+            </div>
+            <button type="button" id="clearSorting" class="clear-sorting-btn">
+                <i class="bi bi-arrow-counterclockwise" aria-hidden="true"></i>
+                Clear All Filters
+            </button>
+        </div>
+        <div class="table-wrap">
+            <table id="patientWaitingTable">
+                <thead>
+                    <tr>
+                        <th class="sortable" data-sort-column="0" aria-sort="none" tabindex="0" role="button">
+                            Sl No <span class="sort-indicator">↕</span>
+                        </th>
+                        <th class="sortable" data-sort-column="1" aria-sort="none" tabindex="0" role="button">
+                            Name <span class="sort-indicator">↕</span>
+                        </th>
+                        <th class="sortable" data-sort-column="2" aria-sort="none" tabindex="0" role="button">
+                            Time Balance <span class="sort-indicator">↕</span>
+                        </th>
+                        <th class="sortable" data-sort-column="3" aria-sort="none" tabindex="0" role="button">
+                            Purpose <span class="sort-indicator">↕</span>
+                        </th>
+                        <th class="sortable" data-sort-column="4" aria-sort="none" tabindex="0" role="button">
+                            Bill Number <span class="sort-indicator">↕</span>
+                        </th>
+                        <th class="sortable" data-sort-column="5" aria-sort="none" tabindex="0" role="button">
+                            Case <span class="sort-indicator">↕</span>
+                        </th>
+                        <th class="sortable" data-sort-column="6" aria-sort="none" tabindex="0" role="button">
+                            Expected End Time <span class="sort-indicator">↕</span>
+                        </th>
+                        <th class="sortable" data-sort-column="7" aria-sort="none" tabindex="0" role="button">
+                            Time Ended <span class="sort-indicator">↕</span>
+                        </th>
+                        <th class="sortable" data-sort-column="8" aria-sort="none" tabindex="0" role="button">
+                            Total Waiting Time <span class="sort-indicator">↕</span>
+                        </th>
+                        <th>Patient Connect</th>
+                        <th colspan="2">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for bill in bills %}
+                    <tr data-bill-id="{{ bill.id }}">
+                        <td class="serial-number">{{ forloop.counter }}</td>
+                        <td>{{ bill.patient_name }}</td>
 
-
-<script>
+                        <td
+                            class="balance-cell"
+                            data-bill-id="{{ bill.id }}"
+                            data-created="{{ bill.created_at|date:'c' }}"
+                            data-waiting="{{ bill.waiting_time|default_if_none:'' }}"
+                            data-stopped="{{ bill.timer_stopped|yesno:'true,false' }}"
+                            data-stopped-at="{{ bill.timer_stopped_at|date:'c'|default:'' }}"
+                        >Calculating...</td>
+                        <td>{{ bill.purpose }}</td>
+                        <td>{{ bill.lab_number }}</td>
+                        <td class="urgent-cell" data-sort-value="{{ bill.urgent|yesno:'1,0' }}">
+                            {% if bill.urgent %}
+                                <span class="urgent-label urgent-yes">Urgent</span>
+                            {% else %}
+                                <span class="urgent-label urgent-no">Normal</span>
+                            {% endif %}
+                        </td>
+                        <td class="expected-end-time">Calculating...</td>
+                        <td class="time-ended">—</td>
+                        <td>{{ bill.waiting_time }} minutes</td>
+                        <td>
+                            <a href="{% url 'bill-confirmation' bill_id=bill.id %}" class="edit-btn">
+                                <i class="bi bi-receipt"></i>&nbsp;  Preview
+                            </a>
+                        </td>
+                        <td>
+                            <a href="{% url 'review_bill' bill.id %}" class="edit-btn">
+                                <i class="bi bi-pencil-square"></i>&nbsp;  Edit
+                            </a>
+                        </td>
+                        <td>
+                            {% if bill.timer_stopped %}
+                                <button type="button" class="stop-timer-btn" disabled>
+                                    <i class="bi bi-check-circle-fill"></i>  Received
+                                </button>
+                            {% else %}
+                                <form method="POST" action="{% url 'stop-timer' bill.id %}">
+                                    {% csrf_token %}
+                                    <button
+                                        type="submit"
+                                        class="stop-timer-btn"
+                                        data-received-confirm
+                                        data-patient-name="{{ bill.patient_name|escape }}"
+                                        data-bill-number="{{ bill.lab_number|escape }}" style="background-color: var(--primary);color:white;"
+                                    >
+                                        <i class="bi bi-check-circle"></i>&nbsp;  Mark as Received
+                                    </button>
+                                </form>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr class="empty-row">
+                        <td colspan="12" class="empty">No bills found for today.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </main>
+    <!-- Confirmation wizard: replaces the browser-native confirm() popup -->
+    <dialog class="received-wizard" id="receivedConfirmDialog" aria-labelledby="receivedWizardTitle" aria-describedby="receivedWizardMessage">
+        <div class="wizard-content">
+            <div class="wizard-icon" aria-hidden="true">
+                <i class="bi bi-clipboard-check"></i>
+            </div>
+            <h2 class="wizard-title" id="receivedWizardTitle">Confirm Result Receipt</h2>
+            <p class="wizard-message" id="receivedWizardMessage">
+                Are you sure you want to mark this bill as received?
+                <span class="wizard-bill-reference" id="receivedWizardReference"></span>
+            </p>
+            <div class="wizard-actions">
+                <button type="button" class="wizard-btn wizard-cancel" id="cancelReceivedConfirm">
+                    <i class="bi bi-x-circle" aria-hidden="true"></i> Cancel
+                </button>
+                <button type="button" class="wizard-btn wizard-confirm" id="confirmReceivedSubmit">
+                    <i class="bi bi-check-circle" aria-hidden="true"></i> Confirm
+                </button>
+            </div>
+        </div>
+    </dialog>
+    <script>
 document.addEventListener("DOMContentLoaded", function () {
     "use strict";
 
-    const cells = document.querySelectorAll(".balance-cell");
-    const FIVE_MINUTES = 5 * 60 * 1000;
-    const alertedBills = new Set();
-    const activeOscillators = new Set();
-
+    const table = document.getElementById("patientWaitingTable");
+    const tbody = table ? table.querySelector("tbody") : null;
+    const searchInput = document.getElementById("patientTableSearch");
+    const resultCount = document.getElementById("tableResultCount");
+    const clearSortingBtn = document.getElementById("clearSorting");
     const enableSoundBtn = document.getElementById("enable-sound");
     const disableSoundBtn = document.getElementById("disable-sound");
     const soundStatus = document.getElementById("sound-status");
+    const TEN_MINUTES = 10 * 60 * 1000;
+    const alertedBills = new Set();
 
-    let audioContext = null;
     let soundEnabled = false;
+    let audioUnlocked = false;
+    let audioElement = null;
+    let activeSortColumn = null;
+    let sortDirection = "ascending";
+    let manualSortApplied = false;
 
-    function setSoundStatus(enabled, message) {
-        if (enableSoundBtn) {
-            enableSoundBtn.classList.toggle("active", enabled);
-            enableSoundBtn.setAttribute("aria-pressed", String(enabled));
-        }
+    // Existing confirmation wizard for the Received action.
+    const receivedDialog = document.getElementById("receivedConfirmDialog");
+    const cancelReceivedBtn = document.getElementById("cancelReceivedConfirm");
+    const confirmReceivedBtn = document.getElementById("confirmReceivedSubmit");
+    const receivedReference = document.getElementById("receivedWizardReference");
+    let pendingReceivedForm = null;
 
-        if (disableSoundBtn) {
-            disableSoundBtn.classList.toggle("active", !enabled);
-            disableSoundBtn.setAttribute("aria-pressed", String(!enabled));
-        }
+    document.querySelectorAll("form").forEach(function (form) {
+        const submitButton = form.querySelector("[data-received-confirm]");
+        if (!submitButton) return;
 
-        if (soundStatus) {
-            soundStatus.replaceChildren();
+        form.addEventListener("submit", function (event) {
+            event.preventDefault();
+            pendingReceivedForm = form;
 
-            const icon = document.createElement("i");
-            icon.className = enabled
-                ? "bi bi-check-circle"
-                : "bi bi-info-circle";
-            icon.setAttribute("aria-hidden", "true");
-
-            soundStatus.appendChild(icon);
-            soundStatus.appendChild(document.createTextNode(" " + message));
-        }
-    }
-
-    function stopAllAlertSounds() {
-        activeOscillators.forEach(function (oscillator) {
-            try {
-                oscillator.stop();
-            } catch (error) {
-                // The oscillator may already have stopped.
+            const patientName = submitButton.dataset.patientName || "Patient";
+            const billNumber = submitButton.dataset.billNumber || "";
+            if (receivedReference) {
+                receivedReference.textContent = billNumber
+                    ? patientName + " · Bill No: " + billNumber
+                    : patientName;
             }
-            try {
-                oscillator.disconnect();
-            } catch (error) {
-                // Ignore already-disconnected nodes.
+
+            if (receivedDialog && typeof receivedDialog.showModal === "function") {
+                receivedDialog.showModal();
+            } else if (window.confirm("Mark this patient as received?")) {
+                form.submit();
             }
         });
-        activeOscillators.clear();
+    });
+
+    if (cancelReceivedBtn && receivedDialog) {
+        cancelReceivedBtn.addEventListener("click", function () {
+            pendingReceivedForm = null;
+            receivedDialog.close();
+        });
     }
 
-    if (enableSoundBtn) {
-        enableSoundBtn.addEventListener("click", async function () {
-            const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    if (confirmReceivedBtn && receivedDialog) {
+        confirmReceivedBtn.addEventListener("click", function () {
+            if (!pendingReceivedForm) return;
+            confirmReceivedBtn.disabled = true;
+            confirmReceivedBtn.innerHTML =
+                '<i class="bi bi-hourglass-split" aria-hidden="true"></i> Processing...';
+            pendingReceivedForm.submit();
+        });
 
-            if (!AudioContextClass) {
-                setSoundStatus(false, "Audio alerts are not supported by this browser.");
-                return;
-            }
+        receivedDialog.addEventListener("close", function () {
+            confirmReceivedBtn.disabled = false;
+            confirmReceivedBtn.innerHTML =
+                '<i class="bi bi-check-circle" aria-hidden="true"></i> Confirm';
+        });
 
-            try {
-                if (!audioContext || audioContext.state === "closed") {
-                    audioContext = new AudioContextClass();
-                }
-
-                if (audioContext.state === "suspended") {
-                    await audioContext.resume();
-                }
-
-                soundEnabled = audioContext.state === "running";
-                setSoundStatus(
-                    soundEnabled,
-                    soundEnabled ? "Alert sound is enabled." : "Sound could not be enabled. Please try again."
-                );
-
-                if (soundEnabled) {
-                    playAlert();
-                }
-            } catch (error) {
-                console.error("Unable to enable sound:", error);
-                soundEnabled = false;
-                setSoundStatus(false, "Could not enable sound. Please try again.");
+        receivedDialog.addEventListener("click", function (event) {
+            if (event.target === receivedDialog) {
+                pendingReceivedForm = null;
+                receivedDialog.close();
             }
         });
     }
 
-    if (disableSoundBtn) {
-        disableSoundBtn.addEventListener("click", async function () {
-            // Switch off first so no new alert can start during shutdown.
-            soundEnabled = false;
-            stopAllAlertSounds();
-
-            try {
-                if (audioContext && audioContext.state === "running") {
-                    await audioContext.suspend();
-                }
-            } catch (error) {
-                console.error("Unable to suspend audio:", error);
-            }
-
-            setSoundStatus(false, "Alert sound is disabled.");
-        });
+    function patientRows() {
+        return tbody
+            ? Array.from(tbody.querySelectorAll("tr[data-bill-id]"))
+            : [];
     }
 
-    function playAlert() {
-        if (!soundEnabled || !audioContext || audioContext.state !== "running") return;
-
-        let oscillator;
-        let gainNode;
-
-        try {
-            oscillator = audioContext.createOscillator();
-            gainNode = audioContext.createGain();
-
-            oscillator.type = "sine";
-            oscillator.frequency.setValueAtTime(880, audioContext.currentTime);
-            gainNode.gain.setValueAtTime(0.15, audioContext.currentTime);
-
-            oscillator.connect(gainNode);
-            gainNode.connect(audioContext.destination);
-            activeOscillators.add(oscillator);
-
-            oscillator.addEventListener("ended", function () {
-                activeOscillators.delete(oscillator);
-                try { oscillator.disconnect(); } catch (error) {}
-                try { gainNode.disconnect(); } catch (error) {}
-            }, { once: true });
-
-            oscillator.start();
-            oscillator.stop(audioContext.currentTime + 0.5);
-        } catch (error) {
-            console.error("Unable to play alert:", error);
-            if (oscillator) activeOscillators.delete(oscillator);
-        }
-    }
-
-    function formatDateTime(date) {
-        if (!date || Number.isNaN(date.getTime())) return "—";
-        return date.toLocaleString([], {
-            year: "numeric",
-            month: "short",
-            day: "2-digit",
+    function formatTime(date) {
+        return date.toLocaleTimeString([], {
             hour: "2-digit",
             minute: "2-digit",
-            second: "2-digit"
+            hour12: true
         });
     }
 
@@ -1587,114 +811,392 @@ document.addEventListener("DOMContentLoaded", function () {
         const minutes = Math.floor((totalSeconds % 3600) / 60);
         const seconds = totalSeconds % 60;
 
-        if (hours > 0) {
-            return hours + "h " + String(minutes).padStart(2, "0") + "m " +
-                String(seconds).padStart(2, "0") + "s";
-        }
-        return String(minutes).padStart(2, "0") + "m " +
-            String(seconds).padStart(2, "0") + "s";
+        if (hours > 0) return hours + "h " + minutes + "m " + seconds + "s";
+        if (minutes > 0) return minutes + "m " + seconds + "s";
+        return seconds + "s";
     }
 
-    function hasAlreadyAlerted(billId) {
-        const alertKey = "timer-alerted-" + billId;
-        try {
-            return sessionStorage.getItem(alertKey) === "true";
-        } catch (error) {
-            return alertedBills.has(String(billId));
+    function setSoundStatus(enabled, message) {
+        if (enableSoundBtn) {
+            enableSoundBtn.classList.toggle("active", enabled);
+            enableSoundBtn.setAttribute("aria-pressed", String(enabled));
+        }
+        if (disableSoundBtn) {
+            disableSoundBtn.classList.toggle("active", !enabled);
+            disableSoundBtn.setAttribute("aria-pressed", String(!enabled));
+        }
+        if (soundStatus) {
+            soundStatus.innerHTML =
+                '<i class="bi bi-info-circle" aria-hidden="true"></i> ' + message;
         }
     }
 
-    function markAsAlerted(billId) {
-        const normalizedId = String(billId);
-        alertedBills.add(normalizedId);
-        try {
-            sessionStorage.setItem("timer-alerted-" + normalizedId, "true");
-        } catch (error) {
-            // In-memory Set still prevents duplicate alerts for this page session.
+    function unlockAudio() {
+        if (!audioElement) {
+            audioElement = new Audio("{% static 'audio/beep.mp3' %}");
+            audioElement.preload = "auto";
+            audioElement.volume = 1;
         }
+
+        // A user click is required by browsers before audio can play.
+        const oldMuted = audioElement.muted;
+        audioElement.muted = true;
+        audioElement.currentTime = 0;
+
+        const playPromise = audioElement.play();
+        if (playPromise && typeof playPromise.then === "function") {
+            return playPromise.then(function () {
+                audioElement.pause();
+                audioElement.currentTime = 0;
+                audioElement.muted = oldMuted;
+                audioUnlocked = true;
+                return true;
+            }).catch(function () {
+                audioElement.muted = oldMuted;
+                audioUnlocked = false;
+                return false;
+            });
+        }
+
+        audioElement.pause();
+        audioElement.muted = oldMuted;
+        audioUnlocked = true;
+        return Promise.resolve(true);
+    }
+
+    function playAlert() {
+        if (!soundEnabled || !audioUnlocked || !audioElement) return false;
+        try {
+            audioElement.pause();
+            audioElement.currentTime = 0;
+            audioElement.muted = false;
+            const result = audioElement.play();
+            if (result && typeof result.catch === "function") {
+                result.catch(function () {
+                    setSoundStatus(true, "Sound is enabled, but the alert audio could not play. Check the audio file and browser volume.");
+                });
+            }
+            return true;
+        } catch (error) {
+            return false;
+        }
+    }
+
+    if (enableSoundBtn) {
+        enableSoundBtn.addEventListener("click", function () {
+            unlockAudio().then(function (unlocked) {
+                soundEnabled = unlocked;
+                setSoundStatus(
+                    soundEnabled,
+                    soundEnabled
+                        ? "Alert sound is enabled."
+                        : "Sound could not be enabled. Check the audio file at static/audio/patient_ready_aler.mp3."
+                );
+                if (soundEnabled) updateTimers();
+            });
+        });
+    }
+
+    if (disableSoundBtn) {
+        disableSoundBtn.addEventListener("click", function () {
+            soundEnabled = false;
+            if (audioElement) audioElement.pause();
+            setSoundStatus(false, "Alert sound is disabled.");
+        });
     }
 
     function updateTimers() {
         const now = new Date();
 
-        cells.forEach(function (cell) {
-            const row = cell.closest("tr");
-            if (!row) return;
-
+        patientRows().forEach(function (row) {
+            const cell = row.querySelector(".balance-cell");
             const expectedEndCell = row.querySelector(".expected-end-time");
             const timeEndedCell = row.querySelector(".time-ended");
-            const billId = cell.dataset.billId;
-            const createdValue = cell.dataset.created;
-            const waitingValue = cell.dataset.waiting;
-            const stoppedValue = cell.dataset.stopped;
-            const stoppedAtValue = cell.dataset.stoppedAt;
-            const createdAt = createdValue ? new Date(createdValue) : null;
-            const waitingMinutes = Number(waitingValue);
+            if (!cell) return;
 
-            row.classList.remove("near-deadline", "pending-highlight");
             cell.classList.remove("on-time", "time-over", "near-deadline");
+            row.classList.remove("pending-highlight", "near-deadline");
 
-            if (!createdAt || Number.isNaN(createdAt.getTime()) || waitingValue === "" ||
-                !Number.isFinite(waitingMinutes) || waitingMinutes < 0) {
-                cell.textContent = "Invalid timer data";
+            const createdAtRaw = cell.dataset.created;
+            const waitingRaw = cell.dataset.waiting;
+            const isStopped = cell.dataset.stopped === "true";
+            const stoppedAtRaw = cell.dataset.stoppedAt || "";
+
+            const createdAt = createdAtRaw ? new Date(createdAtRaw) : null;
+            const waitingMinutes = Number(waitingRaw);
+            const stoppedAt = stoppedAtRaw ? new Date(stoppedAtRaw) : null;
+            const billId = cell.dataset.billId || row.dataset.billId || "";
+
+            if (!createdAt || Number.isNaN(createdAt.getTime()) ||
+                waitingRaw === "" || !Number.isFinite(waitingMinutes) ||
+                waitingMinutes < 0) {
+                cell.textContent = "Time unavailable";
+                cell.classList.add("time-over");
+                row.dataset.remainingMs = "";
                 if (expectedEndCell) expectedEndCell.textContent = "—";
                 if (timeEndedCell) timeEndedCell.textContent = "—";
                 return;
             }
 
-            const expectedEnd = new Date(createdAt.getTime() + waitingMinutes * 60 * 1000);
-            const isStopped = stoppedValue === "true";
-            const stoppedAt = stoppedAtValue ? new Date(stoppedAtValue) : null;
+            const expectedEnd = new Date(
+                createdAt.getTime() + waitingMinutes * 60 * 1000
+            );
+            if (expectedEndCell) {
+                expectedEndCell.textContent = formatTime(expectedEnd);
+            }
 
-            if (expectedEndCell) expectedEndCell.textContent = formatDateTime(expectedEnd);
-
-            if (isStopped && stoppedAt && !Number.isNaN(stoppedAt.getTime())) {
-                if (stoppedAt.getTime() < expectedEnd.getTime()) {
-                    cell.textContent = "On Time";
-                    cell.classList.add("on-time");
+            if (isStopped) {
+                if (stoppedAt && !Number.isNaN(stoppedAt.getTime())) {
+                    if (stoppedAt.getTime() <= expectedEnd.getTime()) {
+                        cell.textContent = "Results On Time";
+                        cell.classList.add("on-time");
+                    } else {
+                        cell.textContent = "Staff Not Attended";
+                        cell.classList.add("time-over");
+                    }
+                    if (timeEndedCell) timeEndedCell.textContent = formatTime(stoppedAt);
                 } else {
-                    cell.textContent = "Not Attended";
-                    cell.classList.add("time-over");
+                    cell.textContent = "Received";
+                    cell.classList.add("on-time");
+                    if (timeEndedCell) timeEndedCell.textContent = "—";
                 }
-                if (timeEndedCell) timeEndedCell.textContent = formatDateTime(stoppedAt);
+                row.dataset.remainingMs = "";
                 return;
             }
 
             const remainingMs = expectedEnd.getTime() - now.getTime();
+            row.dataset.remainingMs = String(remainingMs);
 
             if (remainingMs <= 0) {
-                cell.textContent = "Not Attended";
+                cell.textContent = "Staff Not Attended";
                 cell.classList.add("time-over");
-                if (timeEndedCell) timeEndedCell.textContent = formatDateTime(expectedEnd);
+                if (timeEndedCell) timeEndedCell.textContent = "—";
                 return;
             }
 
-            if (timeEndedCell) timeEndedCell.textContent = "Pending";
             row.classList.add("pending-highlight");
+            if (timeEndedCell) timeEndedCell.textContent = "Pending";
 
-            if (remainingMs <= FIVE_MINUTES) {
-                cell.textContent = "Near Deadline — " + formatRemaining(remainingMs);
+            if (remainingMs <= TEN_MINUTES) {
+                cell.textContent = "Alert — " + formatRemaining(remainingMs);
                 cell.classList.add("near-deadline");
                 row.classList.add("near-deadline");
 
-                if (billId && !alertedBills.has(String(billId)) && !hasAlreadyAlerted(billId)) {
-                    markAsAlerted(billId);
-                    playAlert();
+                if (soundEnabled && audioUnlocked && billId && !alertedBills.has(billId)) {
+                    if (playAlert()) alertedBills.add(billId);
                 }
-                return;
+            } else {
+                cell.textContent = formatRemaining(remainingMs);
             }
+        });
+        if (!manualSortApplied) {
+        sortByRemainingTime();
+        }
 
-            cell.textContent = formatRemaining(remainingMs);
+    }
+
+    function updateSerialNumbers() {
+        patientRows().forEach(function (row, index) {
+            const cell = row.querySelector(".serial-number");
+            if (cell) cell.textContent = String(index + 1);
+        });
+    }
+    function sortByRemainingTime() {
+
+    if (!tbody) return;
+
+    const rows = patientRows();
+
+    rows.sort(function (a, b) {
+
+        const aRemaining = Number(a.dataset.remainingMs);
+        const bRemaining = Number(b.dataset.remainingMs);
+
+        const aValid = a.dataset.remainingMs !== "" &&
+                       Number.isFinite(aRemaining);
+
+        const bValid = b.dataset.remainingMs !== "" &&
+                       Number.isFinite(bRemaining);
+
+        const aActive = aValid && aRemaining > 0;
+        const bActive = bValid && bRemaining > 0;
+
+        // Active timers always appear first
+        if (aActive && !bActive) return -1;
+        if (!aActive && bActive) return 1;
+
+        // Sort active timers by lowest remaining time
+        if (aActive && bActive) {
+            return aRemaining - bRemaining;
+        }
+
+        // Expired timers appear before stopped timers
+        if (aValid && !bValid) return -1;
+        if (!aValid && bValid) return 1;
+
+        // Among expired timers, show the most overdue first
+        if (aValid && bValid) {
+            return aRemaining - bRemaining;
+        }
+
+        return 0;
+    });
+
+    rows.forEach(function (row) {
+        tbody.appendChild(row);
+    });
+
+    updateSerialNumbers();
+}
+
+    function updateResultCount(visible, total, hasSearch) {
+        if (!resultCount) return;
+        if (total === 0) resultCount.textContent = "No patients to display";
+        else if (hasSearch) resultCount.textContent =
+            "Showing " + visible + " of " + total + " patients";
+        else resultCount.textContent = "Showing all " + total + " patients";
+    }
+
+    function filterPatients() {
+        if (!tbody) return;
+        const query = searchInput ? searchInput.value.trim().toLocaleLowerCase() : "";
+        const rows = patientRows();
+        let visible = 0;
+
+        rows.forEach(function (row) {
+            const matches = !query ||
+                row.innerText.toLocaleLowerCase().includes(query);
+            row.classList.toggle("search-hidden", !matches);
+            if (matches) visible++;
+        });
+
+        let noResultsRow = tbody.querySelector(".no-search-results");
+        if (query && rows.length > 0 && visible === 0) {
+            if (!noResultsRow) {
+                noResultsRow = document.createElement("tr");
+                noResultsRow.className = "no-search-results";
+                const cell = document.createElement("td");
+                cell.colSpan = table.querySelectorAll("thead th").length;
+                cell.textContent = "No matching patients found.";
+                noResultsRow.appendChild(cell);
+                tbody.appendChild(noResultsRow);
+            }
+        } else if (noResultsRow) {
+            noResultsRow.remove();
+        }
+        updateResultCount(visible, rows.length, Boolean(query));
+    }
+
+    function parseClock(text) {
+        const match = text.match(/^(\d{1,2}):(\d{2})(?::(\d{2}))?\s*(AM|PM)$/i);
+        if (!match) return null;
+        let hours = Number(match[1]) % 12;
+        if (match[4].toUpperCase() === "PM") hours += 12;
+        return hours * 3600 + Number(match[2]) * 60 + Number(match[3] || 0);
+    }
+
+    function getSortValue(row, columnIndex) {
+        const cell = row.cells[columnIndex];
+        if (!cell) return "";
+        if (cell.dataset.sortValue !== undefined) {
+            const value = Number(cell.dataset.sortValue);
+            return Number.isFinite(value) ? value : 0;
+        }
+
+        const text = cell.textContent.replace(/\s+/g, " ").trim();
+        if (columnIndex === 0) return Number(text) || 0;
+        if (columnIndex === 2) {
+            const match = text.match(/(?:(\d+)\s*h\s*)?(?:(\d+)\s*m\s*)?(?:(\d+)\s*s)?/i);
+            if (match && match[0] && /\d/.test(match[0])) {
+                return Number(match[1] || 0) * 3600 +
+                    Number(match[2] || 0) * 60 + Number(match[3] || 0);
+            }
+            return Number.MAX_SAFE_INTEGER;
+        }
+        if (columnIndex === 6 || columnIndex === 7) {
+            const clock = parseClock(text);
+            if (clock !== null) return clock;
+        }
+        if (columnIndex === 8) {
+            const match = text.match(/-?\d+(?:\.\d+)?/);
+            if (match) return Number(match[0]);
+        }
+        return text.toLocaleLowerCase();
+    }
+
+    function compareValues(a, b) {
+        if (typeof a === "number" && typeof b === "number") return a - b;
+        return String(a).localeCompare(String(b), undefined, {
+            numeric: true,
+            sensitivity: "base"
         });
     }
 
-    setSoundStatus(false, "Alert sound is disabled. Select Enable to allow sound alerts.");
+    function sortTable(header) {
+        const columnIndex = Number(header.dataset.sortColumn);
+        manualSortApplied = true;
+        if (!Number.isInteger(columnIndex) || !tbody) return;
+
+        if (activeSortColumn === columnIndex) {
+            sortDirection = sortDirection === "ascending" ? "descending" : "ascending";
+        } else {
+            activeSortColumn = columnIndex;
+            sortDirection = "ascending";
+        }
+
+        const multiplier = sortDirection === "ascending" ? 1 : -1;
+        const rows = patientRows();
+        rows.sort(function (a, b) {
+            return compareValues(getSortValue(a, columnIndex), getSortValue(b, columnIndex)) * multiplier;
+        });
+        rows.forEach(function (row) { tbody.appendChild(row); });
+
+        table.querySelectorAll("thead th.sortable").forEach(function (item) {
+            item.removeAttribute("aria-sort");
+            const indicator = item.querySelector(".sort-indicator");
+            if (indicator) indicator.textContent = "↕";
+        });
+
+        header.setAttribute("aria-sort", sortDirection);
+        const indicator = header.querySelector(".sort-indicator");
+        if (indicator) indicator.textContent = sortDirection === "ascending" ? "↑" : "↓";
+
+        updateSerialNumbers();
+        filterPatients();
+    }
+
+    if (table) {
+        table.querySelectorAll("thead th.sortable").forEach(function (header) {
+            header.addEventListener("click", function () { sortTable(header); });
+            header.addEventListener("keydown", function (event) {
+                if (event.key === "Enter" || event.key === " ") {
+                    event.preventDefault();
+                    sortTable(header);
+                }
+            });
+        });
+    }
+
+    if (searchInput) searchInput.addEventListener("input", filterPatients);
+
+    if (clearSortingBtn) {
+        clearSortingBtn.addEventListener("click", function () {
+            window.location.reload();
+        });
+    }
+
+    // Sound is intentionally OFF until the user presses Enable.
+    setSoundStatus(false,
+        "Alert sound is disabled by default. Click Enable to turn on sound alerts.");
+
     updateTimers();
+
+    // Initial display: the patients with <= 10 minutes remaining appear first.
+
+
+    filterPatients();
     window.setInterval(updateTimers, 1000);
 });
 </script>
-
-
 </body>
-</html>
-
+        </html>

@@ -341,7 +341,7 @@
         }
 
         .balance-cell.near-deadline {
-            color: var(--tv-yellow) !important;
+            color: var(--tv-red) !important;
         }
 
         .status-label {
@@ -362,10 +362,10 @@
 
         @keyframes rowBlink {
             0%, 100% {
-                box-shadow: inset 5px 0 0 #d99d00;
+                box-shadow: inset 5px 0 0 red;
             }
             50% {
-                box-shadow: inset 5px 0 0 #ffe17a;
+                box-shadow: inset 5px 0 0 white;
             }
         }
 
@@ -681,8 +681,8 @@
                     <tr>
                         <th scope="col">Sl No</th>
                         <th scope="col">Patient Name</th>
-                        <th scope="col">Bill Number</th>
-                        <th scope="col">Time Balance / Status</th>
+                        <!-- <th scope="col">Bill Number</th> -->
+                        <th scope="col">Status</th>
                     </tr>
                 </thead>
 
@@ -696,7 +696,7 @@
 
                         <td>{{ bill.patient_name }}</td>
 
-                        <td>{{ bill.lab_number }}</td>
+                        <!-- <td>{{ bill.lab_number }}</td> -->
 
                         <td
                             class="balance-cell"
@@ -1181,7 +1181,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             if (remainingMs <= FIVE_MINUTES) {
                 cell.textContent =
-                    "Near Deadline — " +
+                    "" +
                     formatRemaining(remainingMs);
 
                 cell.classList.add("near-deadline");

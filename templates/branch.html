@@ -1,165 +1,431 @@
 
 {% load static %}
-{% include 'head.html' %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Microlab | Branch Management</title>
+
+    <link rel="icon" href="{% static 'assets/images/favicon.ico' %}">
+
+    <link rel="stylesheet" href="{% static 'assets/libs/bootstrap/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/libs/bootstrap-icons/bootstrap-icons.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/main.css' %}">
+
+    <script src="{% static 'assets/libs/apexcharts/apexcharts.min.js' %}"></script>
+
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+</head>
+
 <body>
 
+    <!-- ADMIN NAVBAR -->
+    {% include 'admin_navbar.html' %}
 
- {% include 'sidebar.html' %}
 
-  <div class="main-wrapper">
-
- {% include 'header.html' %}
-
-    <!-- START: Page Header Banner -->
+    <!-- PAGE HEADER -->
     <div class="page-header">
-      <div>
-        <h1 class="page-title">Branch</h1>
-      </div>
-      <nav aria-label="breadcrumb">
-        <ol class="breadcrumb mb-0">
-          <li class="breadcrumb-item"><a href="/admin_home" class="text-decoration-none text-muted-green">Home</a></li>
-          <li class="breadcrumb-item text-muted-green">Components</li>
-          <li class="breadcrumb-item active text-main" aria-current="page">Branch</li>
-        </ol>
-      </nav>
-    </div>
-    <!-- END: Page Header Banner -->
 
-    <!-- START: Basic Table Card Container -->
-<div class="table-card-custom">
+        <div>
+            <h1 class="page-title">Branch Management</h1>
 
-    <!-- Header Controls -->
-    <div class="table-header-control">
-
-        <!-- Search bar -->
-        <div class="table-search-box">
-            <i class="bi bi-search table-search-icon"></i>
-            <input type="text"
-                   id="branchSearch"
-                   class="table-search-input"
-                   placeholder="Search branches...">
+            <p class="text-muted mb-0">
+                Manage and monitor all registered branches.
+            </p>
         </div>
 
-        <!-- Action buttons -->
-        <div class="table-filter-group">
-            <a class="btn-table-action" href="/create_branch">
-                <i class="bi bi-plus"></i> Create Branch
-            </a>
-        </div>
+        <nav aria-label="breadcrumb">
+
+            <ol class="breadcrumb mb-0">
+
+                <li class="breadcrumb-item">
+                    <a href="/admin_home/"
+                       class="text-decoration-none text-muted-green">
+                        Home
+                    </a>
+                </li>
+
+                <li class="breadcrumb-item active text-main"
+                    aria-current="page">
+                    Branch
+                </li>
+
+            </ol>
+
+        </nav>
 
     </div>
 
-    <!-- Responsive Table -->
-    <div class="table-responsive">
-        <table class="table-custom" id="branchTable">
 
-            <thead>
-                <tr>
-                    <th>Branch ID</th>
-                    <th>Name</th>
-                    <th>Address</th>
-                    <th>Email</th>
-                    <th>Phone</th>
-                    <th>Created Date</th>
-                    <th class="text-center">Actions</th>
-                </tr>
-            </thead>
+    <!-- BRANCH TABLE CARD -->
+    <div class="table-card-custom">
 
-            <tbody>
-                {% for i in data %}
-                <tr>
-                    <td class="table-order-id">#{{ i.id }}</td>
+        <!-- TABLE HEADER -->
+        <div class="table-header-control">
 
-                    <td>
-                        <div class="table-user-cell">
-                            <div>
+            <div class="table-search-box">
+
+                <i class="bi bi-search table-search-icon"></i>
+
+                <input type="text"
+                       id="branchSearch"
+                       class="table-search-input"
+                       placeholder="Search branches..."
+                       autocomplete="off">
+
+            </div>
+
+
+            <div class="table-filter-group">
+
+                <a href="/create_branch/"
+                   class="btn-table-action">
+
+                    <i class="bi bi-plus-lg"></i>
+
+                    Create Branch
+
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <!-- TABLE -->
+        <div class="table-responsive">
+
+            <table class="table-custom" id="branchTable">
+
+                <thead>
+
+                    <tr>
+                        <th>Branch ID</th>
+                        <th>Branch Name</th>
+                        <th>Address</th>
+                        <th>Email</th>
+                        <th>User name</th>
+                        <th>Password</th>
+                        <th>Phone</th>
+                        <th>Created Date</th>
+                        <th class="text-center">Actions</th>
+                    </tr>
+
+                </thead>
+
+
+                <tbody id="branchTableBody">
+
+                    {% for i in data %}
+
+                    <tr class="branch-row">
+
+                        <td class="table-order-id">
+                            #{{ i.id }}
+                        </td>
+
+
+                        <td>
+
+                            <div class="table-user-cell">
+
                                 <div class="table-user-name">
                                     {{ i.name|default:"N/A" }}
                                 </div>
+
                             </div>
-                        </div>
-                    </td>
 
-                    <td class="table-product-name">
-                        {{ i.address|default:"N/A" }}
-                    </td>
+                        </td>
 
-                    <td>{{ i.email|default:"N/A" }}</td>
 
-                    <td>{{ i.phone|default:"N/A" }}</td>
+                        <td class="table-product-name" style="width: 150px; max-width: 150px; white-space: normal; overflow-wrap: anywhere;">
+                            {{ i.address|default:"N/A" }}
+                        </td>
+                        <td>
+                            {{ i.email|default:"N/A" }}
+                        </td>
+                        <td>
+                            {{ i.username|default:"N/A" }}
+                        </td>
 
-                    <td>
-                        {{ i.created_at|date:"d M Y" }}
-                    </td>
 
-                    <td>
-                        <div class="d-flex justify-content-center gap-1">
+                        <td>
+                            {{ i.password|default:"N/A" }}
+                        </td>
 
-                            <!-- Edit -->
-                            <a href="/edit_branch/{{ i.id }}"
-                               class="table-btn-action"
-                               title="Edit branch">
-                                <i class="bi bi-pencil"></i>
-                            </a>
 
-                            <!-- Delete -->
-                            <a href="/delete_branch/{{ i.id }}"
-                               class="table-btn-action delete"
-                               title="Delete branch"
-                               onclick="return confirm('Are you sure you want to delete this branch?');">
-                                <i class="bi bi-trash"></i>
-                            </a>
+                        <td>
+                            {{ i.phone|default:"N/A" }}
+                        </td>
 
-                        </div>
-                    </td>
-                </tr>
 
-                {% empty %}
-                <tr>
-                    <td colspan="7" class="text-center py-4">
-                        <i class="bi bi-inbox fs-3 d-block mb-2"></i>
-                        No branches found.
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
+                        <td>
+                            {{ i.created_at|date:"d M Y"|default:"N/A" }}
+                        </td>
 
-        </table>
+
+                        <!-- ACTIONS -->
+                        <td>
+
+                            <div class="d-flex justify-content-center gap-2">
+
+                                <!-- EDIT -->
+                                <a href="/edit_branch/{{ i.id }}/"
+                                   class="table-btn-action"
+                                   title="Edit Branch">
+
+                                    <i class="bi bi-pencil"></i>
+
+                                </a>
+
+
+                                <!-- DELETE -->
+                                <a href="javascript:void(0);"
+                                   class="table-btn-action delete"
+                                   title="Delete Branch"
+                                   onclick="confirmDeleteBranch('/delete_branch/{{ i.id }}/', '{{ i.name|escapejs }}');">
+
+                                    <i class="bi bi-trash"></i>
+
+                                </a>
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+
+                    {% empty %}
+
+                    <tr id="emptyBranchRow">
+
+                        <td colspan="7" class="text-center py-5">
+
+                            <i class="bi bi-inbox fs-2 d-block mb-2"></i>
+
+                            <span>No branches found.</span>
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+
+                    <!-- SEARCH EMPTY RESULT -->
+                    <tr id="noSearchResults" style="display:none;">
+
+                        <td colspan="7" class="text-center py-5">
+
+                            <i class="bi bi-search fs-2 d-block mb-2"></i>
+
+                            No matching branches found.
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+
+        <!-- TABLE FOOTER -->
+        <div class="table-footer-control">
+
+            <span id="branchCount"
+                  class="table-pagination-info">
+
+                Total {{ data|length }} branches
+
+            </span>
+
+        </div>
+
     </div>
 
-    <!-- Footer -->
-    <div class="table-footer-control">
-        <span id="branchCount" class="table-pagination-info">
-            Total {{ data|length }} branches
-        </span>
-    </div>
 
-</div>
+    <!-- FOOTER -->
+    {% include 'footer.html' %}
 
-<!-- Search Functionality -->
-<script>
-document.getElementById("branchSearch").addEventListener("keyup", function () {
-    let searchValue = this.value.toLowerCase();
-    let rows = document.querySelectorAll("#branchTable tbody tr");
-    let visibleCount = 0;
 
-    rows.forEach(function (row) {
-        if (row.cells.length > 1) {
-            let rowText = row.innerText.toLowerCase();
-            let matches = rowText.includes(searchValue);
+    <!-- BRANCH SEARCH SCRIPT -->
+    <script>
 
-            row.style.display = matches ? "" : "none";
+        document.addEventListener("DOMContentLoaded", function () {
 
-            if (matches) {
-                visibleCount++;
-            }
+            const searchInput = document.getElementById("branchSearch");
+
+            const branchRows = document.querySelectorAll(".branch-row");
+
+            const branchCount = document.getElementById("branchCount");
+
+            const noResults = document.getElementById("noSearchResults");
+
+            const totalBranches = branchRows.length;
+
+
+            if (!searchInput) return;
+
+
+            searchInput.addEventListener("input", function () {
+
+                const searchValue = this.value.toLowerCase().trim();
+
+                let visibleCount = 0;
+
+
+                branchRows.forEach(function (row) {
+
+                    const rowText = row.textContent.toLowerCase();
+
+                    const matches = rowText.includes(searchValue);
+
+                    row.style.display = matches ? "" : "none";
+
+
+                    if (matches) {
+                        visibleCount++;
+                    }
+
+                });
+
+
+                // Show or hide no results message
+                if (noResults) {
+
+                    noResults.style.display =
+                        searchValue !== "" && visibleCount === 0
+                            ? ""
+                            : "none";
+
+                }
+
+
+                // Update branch count
+                if (searchValue === "") {
+
+                    branchCount.textContent =
+                        "Total " + totalBranches + " branches";
+
+                } else {
+
+                    branchCount.textContent =
+                        "Showing " + visibleCount +
+                        " of " + totalBranches + " branches";
+
+                }
+
+            });
+
+        });
+
+
+    </script>
+
+
+
+    <!-- SWEETALERT DELETE CONFIRMATION -->
+    <script>
+
+        function confirmDeleteBranch(deleteUrl, branchName) {
+
+            Swal.fire({
+
+                title: 'Delete Branch?',
+
+                html: `
+                    <div style="font-size:15px; color:#555;">
+                        Are you sure you want to delete
+                        <strong style="color:#222;">${branchName}</strong>?
+                    </div>
+
+                    <div style="
+                        margin-top:15px;
+                        color:#dc3545;
+                        font-size:13px;
+                    ">
+                        <i class="bi bi-exclamation-triangle-fill"></i>
+                        This action cannot be undone!
+                    </div>
+                `,
+
+                icon: 'warning',
+
+                showCancelButton: true,
+
+                confirmButtonText: '<i class="bi bi-trash"></i> Yes, Delete',
+
+                cancelButtonText: '<i class="bi bi-x-lg"></i> Cancel',
+
+                confirmButtonColor: '#dc3545',
+
+                cancelButtonColor: '#6c757d',
+
+                reverseButtons: true,
+
+                focusCancel: true,
+
+                allowOutsideClick: false,
+
+                customClass: {
+
+                    popup: 'branch-delete-popup',
+
+                    confirmButton: 'px-4',
+
+                    cancelButton: 'px-4'
+
+                }
+
+            }).then((result) => {
+
+                if (result.isConfirmed) {
+
+                    window.location.href = deleteUrl;
+
+                }
+
+            });
+
         }
-    });
 
-    document.getElementById("branchCount").innerText =
-        "Showing " + visibleCount + " branches";
-});
-</script>
-    <!-- END: Basic Table Card Container -->
+    </script>
 
-{% include 'footer.html' %}
+
+    <!-- DELETE POPUP STYLING -->
+    <style>
+
+        .branch-delete-popup {
+            border-radius: 14px;
+            padding: 25px;
+        }
+
+        .branch-delete-popup .swal2-title {
+            font-size: 23px;
+            font-weight: 700;
+            color: #222;
+        }
+
+        .branch-delete-popup .swal2-confirm,
+        .branch-delete-popup .swal2-cancel {
+            border-radius: 7px;
+            font-size: 14px;
+            font-weight: 600;
+            padding: 10px 20px;
+        }
+
+    </style>
+
+
+</body>
+</html>

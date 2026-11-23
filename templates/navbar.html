@@ -1,3 +1,4 @@
+
 {% load static %}
 
 <style>
@@ -12,6 +13,7 @@
     --nav-border: #e8edf5;
     --nav-danger: #dc3545;
     --nav-bg: #ffffff;
+
     --nav-height: 88px;
     --nav-mobile-height: 70px;
 }
@@ -32,13 +34,16 @@
 }
 
 .navbar-inner {
+    width: 100%;
     max-width: 1400px;
     min-height: var(--nav-height);
     margin: 0 auto;
     padding: 8px 28px;
+
     display: flex;
     align-items: center;
     gap: 25px;
+
     box-sizing: border-box;
 }
 
@@ -55,17 +60,23 @@ body {
 .navbar-custom .brand {
     display: inline-flex;
     align-items: center;
-    flex-shrink: 0;
+    flex: 0 0 auto;
     text-decoration: none;
+    background: transparent !important;
+    box-shadow: none !important;
 }
 
 .navbar-custom .brand-icon {
-    width: 115px;
+    width: 125px;
     height: 75px;
+
     display: flex;
     align-items: center;
     justify-content: center;
-    overflow: hidden;
+
+    overflow: visible;
+    background: transparent !important;
+    box-shadow: none !important;
 }
 
 .navbar-custom .brand-icon img {
@@ -73,6 +84,7 @@ body {
     width: 100%;
     height: 100%;
     object-fit: contain;
+    background: transparent;
 }
 
 /* =========================================
@@ -91,15 +103,20 @@ body {
     align-items: center;
     justify-content: center;
     gap: 9px;
+
     min-height: 44px;
     padding: 11px 16px;
+
     border-radius: 11px;
     border: 1px solid transparent;
+
     font-size: 13px;
     font-weight: 700;
     color: var(--nav-text);
+
     text-decoration: none !important;
     white-space: nowrap;
+
     transition: all .22s ease;
     box-sizing: border-box;
 }
@@ -112,13 +129,18 @@ body {
     display: inline-flex;
     align-items: center;
     gap: 8px;
+
     padding: 12px 14px;
+
     border-radius: 10px;
     color: #475569;
+
     font-size: 13px;
     font-weight: 700;
+
     text-decoration: none;
     white-space: nowrap;
+
     transition: all .2s ease;
 }
 
@@ -127,7 +149,7 @@ body {
     background: #eff6ff;
 }
 
-/* Staff Portal */
+/* STAFF PORTAL */
 .navbar-custom .staff-btn {
     color: var(--nav-primary);
     background: #eff6ff;
@@ -139,7 +161,7 @@ body {
     color: var(--nav-primary-dark);
 }
 
-/* TV Display */
+/* TV DISPLAY */
 .navbar-custom .tv-btn {
     color: #475569;
     background: #f8fafc;
@@ -151,7 +173,7 @@ body {
     background: #eff6ff;
 }
 
-/* Waiting List */
+/* WAITING LIST */
 .navbar-custom .waiting-btn {
     background: var(--nav-primary);
     color: #fff;
@@ -165,7 +187,7 @@ body {
     box-shadow: 0 7px 16px rgba(23, 105, 224, .22);
 }
 
-/* Logout */
+/* LOGOUT */
 .navbar-custom .logout-btn {
     color: var(--nav-danger);
     background: #fff7f7;
@@ -182,20 +204,27 @@ body {
 ========================================= */
 .navbar-custom .mobile-nav-toggle {
     display: none;
+
     align-items: center;
     justify-content: center;
+
     width: 46px;
     height: 46px;
     flex-shrink: 0;
+
     border: 1px solid var(--nav-border);
     border-radius: 12px;
+
     background: #f8fafc;
     color: var(--nav-text);
+
     font-size: 23px;
     cursor: pointer;
+
     margin-left: auto;
     position: relative;
     z-index: 1203;
+
     transition: all .2s ease;
 }
 
@@ -208,6 +237,7 @@ body {
    TABLET
 ========================================= */
 @media (max-width: 1050px) and (min-width: 768px) {
+
     .navbar-inner {
         padding-inline: 16px;
         gap: 12px;
@@ -215,6 +245,7 @@ body {
 
     .navbar-custom .brand-icon {
         width: 90px;
+        height: 65px;
     }
 
     .navbar-custom .nav-actions {
@@ -230,9 +261,10 @@ body {
 }
 
 /* =========================================
-   MOBILE FULL-SCREEN MENU
+   MOBILE NAVIGATION
 ========================================= */
 @media (max-width: 767.98px) {
+
     body {
         padding-top: var(--nav-mobile-height);
     }
@@ -240,23 +272,50 @@ body {
     .navbar-inner {
         min-height: var(--nav-mobile-height);
         padding: 6px 17px;
-        gap: 12px;
+        gap: 10px;
+    }
+
+    .navbar-custom .brand {
+        flex: 0 1 auto;
+        min-width: 0;
+        max-width: calc(100% - 58px);
     }
 
     .navbar-custom .brand-icon {
-        width: 76px;
-        height: 57px;
+        width: auto;
+        height: auto;
+
+        max-width: 100%;
+        max-height: 57px;
+
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+
+        overflow: visible;
     }
 
-    /* Toggle remains on the right */
+    .navbar-custom .brand-icon img {
+        width: auto !important;
+        height: auto !important;
+
+        max-width: 100%;
+        max-height: 55px;
+
+        object-fit: contain;
+    }
+
+    /* TOGGLE ON RIGHT */
     .navbar-custom .mobile-nav-toggle {
         display: inline-flex;
         margin-left: auto;
     }
 
+    /* FULL SCREEN MENU */
     .navbar-custom .nav-actions {
         position: fixed;
         inset: 0;
+
         z-index: 1201;
 
         display: flex;
@@ -267,6 +326,7 @@ body {
         width: 100%;
         height: 100vh;
         height: 100dvh;
+
         box-sizing: border-box;
 
         margin: 0;
@@ -277,12 +337,12 @@ body {
         overscroll-behavior: contain;
         -webkit-overflow-scrolling: touch;
 
-        /* Gradient removed; plain white background */
         background: #ffffff;
 
         opacity: 0;
         visibility: hidden;
         pointer-events: none;
+
         transform: translateY(-10px);
 
         transition:
@@ -300,10 +360,12 @@ body {
 
     .navbar-custom .nav-actions::before {
         content: "NAVIGATION MENU";
+
         color: #64748b;
         font-size: 11px;
         font-weight: 800;
         letter-spacing: 2.5px;
+
         margin-bottom: 7px;
     }
 
@@ -317,10 +379,12 @@ body {
         width: 100%;
         min-height: 65px;
         flex-shrink: 0;
+
         box-sizing: border-box;
         padding: 12px 16px;
 
         border-radius: 15px;
+
         font-size: 15px;
         font-weight: 700;
 
@@ -339,6 +403,7 @@ body {
 
         border-radius: 12px;
         font-size: 20px;
+
         background: rgba(255, 255, 255, .2);
     }
 
@@ -399,13 +464,28 @@ body {
    SMALL MOBILE
 ========================================= */
 @media (max-width: 420px) {
+
     .navbar-inner {
-        padding-inline: 13px;
+        padding-inline: 12px;
+        gap: 8px;
+    }
+
+    .navbar-custom .brand {
+        max-width: calc(100% - 54px);
     }
 
     .navbar-custom .brand-icon {
-        width: 68px;
-        height: 52px;
+        max-height: 52px;
+    }
+
+    .navbar-custom .brand-icon img {
+        max-height: 50px;
+    }
+
+    .navbar-custom .mobile-nav-toggle {
+        width: 42px;
+        height: 42px;
+        font-size: 21px;
     }
 
     .navbar-custom .nav-actions {
@@ -420,6 +500,25 @@ body {
 }
 
 /* =========================================
+   VERY SMALL MOBILE
+========================================= */
+@media (max-width: 340px) {
+
+    .navbar-inner {
+        padding-inline: 9px;
+    }
+
+    .navbar-custom .brand-icon img {
+        max-height: 45px;
+    }
+
+    .navbar-custom .mobile-nav-toggle {
+        width: 40px;
+        height: 40px;
+    }
+}
+
+/* =========================================
    ACCESSIBILITY
 ========================================= */
 .navbar-custom a:focus-visible,
@@ -429,41 +528,75 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
+
     .navbar-custom *,
     .navbar-custom *::before,
     .navbar-custom *::after {
         transition: none !important;
     }
 }
+
+/* =========================================
+   SWEETALERT2 DESIGN
+========================================= */
+.microlab-swal-popup {
+    border-radius: 20px !important;
+    padding: 30px 25px !important;
+    font-family: inherit !important;
+}
+
+.microlab-swal-title {
+    color: #172033 !important;
+    font-size: 23px !important;
+    font-weight: 800 !important;
+}
+
+.microlab-swal-html {
+    color: #64748b !important;
+    font-size: 14px !important;
+}
+
+.microlab-swal-confirm,
+.microlab-swal-cancel {
+    border-radius: 10px !important;
+    padding: 11px 23px !important;
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    min-width: 105px;
+}
+
+.swal2-icon.swal2-warning {
+    border-color: #f0ad4e !important;
+    color: #f0ad4e !important;
+}
 </style>
+
 
 <!-- =========================================
      NAVBAR HTML
 ========================================= -->
 <nav class="navbar-custom" aria-label="Main navigation">
+
     <div class="navbar-inner">
 
-        <!-- Original Logo Restored -->
+        <!-- BRAND LOGO -->
         <a href="{% url 'home' %}"
            class="brand"
            aria-label="Lab Bill Scanner Home">
 
             <span class="brand-icon">
+
                 <img
                     src="https://microlabchengannur.com/static/logo.png"
-                    alt="Lab Scanner Logo"
+                    alt="Microlab Laboratories Logo"
                     loading="eager">
+
             </span>
+
         </a>
-<style>
-    .brand,
-.brand-icon {
-    background: transparent !important;
-    background-image: none !important;
-    box-shadow: none;
-}
-</style>
-        <!-- Mobile Toggle -->
+
+
+        <!-- MOBILE MENU TOGGLE -->
         <button
             type="button"
             class="mobile-nav-toggle"
@@ -475,74 +608,67 @@ body {
             <i class="bi bi-list"
                id="mobileNavIcon"
                aria-hidden="true"></i>
+
         </button>
 
-        <!-- Navigation Actions -->
+
+        <!-- NAVIGATION ACTIONS -->
         <div class="nav-actions" id="navActions">
 
             {% if not request.session.bch %}
 
-                <!-- Staff Portal -->
-                <a href="/Login/" class="nav-btn staff-btn">
+                <!-- STAFF PORTAL -->
+                <a href="/Login/"
+                   class="nav-btn staff-btn">
+
                     <i class="bi bi-person-circle"
                        aria-hidden="true"></i>
+
                     <span>Staff Portal</span>
+
                 </a>
 
             {% else %}
 
-                <!-- Sample Collection -->
-                <!-- <a href="{% url 'collection_dashboard' %}"
-                   class="nav-link">
-                    <i class="bi bi-droplet-half"
-                       aria-hidden="true"></i>
-                    <span>Sample Collection</span>
-                </a>
 
-     
-                <a href="{% url 'inside_lab_dashboard' %}"
-                   class="nav-link">
-                    <i class="bi bi-hospital"
-                       aria-hidden="true"></i>
-                    <span>Inside Lab</span>
-                </a> -->
 
-                <!-- TV Display -->
-                <a href="{% url 'collection_tv_display' %}"
-                   class="nav-btn tv-btn">
-                    <i class="bi bi-tv"
-                       aria-hidden="true"></i>
-                    <span>TV Display</span>
-                </a>
-
-                <!-- Waiting List -->
-                <a href="/waiting-dashboard/"
-                   class="nav-btn waiting-btn">
-                    <i class="bi bi-clock-history"
-                       aria-hidden="true"></i>
-                    <span>Waiting List</span>
-                </a>
-
-                <!-- Logout -->
-                <a href="/Logout/"
+            <a href="{% url 'collection_list' %}"
+            class="btn btn-primary">
+             <i class="bi bi-list-ul"></i> Tests
+         </a>
+                <!-- LOGOUT -->
+                <a href="/logout_view"
                    class="nav-btn logout-btn"
                    id="logoutNavLink">
+
                     <i class="bi bi-box-arrow-right"
                        aria-hidden="true"></i>
+
                     <span>Logout</span>
+
                 </a>
 
             {% endif %}
 
         </div>
+
     </div>
+
 </nav>
 
+
 <!-- =========================================
-     MOBILE NAVIGATION SCRIPT
+     SWEETALERT2 LIBRARY
+========================================= -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+<!-- =========================================
+     MOBILE NAVIGATION JAVASCRIPT
 ========================================= -->
 <script>
 (function () {
+
     'use strict';
 
     const toggle = document.getElementById('mobileNavToggle');
@@ -556,11 +682,16 @@ body {
 
     const mobileQuery = window.matchMedia('(max-width: 767.98px)');
 
+
+    /* CHECK MOBILE SCREEN */
     function isMobile() {
         return mobileQuery.matches;
     }
 
+
+    /* OPEN / CLOSE MENU */
     function setMenu(open) {
+
         const shouldOpen = Boolean(open) && isMobile();
 
         if (shouldOpen && !menu.classList.contains('show')) {
@@ -569,7 +700,10 @@ body {
 
         menu.classList.toggle('show', shouldOpen);
 
-        toggle.setAttribute('aria-expanded', String(shouldOpen));
+        toggle.setAttribute(
+            'aria-expanded',
+            String(shouldOpen)
+        );
 
         toggle.setAttribute(
             'aria-label',
@@ -584,66 +718,149 @@ body {
         document.body.style.overflow = shouldOpen
             ? 'hidden'
             : previousBodyOverflow;
+
     }
 
-    /* Toggle mobile menu */
+
+    /* MOBILE TOGGLE */
     toggle.addEventListener('click', function () {
+
         setMenu(!menu.classList.contains('show'));
+
     });
 
-    /* Close when clicking outside */
+
+    /* CLOSE WHEN CLICKING OUTSIDE */
     document.addEventListener('click', function (event) {
+
         if (
             menu.classList.contains('show') &&
             !menu.contains(event.target) &&
             !toggle.contains(event.target)
         ) {
+
             setMenu(false);
+
         }
+
     });
 
-    /* Close with Escape key */
+
+    /* CLOSE WITH ESCAPE */
     document.addEventListener('keydown', function (event) {
+
         if (
             event.key === 'Escape' &&
             menu.classList.contains('show')
         ) {
+
             setMenu(false);
             toggle.focus();
+
         }
+
     });
 
-    /* Close after navigation; confirm logout */
-    menu.querySelectorAll('a').forEach(function (link) {
-        link.addEventListener('click', function (event) {
-            if (link === logoutLink) {
-                const confirmed = window.confirm(
-                    'Are you sure you want to logout?'
-                );
 
-                if (!confirmed) {
-                    event.preventDefault();
-                    return;
-                }
+    /* NAVIGATION LINKS AND LOGOUT CONFIRMATION */
+    menu.querySelectorAll('a').forEach(function (link) {
+
+        link.addEventListener('click', function (event) {
+
+            /* LOGOUT CONFIRMATION */
+            if (link === logoutLink) {
+
+                event.preventDefault();
+
+                setMenu(false);
+
+                Swal.fire({
+
+                    title: 'Are you sure?',
+
+                    text: 'Do you really want to logout from your account?',
+
+                    icon: 'warning',
+
+                    showCancelButton: true,
+
+                    confirmButtonText: 'Yes, Logout',
+
+                    cancelButtonText: 'Cancel',
+
+                    confirmButtonColor: '#dc3545',
+
+                    cancelButtonColor: '#64748b',
+
+                    reverseButtons: true,
+
+                    buttonsStyling: true,
+
+                    allowOutsideClick: false,
+
+                    allowEscapeKey: true,
+
+                    customClass: {
+
+                        popup: 'microlab-swal-popup',
+
+                        title: 'microlab-swal-title',
+
+                        htmlContainer: 'microlab-swal-html',
+
+                        confirmButton: 'microlab-swal-confirm',
+
+                        cancelButton: 'microlab-swal-cancel'
+
+                    }
+
+                }).then(function (result) {
+
+                    if (result.isConfirmed) {
+
+                        window.location.href = link.href;
+
+                    }
+
+                });
+
+                return;
+
             }
 
+            /* CLOSE MENU AFTER NORMAL NAVIGATION */
             setMenu(false);
+
         });
+
     });
 
-    /* Reset menu and body scroll when resizing */
+
+    /* RESET WHEN RESIZING */
     function handleViewportChange() {
+
         if (!isMobile()) {
+
             setMenu(false);
+
         }
+
     }
+
 
     window.addEventListener('resize', handleViewportChange);
 
     if (mobileQuery.addEventListener) {
-        mobileQuery.addEventListener('change', handleViewportChange);
+
+        mobileQuery.addEventListener(
+            'change',
+            handleViewportChange
+        );
+
     } else {
+
         mobileQuery.addListener(handleViewportChange);
+
     }
 
 })();

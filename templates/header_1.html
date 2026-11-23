@@ -1,0 +1,233 @@
+<header class="bill-navbar">
+
+    <!-- Brand Logo -->
+    <a href="/" class="bill-brand" aria-label="Microlab Home">
+
+        <div class="bill-logo">
+            <img
+                src="https://microlabchengannur.com/static/logo.png"
+                alt="Microlab Laboratories Logo"
+            >
+        </div>
+
+    </a>
+
+    <!-- Header Right -->
+    <div class="bill-header-right">
+
+        <a href="/Login/" class="nav-btn staff-btn">
+            <i class="bi bi-person-circle" aria-hidden="true"></i>
+            <span>Login</span>
+        </a>
+
+    </div>
+
+</header>
+
+
+<style>
+
+/* =====================================
+   HEADER NAVBAR
+===================================== */
+
+.bill-navbar {
+    width: 100%;
+    min-height: 95px;
+    padding: 10px 35px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    background: #ffffff;
+    border-bottom: 1px solid #e8edf2;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.05);
+
+    position: relative;
+    z-index: 1000;
+    box-sizing: border-box;
+}
+
+/* =====================================
+   BRAND LOGO
+===================================== */
+
+.bill-brand {
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-start;
+
+    text-decoration: none;
+    flex-shrink: 0;
+}
+
+.bill-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    height: 80px;
+    width: auto;
+}
+
+.bill-logo img {
+    display: block;
+
+    height: 75px;
+    width: auto;
+    max-width: 300px;
+
+    object-fit: contain;
+}
+
+/* =====================================
+   HEADER RIGHT SECTION
+===================================== */
+
+.bill-header-right {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+
+    gap: 16px;
+    flex-shrink: 0;
+}
+
+/* =====================================
+   LOGIN BUTTON
+===================================== */
+
+.staff-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 9px;
+    min-height: 46px;
+    padding: 11px 22px;
+
+    color: #ffffff;
+    background: #4d9dc9;
+
+    border: 1px solid #4d9dc9;
+    border-radius: 10px;
+
+    font-size: 15px;
+    font-weight: 700;
+
+    text-decoration: none;
+    white-space: nowrap;
+
+    transition: all 0.25s ease;
+}
+
+.staff-btn i {
+    color: #ffffff;
+    font-size: 19px;
+}
+
+.staff-btn:hover {
+    color: #ffffff;
+    background: #287eae;
+    border-color: #287eae;
+
+    box-shadow: 0 5px 15px rgba(77, 157, 201, 0.22);
+    transform: translateY(-2px);
+}
+
+.staff-btn:focus-visible {
+    outline: 3px solid rgba(77, 157, 201, 0.35);
+    outline-offset: 3px;
+}
+
+/* =====================================
+   TABLET RESPONSIVE
+===================================== */
+
+@media (max-width: 768px) {
+
+    .bill-navbar {
+        min-height: 85px;
+        padding: 10px 20px;
+    }
+
+    .bill-logo {
+        height: 70px;
+    }
+
+    .bill-logo img {
+        height: 65px;
+        max-width: 250px;
+    }
+
+}
+
+/* =====================================
+   MOBILE RESPONSIVE
+===================================== */
+
+@media (max-width: 576px) {
+
+    .bill-navbar {
+        min-height: 75px;
+        padding: 8px 14px;
+    }
+
+    .bill-logo {
+        height: 62px;
+    }
+
+    .bill-logo img {
+        height: 58px;
+        max-width: 210px;
+    }
+
+    .bill-header-right {
+        gap: 9px;
+    }
+
+    .staff-btn {
+        min-height: 40px;
+        gap: 7px;
+        padding: 9px 13px;
+
+        border-radius: 9px;
+        font-size: 13px;
+    }
+
+    .staff-btn i {
+        font-size: 17px;
+    }
+
+}
+
+/* =====================================
+   SMALL MOBILE
+===================================== */
+
+@media (max-width: 360px) {
+
+    .bill-navbar {
+        padding: 8px 10px;
+    }
+
+    .bill-logo img {
+        height: 52px;
+        max-width: 175px;
+    }
+
+    .staff-btn {
+        min-height: 37px;
+        padding: 8px 10px;
+        gap: 5px;
+        font-size: 12px;
+    }
+
+    .staff-btn i {
+        font-size: 15px;
+    }
+
+}
+
+</style>

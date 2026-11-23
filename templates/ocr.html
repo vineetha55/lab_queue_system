@@ -1,0 +1,1323 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Lab Bill Scanner | Dashboard</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+          rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #1769e0;
+            --primary-dark: #124bb0;
+            --teal: #08a6a6;
+            --background: #f3f7fc;
+            --text: #172b4d;
+            --muted: #718198;
+            --border: #e5ebf4;
+            --white: #ffffff;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            width: 100%;
+            min-height: 100%;
+            overflow-x: hidden;
+        }
+
+        body {
+            width: 100%;
+            min-height: 100vh;
+            min-height: 100dvh;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            background: var(--background);
+            color: var(--text);
+            font-family: Inter, "Segoe UI", Arial, sans-serif;
+        }
+
+        /* Navbar remains at the top */
+
+        /* Main Dashboard */
+
+        .dashboard {
+            width: 100%;
+            max-width: 1160px;
+            margin: 0 auto;
+            padding: 38px 20px 45px;
+            flex: 1 0 auto;
+        }
+
+        .page-header {
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .page-title {
+            margin: 0 0 10px;
+            font-size: clamp(26px, 4vw, 36px);
+            font-weight: 800;
+            letter-spacing: -.7px;
+            overflow-wrap: anywhere;
+        }
+
+        .page-subtitle {
+            max-width: 600px;
+            margin: 0 auto;
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        /* Error Message */
+
+        .error-message {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            width: 100%;
+            max-width: 780px;
+            margin: 0 auto 22px;
+            padding: 14px 16px;
+            border: 1px solid #f4d1d5;
+            border-radius: 12px;
+            background: #fff1f2;
+            color: #a61b2b;
+            font-size: 13px;
+            overflow-wrap: anywhere;
+        }
+
+        /* Scanner Card */
+
+        .scanner-card {
+            width: 100%;
+            min-width: 0;
+            padding: 30px;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            background: var(--white);
+            box-shadow: 0 8px 30px rgba(31, 57, 90, .06);
+        }
+
+        .card-heading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+
+        .heading-icon {
+            width: 46px;
+            height: 46px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            border-radius: 14px;
+            background: #eaf2ff;
+            color: var(--primary);
+            font-size: 22px;
+        }
+
+        .card-heading h2 {
+            margin: 0;
+            font-size: 20px;
+            font-weight: 800;
+        }
+
+        /* Upload Area */
+
+        .upload-area {
+            width: 100%;
+            min-width: 0;
+            padding: 32px 18px;
+            border: 2px dashed #bdcde3;
+            border-radius: 16px;
+            background: #f9fbff;
+            text-align: center;
+            transition: border-color .2s, background .2s;
+        }
+
+        .upload-area:hover,
+        .upload-area.dragover {
+            border-color: var(--primary);
+            background: #eff6ff;
+        }
+
+        .upload-icon {
+            width: 66px;
+            height: 66px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            border-radius: 19px;
+            background: #e6efff;
+            color: var(--primary);
+            font-size: 30px;
+        }
+
+        .upload-area h3 {
+            margin-bottom: 9px;
+            font-size: 16px;
+            font-weight: 800;
+        }
+
+        .upload-area p {
+            margin-bottom: 18px;
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.7;
+        }
+
+        .file-input-hidden {
+            display: none;
+        }
+
+        /* Buttons */
+
+        .file-btn,
+        .camera-btn,
+        .scan-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            border: none;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none !important;
+            transition: .2s;
+        }
+
+        .file-btn {
+            padding: 12px 19px;
+            background: var(--primary);
+            color: var(--white);
+        }
+
+        .file-btn:hover {
+            background: var(--primary-dark);
+            color: var(--white);
+        }
+
+        .file-name {
+            display: none;
+            margin-top: 15px;
+            padding: 11px 13px;
+            border-radius: 9px;
+            background: #edf8f3;
+            color: #168052;
+            font-size: 12px;
+            text-align: left;
+            overflow-wrap: anywhere;
+        }
+
+        /* Divider */
+
+        .divider-text {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            margin: 22px 0;
+            color: #9aa7b8;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: .5px;
+        }
+
+        .divider-text::before,
+        .divider-text::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        /* Camera */
+
+        .camera-btn {
+            width: 100%;
+            min-height: 48px;
+            padding: 14px;
+            border: 1px solid #ccefeb;
+            background: #e8f9f7;
+            color: #087f79;
+        }
+
+        .camera-btn:hover {
+            background: #d5f4ef;
+            color: #066b65;
+        }
+
+        /* Image Preview */
+
+        .preview-wrapper {
+            display: none;
+            width: 100%;
+            min-width: 0;
+            margin-top: 22px;
+            padding: 14px;
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            background: var(--white);
+        }
+
+        .preview-heading {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 13px;
+            font-size: 13px;
+            font-weight: 800;
+        }
+
+        #preview {
+            display: block;
+            width: 100%;
+            max-width: 100%;
+            max-height: 350px;
+            margin: 0 auto;
+            border-radius: 9px;
+            object-fit: contain;
+        }
+
+        .remove-image {
+            padding: 5px;
+            border: none;
+            background: transparent;
+            color: #dc3545;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        /* Submit */
+
+        .scan-btn {
+            width: 100%;
+            min-height: 52px;
+            margin-top: 22px;
+            padding: 16px;
+            background: linear-gradient(100deg, var(--primary), #1455bd);
+            color: var(--white);
+            font-size: 14px;
+            box-shadow: 0 5px 14px rgba(23, 105, 224, .15);
+        }
+
+        .scan-btn:hover:not(:disabled) {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 18px rgba(23, 105, 224, .22);
+        }
+
+        .scan-btn:disabled {
+            opacity: .7;
+            cursor: wait;
+        }
+
+        .hint {
+            margin: 14px 0 0;
+            color: var(--muted);
+            font-size: 11px;
+            line-height: 1.8;
+            text-align: center;
+        }
+
+
+        /* Dual workflow selection */
+        .workflow-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 18px;
+            margin: 24px 0;
+        }
+
+        .workflow-option {
+            width: 100%;
+            min-height: 175px;
+            padding: 24px 18px;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            background: #fff;
+            color: var(--text);
+            text-align: center;
+            cursor: pointer;
+            transition: .2s ease;
+        }
+
+        .workflow-option:hover {
+            transform: translateY(-3px);
+            border-color: var(--primary);
+            box-shadow: 0 10px 25px rgba(23,105,224,.10);
+        }
+
+        .workflow-option.active {
+            border: 2px solid var(--primary);
+            background: #f2f7ff;
+        }
+
+        .workflow-option .option-icon {
+            width: 58px;
+            height: 58px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 13px;
+            border-radius: 17px;
+            background: #eaf2ff;
+            color: var(--primary);
+            font-size: 27px;
+        }
+
+        .workflow-option.manual .option-icon {
+            background: #e8f9f7;
+            color: #087f79;
+        }
+
+        .workflow-option h3 {
+            margin: 0 0 8px;
+            font-size: 16px;
+            font-weight: 800;
+        }
+
+        .workflow-option p {
+            margin: 0;
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.7;
+        }
+
+        .workflow-panel {
+            display: none;
+            margin-top: 26px;
+            padding-top: 25px;
+            border-top: 1px solid var(--border);
+        }
+
+        .workflow-panel.active {
+            display: block;
+            animation: panelFade .25s ease;
+        }
+
+        @keyframes panelFade {
+            from { opacity: 0; transform: translateY(7px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .panel-heading {
+            margin-bottom: 7px;
+            font-size: 18px;
+            font-weight: 800;
+        }
+
+        .panel-description {
+            margin-bottom: 20px;
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.7;
+        }
+
+        .manual-form .form-label {
+            margin-bottom: 7px;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .manual-form .form-control,
+        .manual-form .form-select {
+            min-height: 45px;
+            border: 1px solid #dce4ef;
+            border-radius: 9px;
+            font-size: 13px;
+            box-shadow: none;
+        }
+
+        .manual-form .form-control:focus,
+        .manual-form .form-select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(23,105,224,.08);
+        }
+
+        .manual-section-title {
+            margin: 20px 0 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border);
+            font-size: 14px;
+            font-weight: 800;
+        }
+
+        .back-to-options {
+            margin-bottom: 18px;
+            padding: 8px 13px;
+            border: 1px solid var(--border);
+            border-radius: 9px;
+            background: #fff;
+            color: var(--text);
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        @media (max-width: 767px) {
+            .workflow-grid {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            .workflow-option {
+                min-height: 150px;
+                padding: 19px 13px;
+            }
+        }
+
+        /* Footer - Always at bottom when content is short */
+
+        .page-footer {
+            width: 100%;
+            margin-top: auto;
+            flex-shrink: 0;
+        }
+
+        /* Mobile */
+
+        @media (max-width: 767px) {
+
+            .dashboard {
+                width: 100%;
+                max-width: 100%;
+                padding: 20px 12px 28px;
+            }
+
+            .page-header {
+                margin-bottom: 20px;
+                padding: 0 5px;
+            }
+
+            .page-title {
+                font-size: 25px;
+                line-height: 1.3;
+            }
+
+            .page-subtitle {
+                font-size: 13px;
+            }
+
+            .error-message {
+                margin-bottom: 16px;
+                padding: 12px;
+                font-size: 12px;
+            }
+
+            .row.justify-content-center {
+                margin-left: 0;
+                margin-right: 0;
+            }
+
+            .row.justify-content-center > div {
+                padding-left: 0;
+                padding-right: 0;
+            }
+
+            .scanner-card {
+                padding: 20px 15px;
+                border-radius: 15px;
+            }
+
+            .card-heading {
+                gap: 10px;
+            }
+
+            .heading-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 19px;
+            }
+
+            .card-heading h2 {
+                font-size: 18px;
+            }
+
+            .upload-area {
+                padding: 24px 12px;
+                border-radius: 13px;
+            }
+
+            .upload-icon {
+                width: 55px;
+                height: 55px;
+                font-size: 25px;
+            }
+
+            .upload-area h3 {
+                font-size: 15px;
+            }
+
+            .upload-area p {
+                max-width: 260px;
+                margin: 0 auto 16px;
+                font-size: 12px;
+            }
+
+            .file-btn {
+                width: 100%;
+                max-width: 230px;
+                min-height: 44px;
+            }
+
+            .divider-text {
+                gap: 9px;
+                margin: 19px 0;
+                font-size: 10px;
+            }
+
+            .camera-btn {
+                min-height: 48px;
+                padding: 12px 8px;
+                font-size: 12px;
+            }
+
+            .preview-wrapper {
+                margin-top: 16px;
+                padding: 10px;
+            }
+
+            .preview-heading {
+                font-size: 12px;
+            }
+
+            #preview {
+                max-height: 280px;
+            }
+
+            .scan-btn {
+                min-height: 49px;
+                margin-top: 18px;
+                padding: 13px;
+            }
+
+            .hint {
+                font-size: 11px;
+            }
+        }
+
+        /* Small Mobile */
+
+        @media (max-width: 420px) {
+
+            .dashboard {
+                padding: 16px 10px 24px;
+            }
+
+            .page-title {
+                font-size: 22px;
+            }
+
+            .scanner-card {
+                padding: 17px 12px;
+            }
+
+            .card-heading h2 {
+                font-size: 16px;
+            }
+
+            .upload-area {
+                padding: 21px 10px;
+            }
+
+            #preview {
+                max-height: 240px;
+            }
+        }
+
+        @media (max-width: 350px) {
+
+            .dashboard {
+                padding-left: 8px;
+                padding-right: 8px;
+            }
+
+            .scanner-card {
+                padding: 14px 10px;
+            }
+
+            .card-heading h2 {
+                font-size: 15px;
+            }
+
+            .page-title {
+                font-size: 20px;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <!-- Navbar -->
+
+    {% include "navbar.html" %}
+
+    <!-- Main Dashboard -->
+
+    <main class="dashboard">
+
+        <header class="page-header">
+
+            <h1 class="page-title">{{ b.name }}</h1>
+
+        </header>
+
+        <!-- Error Message -->
+
+        {% if error %}
+
+        <div class="error-message" role="alert">
+
+            <i class="bi bi-exclamation-triangle-fill"></i>
+
+            <div>{{ error }}</div>
+
+        </div>
+
+        {% endif %}
+
+        <!-- Dual Workflow Bill Processing Interface -->
+
+        <div class="row justify-content-center">
+            <div class="col-12 col-lg-9 col-xl-8">
+
+                <section class="scanner-card">
+
+                    <div class="card-heading">
+                        <div class="heading-icon">
+                            <i class="bi bi-receipt-cutoff"></i>
+                        </div>
+                        <h2>Laboratory Bill Processing</h2>
+                    </div>
+
+                    <p class="page-subtitle text-center mt-3">
+                        Choose a processing method to capture bill information
+                        automatically or enter the details manually.
+                    </p>
+
+                    <!-- Primary workflow selection buttons -->
+                    <div class="workflow-grid">
+
+                        <button type="button"
+                                class="workflow-option"
+                                id="ocrModeButton"
+                                aria-controls="ocrPanel"
+                                aria-expanded="false">
+
+                            <div class="option-icon">
+                                <i class="bi bi-camera-fill"></i>
+                            </div>
+
+                            <h3>Camera Capture & OCR</h3>
+
+                            <p>
+                                Capture a laboratory bill using your device camera
+                                and submit the image for text extraction.
+                            </p>
+
+                        </button>
+
+                        <button type="button"
+                                class="workflow-option manual"
+                                id="manualModeButton"
+                                aria-controls="manualPanel"
+                                aria-expanded="false">
+
+                            <div class="option-icon">
+                                <i class="bi bi-ui-checks-grid"></i>
+                            </div>
+
+                            <h3>Manual Data Entry</h3>
+
+                            <p>
+                                Enter the laboratory bill information directly
+                                through a structured manual form.
+                            </p>
+
+                        </button>
+
+                    </div>
+
+                    <!-- OCR / Camera Capture Workflow -->
+                    <div class="workflow-panel" id="ocrPanel">
+
+                        <button type="button"
+                                class="back-to-options"
+                                id="ocrBackButton">
+                            <i class="bi bi-arrow-left me-1"></i>
+                            Back to processing options
+                        </button>
+
+                        <h3 class="panel-heading">
+                            <i class="bi bi-camera text-primary me-2"></i>
+                            Camera Capture & Text Extraction
+                        </h3>
+
+                        <p class="panel-description">
+                            Capture a bill using your device camera or upload an
+                            existing image. The selected image will be submitted
+                            to the existing OCR processing endpoint.
+                        </p>
+
+                        <form id="scanForm"
+                              method="POST"
+                              action="{% url 'home' %}"
+                              enctype="multipart/form-data">
+
+                            {% csrf_token %}
+
+                            <div class="upload-area"
+                                 id="uploadArea"
+                                 aria-label="Upload laboratory bill image">
+
+                                <div class="upload-icon">
+                                    <i class="bi bi-file-earmark-image"></i>
+                                </div>
+
+                                <h3>Upload Laboratory Bill</h3>
+
+                                <p>
+                                    Drag and drop an image here, or browse your device.
+                                </p>
+
+                                <input type="file"
+                                       name="bill_image"
+                                       id="billImage"
+                                       class="file-input-hidden"
+                                       accept="image/jpeg,image/png,image/webp"
+                                       required>
+
+                                <button type="button"
+                                        class="file-btn"
+                                        id="browseButton">
+                                    <i class="bi bi-folder2-open"></i>
+                                    Browse Files
+                                </button>
+
+                                <div class="file-name"
+                                     id="fileName"
+                                     aria-live="polite"></div>
+
+                            </div>
+
+                            <div class="divider-text">
+                                OR CAPTURE USING DEVICE CAMERA
+                            </div>
+
+                            <input type="file"
+                                   id="cameraImage"
+                                   class="file-input-hidden"
+                                   accept="image/*"
+                                   capture="environment">
+
+                            <button type="button"
+                                    class="camera-btn"
+                                    id="cameraButton">
+                                <i class="bi bi-camera-fill"></i>
+                                Capture Bill Using Camera
+                            </button>
+
+                            <div class="preview-wrapper" id="previewWrapper">
+
+                                <div class="preview-heading">
+                                    <span>
+                                        <i class="bi bi-eye me-1"></i>
+                                        Captured Document Preview
+                                    </span>
+
+                                    <button type="button"
+                                            class="remove-image"
+                                            id="removeImage">
+                                        <i class="bi bi-trash3 me-1"></i>
+                                        Remove Image
+                                    </button>
+                                </div>
+
+                                <img id="preview"
+                                     alt="Selected laboratory bill preview">
+
+                            </div>
+
+                            <button type="submit"
+                                    class="scan-btn"
+                                    id="scanButton">
+                                <i class="bi bi-upc-scan me-2"></i>
+                                Submit for OCR Text Extraction
+                            </button>
+
+                            <p class="hint">
+                                <i class="bi bi-info-circle me-1"></i>
+                                Supported formats: JPG, PNG and WEBP.
+                                Use a clear, properly aligned and well-lit image
+                                for improved text recognition.
+                            </p>
+
+                        </form>
+
+                    </div>
+
+                    <!-- Manual Data Entry Workflow -->
+                    <div class="workflow-panel" id="manualPanel">
+
+                        <button type="button"
+                                class="back-to-options"
+                                id="manualBackButton">
+                            <i class="bi bi-arrow-left me-1"></i>
+                            Back to processing options
+                        </button>
+
+                        <h3 class="panel-heading">
+                            <i class="bi bi-pencil-square text-success me-2"></i>
+                            Manual Laboratory Bill Entry
+                        </h3>
+
+                        <p class="panel-description">
+                            Enter the bill and patient information manually
+                            using the structured data-entry form.
+                        </p>
+
+                        <form id="manualForm"
+                              class="manual-form"
+                              method="POST"
+                              action="{% url 'home' %}">
+
+                            {% csrf_token %}
+
+                            <h6 class="manual-section-title">
+                                <i class="bi bi-person-vcard me-2"></i>
+                                Patient Information
+                            </h6>
+
+                            <div class="row g-3">
+
+                                <div class="col-md-6">
+                                    <label for="patientName" class="form-label">
+                                        Patient Name
+                                    </label>
+                                    <input type="text"
+                                           class="form-control"
+                                           id="patientName"
+                                           name="patient_name"
+                                           placeholder="Enter patient name"
+                                           required>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label for="patientPhone" class="form-label">
+                                        Mobile Number
+                                    </label>
+                                    <input type="tel"
+                                           class="form-control"
+                                           id="patientPhone"
+                                           name="phone"
+                                           placeholder="Enter mobile number">
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label for="patientId" class="form-label">
+                                        Patient ID
+                                    </label>
+                                    <input type="text"
+                                           class="form-control"
+                                           id="patientId"
+                                           name="patient_id"
+                                           placeholder="Enter patient ID">
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label for="billNumber" class="form-label">
+                                        Bill Number
+                                    </label>
+                                    <input type="text"
+                                           class="form-control"
+                                           id="billNumber"
+                                           name="bill_number"
+                                           placeholder="Enter bill number">
+                                </div>
+
+                            </div>
+
+                            <h6 class="manual-section-title">
+                                <i class="bi bi-receipt me-2"></i>
+                                Bill & Transaction Information
+                            </h6>
+
+                            <div class="row g-3">
+
+                                <div class="col-md-6">
+                                    <label for="billDate" class="form-label">
+                                        Bill Date
+                                    </label>
+                                    <input type="date"
+                                           class="form-control"
+                                           id="billDate"
+                                           name="bill_date">
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label for="totalAmount" class="form-label">
+                                        Total Bill Amount
+                                    </label>
+                                    <input type="number"
+                                           class="form-control"
+                                           id="totalAmount"
+                                           name="total_amount"
+                                           placeholder="Enter total amount"
+                                           min="0"
+                                           step="0.01">
+                                </div>
+
+                                <div class="col-12">
+                                    <label for="testDetails" class="form-label">
+                                        Laboratory Test / Service Details
+                                    </label>
+                                    <textarea class="form-control"
+                                              id="testDetails"
+                                              name="test_details"
+                                              rows="3"
+                                              placeholder="Enter test or service details"></textarea>
+                                </div>
+
+                                <div class="col-12">
+                                    <label for="remarks" class="form-label">
+                                        Additional Remarks
+                                    </label>
+                                    <textarea class="form-control"
+                                              id="remarks"
+                                              name="remarks"
+                                              rows="2"
+                                              placeholder="Enter additional remarks (optional)"></textarea>
+                                </div>
+
+                            </div>
+
+                            <button type="submit"
+                                    class="scan-btn"
+                                    id="manualSubmitButton">
+                                <i class="bi bi-check-circle-fill me-2"></i>
+                                Submit Manual Bill Details
+                            </button>
+
+                        </form>
+
+                    </div>
+
+                </section>
+
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer: pushed to bottom by Flexbox -->
+
+    <footer class="page-footer">
+
+        {% include "footer_1.html" %}
+
+    </footer>
+
+    <!-- JavaScript: workflow selection, image preview and submission -->
+
+    <script>
+        (() => {
+            "use strict";
+
+            /* -------------------------------------------------
+               WORKFLOW PANEL CONTROL
+            ------------------------------------------------- */
+
+            const ocrModeButton = document.getElementById("ocrModeButton");
+            const manualModeButton = document.getElementById("manualModeButton");
+            const ocrPanel = document.getElementById("ocrPanel");
+            const manualPanel = document.getElementById("manualPanel");
+
+            function selectWorkflow(mode) {
+                const isOCR = mode === "ocr";
+                const isManual = mode === "manual";
+
+                ocrPanel.classList.toggle("active", isOCR);
+                manualPanel.classList.toggle("active", isManual);
+
+                ocrModeButton.classList.toggle("active", isOCR);
+                manualModeButton.classList.toggle("active", isManual);
+
+                ocrModeButton.setAttribute("aria-expanded", String(isOCR));
+                manualModeButton.setAttribute("aria-expanded", String(isManual));
+
+                if (isOCR) {
+                    ocrPanel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+                } else if (isManual) {
+                    manualPanel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+                }
+            }
+
+            function resetWorkflow() {
+                ocrPanel.classList.remove("active");
+                manualPanel.classList.remove("active");
+                ocrModeButton.classList.remove("active");
+                manualModeButton.classList.remove("active");
+
+                ocrModeButton.setAttribute("aria-expanded", "false");
+                manualModeButton.setAttribute("aria-expanded", "false");
+            }
+
+            ocrModeButton.addEventListener("click", () => selectWorkflow("ocr"));
+            manualModeButton.addEventListener("click", () => selectWorkflow("manual"));
+
+            document.getElementById("ocrBackButton").addEventListener("click", resetWorkflow);
+            document.getElementById("manualBackButton").addEventListener("click", resetWorkflow);
+
+
+            /* -------------------------------------------------
+               OCR IMAGE INPUTS AND PREVIEW
+            ------------------------------------------------- */
+
+            const billInput = document.getElementById("billImage");
+            const cameraInput = document.getElementById("cameraImage");
+
+            const preview = document.getElementById("preview");
+            const previewWrapper = document.getElementById("previewWrapper");
+            const fileName = document.getElementById("fileName");
+
+            const scanForm = document.getElementById("scanForm");
+            const scanButton = document.getElementById("scanButton");
+
+            const uploadArea = document.getElementById("uploadArea");
+
+            const browseButton = document.getElementById("browseButton");
+            const cameraButton = document.getElementById("cameraButton");
+            const removeButton = document.getElementById("removeImage");
+
+            const allowedTypes = [
+                "image/jpeg",
+                "image/png",
+                "image/webp"
+            ];
+
+            const defaultScanButtonHTML =
+                '<i class="bi bi-upc-scan me-2"></i>Submit for OCR Text Extraction';
+
+            let previewUrl = null;
+            let isOCRSubmitting = false;
+
+            function resetOCRSubmitState() {
+                isOCRSubmitting = false;
+                scanButton.disabled = false;
+                scanButton.innerHTML = defaultScanButtonHTML;
+            }
+
+            function clearPreview() {
+                if (previewUrl) {
+                    URL.revokeObjectURL(previewUrl);
+                    previewUrl = null;
+                }
+
+                preview.removeAttribute("src");
+                previewWrapper.style.display = "none";
+                fileName.style.display = "none";
+                fileName.replaceChildren();
+            }
+
+            function showPreview(file) {
+                if (!file) return false;
+
+                if (!allowedTypes.includes(file.type)) {
+                    alert("Please select a JPG, PNG, or WEBP image.");
+                    return false;
+                }
+
+                clearPreview();
+
+                previewUrl = URL.createObjectURL(file);
+                preview.src = previewUrl;
+                previewWrapper.style.display = "block";
+                fileName.style.display = "block";
+
+                const icon = document.createElement("i");
+                icon.className = "bi bi-check-circle-fill me-2";
+
+                fileName.appendChild(icon);
+                fileName.appendChild(document.createTextNode(file.name));
+
+                resetOCRSubmitState();
+                return true;
+            }
+
+            function selectCapturedFile(file) {
+                if (!file) return;
+
+                if (!allowedTypes.includes(file.type)) {
+                    alert("Please select a JPG, PNG, or WEBP image.");
+                    return;
+                }
+
+                try {
+                    const transfer = new DataTransfer();
+                    transfer.items.add(file);
+
+                    billInput.files = transfer.files;
+                    cameraInput.value = "";
+
+                    showPreview(file);
+                } catch (error) {
+                    console.error("Image selection error:", error);
+                    alert("Unable to select this image. Please try again.");
+                }
+            }
+
+            /* Browse existing image */
+            browseButton.addEventListener("click", (event) => {
+                event.stopPropagation();
+                billInput.click();
+            });
+
+            /* Open device camera */
+            cameraButton.addEventListener("click", () => {
+                cameraInput.click();
+            });
+
+            /* Existing image selection */
+            billInput.addEventListener("change", () => {
+                if (!billInput.files.length) return;
+
+                const file = billInput.files[0];
+
+                if (!showPreview(file)) {
+                    billInput.value = "";
+                    clearPreview();
+                }
+            });
+
+            /* Captured image selection */
+            cameraInput.addEventListener("change", () => {
+                if (cameraInput.files.length) {
+                    selectCapturedFile(cameraInput.files[0]);
+                }
+            });
+
+            /* Click upload area to browse */
+            uploadArea.addEventListener("click", (event) => {
+                if (event.target.closest("button")) return;
+                billInput.click();
+            });
+
+            /* Remove selected image */
+            removeButton.addEventListener("click", () => {
+                billInput.value = "";
+                cameraInput.value = "";
+                clearPreview();
+                resetOCRSubmitState();
+            });
+
+            /* Drag and drop */
+            uploadArea.addEventListener("dragover", (event) => {
+                event.preventDefault();
+                uploadArea.classList.add("dragover");
+            });
+
+            uploadArea.addEventListener("dragleave", (event) => {
+                if (!uploadArea.contains(event.relatedTarget)) {
+                    uploadArea.classList.remove("dragover");
+                }
+            });
+
+            uploadArea.addEventListener("drop", (event) => {
+                event.preventDefault();
+                uploadArea.classList.remove("dragover");
+
+                const file = event.dataTransfer.files[0];
+                if (file) selectCapturedFile(file);
+            });
+
+            /* OCR form validation and submission */
+            scanForm.addEventListener("submit", (event) => {
+                if (isOCRSubmitting) {
+                    event.preventDefault();
+                    return;
+                }
+
+                if (!billInput.files.length) {
+                    event.preventDefault();
+                    alert("Please capture or select a laboratory bill image first.");
+                    return;
+                }
+
+                const file = billInput.files[0];
+
+                if (!allowedTypes.includes(file.type)) {
+                    event.preventDefault();
+                    alert("Please select a JPG, PNG, or WEBP image.");
+                    return;
+                }
+
+                isOCRSubmitting = true;
+                scanButton.disabled = true;
+
+                scanButton.innerHTML =
+                    '<span class="spinner-border spinner-border-sm me-2" ' +
+                    'aria-hidden="true"></span>Submitting for OCR Processing...';
+            });
+
+
+            /* -------------------------------------------------
+               MANUAL FORM SUBMISSION FEEDBACK
+            ------------------------------------------------- */
+
+            const manualForm = document.getElementById("manualForm");
+            const manualSubmitButton = document.getElementById("manualSubmitButton");
+
+            manualForm.addEventListener("submit", (event) => {
+                if (!manualForm.checkValidity()) {
+                    event.preventDefault();
+                    manualForm.reportValidity();
+                    return;
+                }
+
+                manualSubmitButton.disabled = true;
+                manualSubmitButton.innerHTML =
+                    '<span class="spinner-border spinner-border-sm me-2" ' +
+                    'aria-hidden="true"></span>Submitting Manual Details...';
+            });
+
+
+            /* -------------------------------------------------
+               RELEASE PREVIEW OBJECT URL
+            ------------------------------------------------- */
+
+            window.addEventListener("pagehide", () => {
+                if (previewUrl) {
+                    URL.revokeObjectURL(previewUrl);
+                    previewUrl = null;
+                }
+            });
+
+        })();
+    </script>
+
+</body>
+</html>

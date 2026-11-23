@@ -1,0 +1,201 @@
+
+{% load static %}
+
+<!-- SIDEBAR -->
+<div class="sidebar-wrapper" id="sidebar" style="background-color: #011a24;color: white;">
+
+    <a href="/admin_home/" class="sidebar-brand">
+        <img src="https://microlabchengannur.com/static/logo.png"
+             alt="Microlab Logo"
+             class="sidebar-brand-logo">
+    </a>
+
+
+<style>
+    .sidebar-brand {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 85px;
+        padding: 10px 15px;
+        text-decoration: none;
+        overflow: hidden;
+    }
+
+    .sidebar-brand-logo {
+        width: 180px;
+        height: 65px;
+        max-width: 100%;
+        object-fit: contain;
+        object-position: center;
+        display: block;
+    }
+</style>
+    <div class="flex-grow-1 overflow-y-auto">
+
+        <!-- DASHBOARD -->
+        <div class="sidebar-menu-section">
+            <div class="sidebar-menu-title">Menu</div>
+
+            <ul class="sidebar-menu-list">
+                <li class="sidebar-menu-item">
+                    <a href="/admin_home/"
+                       class="sidebar-menu-link {% if request.path == '/admin_home/' or request.path == '/admin_home' %}active{% endif %}">
+                        <i class="bi bi-grid-fill"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- COMPONENTS -->
+        <div class="sidebar-menu-section">
+            <div class="sidebar-menu-title">Management</div>
+
+            <ul class="sidebar-menu-list">
+
+                <li class="sidebar-menu-item">
+                    <a href="/branch"
+                       class="sidebar-menu-link {% if '/branch' in request.path %}active{% endif %}">
+                        <i class="bi bi-building"></i>
+                        <span>Branches</span>
+                    </a>
+                </li>
+
+                <li class="sidebar-menu-item">
+                    <a href="/tests"
+                       class="sidebar-menu-link {% if '/tests' in request.path %}active{% endif %}">
+                        <i class="bi bi-people"></i>
+                        <span>Reports</span>
+                    </a>
+                </li>
+
+            </ul>
+        </div>
+
+        <!-- ACCOUNT -->
+        <div class="sidebar-menu-section">
+            <div class="sidebar-menu-title">Account</div>
+
+            <ul class="sidebar-menu-list">
+                <li class="sidebar-menu-item">
+                    <a href="/login_view" class="sidebar-menu-link">
+                        <i class="bi bi-box-arrow-right"></i>
+                        <span>Logout</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+    </div>
+
+    <!-- SIDEBAR PROFILE -->
+    <div class="sidebar-profile">
+        <div class="sidebar-profile-info">
+            <div class="sidebar-profile-name">
+                {{ request.user.username|default:"Administrator" }}
+            </div>
+
+  
+        </div>
+    </div>
+
+</div>
+<!-- END SIDEBAR -->
+
+
+<!-- MAIN CONTENT WRAPPER -->
+<div class="main-wrapper">
+
+    <!-- TOP NAVBAR -->
+    <header class="navbar-custom">
+
+        <!-- LEFT NAVBAR -->
+        <div class="navbar-left">
+
+
+            <!-- QUICK ACTIONS -->
+       
+
+
+        <!-- 
+        <div class="navbar-search-wrapper">
+
+
+
+        <div class="navbar-actions">
+
+
+            <button class="navbar-action-btn me-1"
+                    aria-label="Toggle Fullscreen"
+                    id="btn-fullscreen">
+
+                <i class="bi bi-arrows-fullscreen"></i>
+
+            </button>
+
+
+            <input type="text"
+                   class="navbar-search-input"
+                   placeholder="Search..."
+                   id="main-search">
+
+            <button class="navbar-search-btn" aria-label="Search">
+                <i class="bi bi-search"></i>
+            </button> 
+
+        </div>
+
+
+            <!-- <div class="ms-auto d-flex align-items-center">
+
+                <div class="dropdown ms-2">
+            
+                    <button class="navbar-profile-btn dropdown-toggle"
+                            type="button"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false"
+                            id="profile-dropdown">
+            
+                        <img src="{% static 'assets/images/avatar.png' %}"
+                             alt="Profile"
+                             class="navbar-profile-img">
+            
+                        <span class="navbar-profile-name d-none d-md-inline">
+                            Administrator
+                        </span>
+            
+                        <i class="bi bi-chevron-down navbar-profile-caret"></i>
+            
+                    </button>
+            
+                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-profile">
+            
+                        <li class="dropdown-header">
+                            Welcome, Administrator!
+                        </li>
+            
+                        <li>
+                            <a class="dropdown-item" href="/admin_home/">
+                                <i class="bi bi-speedometer2"></i>
+                                Dashboard
+                            </a>
+                        </li>
+            
+                        <li><hr class="dropdown-divider"></li>
+            
+                        <li>
+                            <a class="dropdown-item text-danger" href="/logout_view">
+                                <i class="bi bi-box-arrow-right"></i>
+                                Logout
+                            </a>
+                        </li>
+            
+                    </ul>
+            
+                </div>
+             -->
+            </div>
+    </header>
+    <!-- END TOP NAVBAR -->

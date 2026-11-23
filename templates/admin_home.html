@@ -1,620 +1,1648 @@
-<!DOCTYPE html>
+
 {% load static %}
+
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Microlab</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- SEO Optimization -->
-  <meta name="description" content="Spark Admin - Premium Bootstrap 5 Admin Dashboard Template">
-  <meta name="author" content="Spark Admin Team">
+    <title>Microlab | Admin Dashboard</title>
 
-  <!-- Favicon -->
-  <link rel="icon" type="image/png" href="{% static 'assets/images/favicon.ico">
+    <link rel="icon" href="{% static 'assets/images/favicon.ico' %}">
 
-  <!-- Local Third-Party Libraries (100% Offline Compatible) -->
-  <link rel="stylesheet" href="{% static 'assets/libs/bootstrap/css/bootstrap.min.css' %}">
-  <link rel="stylesheet" href="{% static 'assets/libs/bootstrap-icons/bootstrap-icons.css' %}">
-  <link rel="stylesheet" href="{% static 'assets/libs/apexcharts/apexcharts.css' %}">
-  <link rel="stylesheet" href="{% static 'assets/libs/flatpickr/flatpickr.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/libs/bootstrap/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/libs/bootstrap-icons/bootstrap-icons.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/main.css' %}">
 
-  <!-- Main Design System & Custom Stylesheet -->
-  <link rel="stylesheet" href="{% static 'assets/css/main.css' %}">
+    <script src="{% static 'assets/libs/apexcharts/apexcharts.min.js' %}"></script>
+
+    <style>
+        :root {
+            --ml-navy: #123B5D;
+            --ml-blue: #1677B8;
+            --ml-teal: #00A6A6;
+            --ml-aqua: #55C6C8;
+            --ml-green: #2E9D72;
+            --ml-amber: #E9A23B;
+            --ml-coral: #E76F51;
+            --ml-purple: #7467B8;
+            --ml-bg: #F4F8FB;
+            --ml-border: #E5EDF3;
+        }
+
+        body {
+            background: var(--ml-bg);
+            color: #203040;
+        }
+
+        .dashboard-container {
+            padding: 25px;
+            max-width: 1800px;
+            margin: auto;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 22px;
+        }
+
+        .page-title {
+            font-size: 26px;
+            font-weight: 700;
+            margin: 0;
+            color: var(--ml-navy);
+        }
+
+        .page-subtitle {
+            color: #8993a4;
+            margin-top: 6px;
+            font-size: 13px;
+        }
+
+        .dashboard-card,
+        .chart-card,
+        .filter-card {
+            background: #fff;
+            border: 1px solid var(--ml-border);
+            border-radius: 13px;
+            box-shadow: 0 3px 15px rgba(0,0,0,.025);
+        }
+
+        .dashboard-card {
+            padding: 22px;
+            height: 100%;
+            transition: .2s;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 22px rgba(18,59,93,.08);
+        }
+
+        .chart-card {
+            padding: 22px;
+            height: 100%;
+        }
+
+        .filter-card {
+            padding: 20px;
+            margin-bottom: 22px;
+        }
+
+        .form-select,
+        .form-control {
+            border-color: var(--ml-border);
+            border-radius: 9px;
+            min-height: 42px;
+        }
+
+        .form-select:focus,
+        .form-control:focus {
+            border-color: var(--ml-teal);
+            box-shadow: 0 0 0 .2rem rgba(0,166,166,.12);
+        }
+
+        .btn-primary {
+            background: var(--ml-navy);
+            border-color: var(--ml-navy);
+            border-radius: 9px;
+        }
+
+        .btn-primary:hover {
+            background: var(--ml-blue);
+            border-color: var(--ml-blue);
+        }
+
+        .filter-controls {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+        }
+
+        #dateFilter {
+            width: 210px;
+            min-width: 190px;
+        }
+
+        .filter-submit {
+            min-height: 42px;
+            padding: 8px 20px;
+            white-space: nowrap;
+        }
+
+        .custom-dates {
+            display: none;
+            margin-top: 18px;
+            padding-top: 18px;
+            border-top: 1px solid var(--ml-border);
+        }
+
+        .custom-dates.show {
+            display: block;
+        }
+
+        .filter-description {
+            font-size: 12px;
+            color: #929bad;
+        }
+
+        .stat-label {
+            color: #8b95a5;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .stat-value {
+            font-size: 29px;
+            font-weight: 750;
+            margin-top: 13px;
+            color: #202938;
+            word-break: break-word;
+        }
+
+        .stat-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 11px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 21px;
+            flex-shrink: 0;
+        }
+
+        .icon-blue {
+            background: #E5F1F8;
+            color: var(--ml-blue);
+        }
+
+        .icon-green {
+            background: #E5F5EF;
+            color: var(--ml-green);
+        }
+
+        .icon-red {
+            background: #FCEAE6;
+            color: var(--ml-coral);
+        }
+
+        .icon-orange {
+            background: #FFF4E2;
+            color: var(--ml-amber);
+        }
+
+        .icon-purple {
+            background: #EEEAF8;
+            color: var(--ml-purple);
+        }
+
+        .icon-cyan {
+            background: #E3F7F7;
+            color: var(--ml-teal);
+        }
+
+        .chart-title {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 5px;
+            color: var(--ml-navy);
+        }
+
+        .chart-subtitle {
+            font-size: 12px;
+            color: #929bad;
+        }
+
+        .chart-area {
+            min-height: 300px;
+        }
+
+        .progress {
+            height: 9px;
+            border-radius: 20px;
+            background: #edf0f5;
+        }
+
+        .progress-bar {
+            border-radius: 20px;
+        }
+
+        .section-heading {
+            font-size: 17px;
+            font-weight: 700;
+            margin-bottom: 18px;
+            color: var(--ml-navy);
+        }
+
+        .today-card {
+            background: linear-gradient(135deg, #123B5D, #1677B8);
+            color: white;
+            border-radius: 13px;
+            padding: 20px;
+            height: 100%;
+        }
+
+        .today-card .today-label {
+            font-size: 13px;
+            opacity: .8;
+        }
+
+        .today-card .today-value {
+            font-size: 27px;
+            font-weight: 750;
+            margin-top: 10px;
+        }
+
+        .today-card i {
+            font-size: 23px;
+            opacity: .8;
+        }
+
+        @media(max-width:768px) {
+            .dashboard-container {
+                padding: 14px;
+            }
+
+            .page-title {
+                font-size: 22px;
+            }
+
+            .stat-value {
+                font-size: 24px;
+            }
+
+            .filter-controls {
+                width: 100%;
+            }
+
+            #dateFilter {
+                flex: 1;
+                width: auto;
+                min-width: 0;
+            }
+
+            .filter-submit {
+                padding: 8px 13px;
+            }
+
+            .chart-card {
+                padding: 15px;
+            }
+
+            .dashboard-card {
+                padding: 17px;
+            }
+        }
+
+        @media(max-width:420px) {
+            .filter-controls {
+                flex-wrap: wrap;
+            }
+
+            #dateFilter {
+                width: 100%;
+                flex: 1 1 100%;
+            }
+
+            .filter-submit {
+                width: 100%;
+            }
+        }
+    </style>
+
 </head>
 
 <body>
 
-  <!-- ==========================================
-         START: Sidebar Component
-         Highly polished, dark-green sticky navigation
-         ========================================== -->
-  <div class="sidebar-wrapper" id="sidebar">
-    <!-- Brand Logo / Identity -->
-    <a href="/admin_home/" class="sidebar-brand">
-      <i class="bi bi-asterisk"></i>
-      <span>Microlab</span>
-    </a>
+{% include 'admin_navbar.html' %}
 
-    <!-- Navigation Menu -->
-    <div class="flex-grow-1 overflow-y-auto">
-      <!-- Group: Menu -->
-      <div class="sidebar-menu-section">
-        <div class="sidebar-menu-title">Menu</div>
-        <ul class="sidebar-menu-list">
-          <li class="sidebar-menu-item">
-            <a href="/admin_home" class="sidebar-menu-link active" id="menu-overview" title="Overview">
-              <i class="bi bi-grid-fill"></i>
-              <span>Dashboard</span>
-            </a>
-          </li>
-        </ul>
-      </div>
+<div class="dashboard-container">
 
-      <!-- Group: Components -->
-      <div class="sidebar-menu-section">
-        <div class="sidebar-menu-title">Components</div>
-        <ul class="sidebar-menu-list">
-          <li class="sidebar-menu-item">
-            <a href="/branch" class="sidebar-menu-link" id="menu-basictables" title="Branch">
-              <i class="bi bi-table"></i>
-              <span>Branch</span>
-            </a>
-          </li>
-          <li class="sidebar-menu-item">
-            <a href="/waiting_list" class="sidebar-menu-link" id="menu-uiforms" title="Forms and Input">
-              <i class="bi bi-input-cursor-text"></i>
-              <span>Waiting List</span>
-            </a>
-          </li>
+    <!-- HEADER -->
 
-        </ul>
-      </div>
-
-      <!-- Group: Pages -->
-      <div class="sidebar-menu-section">
-        <div class="sidebar-menu-title">Pages</div>
-        <ul class="sidebar-menu-list">
-          <li class="sidebar-menu-item">
-            <a href="/logout_view" class="sidebar-menu-link" id="menu-404" title="404 Page">
-              <i class="bi bi-slash-circle"></i>
-              <span>Logout</span>
-            </a>
-          </li>
-        </ul>
-      </div>
-    </div>
-
-    <!-- Sidebar Profile Card (Dynamic Footer) -->
-    <div class="sidebar-profile">
-           <div class="sidebar-profile-info">
-        <div class="sidebar-profile-name">{{request.user.username}}</div>
-        <div class="sidebar-profile-email">{{request.user.email}}</div>
-      </div>
-    </div>
-  </div>
-  <!-- ==========================================
-         END: Sidebar Component
-         ========================================== -->
-
-
-  <!-- ==========================================
-         START: Main Content Area
-         ========================================== -->
-  <div class="main-wrapper">
-
-    <!-- START: Top Navbar Component -->
-    <header class="navbar-custom">
-      <div class="navbar-left">
-        <!-- Desktop sidebar toggle (visible on large screens only) -->
-        <button class="btn-desktop-toggle d-none d-xl-flex align-items-center justify-content-center me-3"
-          id="desktop-sidebar-toggle" aria-label="Minimize Sidebar">
-          <i class="bi bi-chevron-bar-left"></i>
-        </button>
-        <!-- Mobile sidebar toggle -->
-        <button class="sidebar-toggle-btn me-2" id="sidebar-toggle" aria-label="Toggle Navigation">
-          <i class="bi bi-list"></i>
-        </button>
-
-        <!-- Quick Actions Dropdown -->
-        <div class="dropdown ms-2">
-          <button class="btn-quick-action dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false"
-            id="quick-actions-dropdown">
-            <i class="bi bi-plus-lg"></i>
-            <span>Create</span>
-          </button>
-          <ul class="dropdown-menu dropdown-menu-quick-action" aria-labelledby="quick-actions-dropdown">
-            <li class="dropdown-header">Quick Action Shortcuts</li>
-            <li><a class="dropdown-item" href="#"><i class="bi bi-file-earmark-plus"></i> New Invoice</a></li>
-            <li><a class="dropdown-item" href="#"><i class="bi bi-person-plus"></i> New User</a></li>
-            <li><a class="dropdown-item" href="#"><i class="bi bi-box-seam"></i> New Product</a></li>
-            <li>
-              <hr class="dropdown-divider">
-            </li>
-            <li><a class="dropdown-item" href="#"><i class="bi bi-gear"></i> System Settings</a></li>
-          </ul>
-        </div>
-      </div>
-
-      <!-- Mid navbar: search pill -->
-      <div class="navbar-search-wrapper">
-        <input type="text" class="navbar-search-input" placeholder="Search anything in Spark..." id="main-search">
-        <button class="navbar-search-btn" aria-label="Search">
-          <i class="bi bi-search"></i>
-        </button>
-      </div>
-
-      <!-- Right actions -->
-      <div class="navbar-actions">
-        <!-- Fullscreen Toggle -->
-        <button class="navbar-action-btn me-1" aria-label="Toggle Fullscreen" id="btn-fullscreen">
-          <i class="bi bi-arrows-fullscreen"></i>
-        </button>
-        <div class="dropdown">
-          <button class="navbar-action-btn dropdown-toggle" type="button" data-bs-toggle="dropdown"
-            aria-expanded="false" id="btn-notifications" data-bs-auto-close="outside">
-            <i class="bi bi-bell"></i>
-            <span class="navbar-action-badge"></span>
-          </button>
-          <div class="dropdown-menu dropdown-menu-end dropdown-menu-notification p-0"
-            aria-labelledby="btn-notifications">
-            <div class="notification-header">
-              <h6 class="notification-title">Notifications</h6>
-              <button class="btn-clear-all" type="button">Mark all read</button>
-            </div>
-            <div class="notification-list">
-              <!-- Sale Notification -->
-              <a href="#" class="notification-item">
-                <div class="notification-icon bg-success text-white">
-                  <i class="bi bi-wallet2"></i>
-                </div>
-                <div class="notification-content">
-                  <p class="notification-text">New sale received: <strong>$150.00</strong></p>
-                  <span class="notification-time">2 mins ago</span>
-                </div>
-                <span class="notification-unread-dot"></span>
-              </a>
-              <!-- User Registration Notification -->
-              <a href="#" class="notification-item">
-                <div class="notification-icon bg-primary text-white">
-                  <i class="bi bi-person-plus-fill"></i>
-                </div>
-                <div class="notification-content">
-                  <p class="notification-text">New user registered: <strong>John Doe</strong></p>
-                  <span class="notification-time">1 hour ago</span>
-                </div>
-                <span class="notification-unread-dot"></span>
-              </a>
-              <!-- Low Stock Notification -->
-              <a href="#" class="notification-item">
-                <div class="notification-icon bg-warning text-dark">
-                  <i class="bi bi-box-seam-fill"></i>
-                </div>
-                <div class="notification-content">
-                  <p class="notification-text">Stock running low: <strong>Hoodie</strong></p>
-                  <span class="notification-time">3 hours ago</span>
-                </div>
-              </a>
-            </div>
-            <a href="#" class="notification-footer">View All Notifications</a>
-          </div>
-        </div>
-
-        <!-- Profile Dropdown -->
-        <div class="dropdown ms-2">
-          <button class="navbar-profile-btn dropdown-toggle" type="button" data-bs-toggle="dropdown"
-            aria-expanded="false" id="profile-dropdown">
-            <img src="{% static 'assets/images/avatar.png' %}" alt="Profile Image" class="navbar-profile-img">
-            <span class="navbar-profile-name d-none d-md-inline">Administrator</span>
-            <i class="bi bi-chevron-down navbar-profile-caret"></i>
-          </button>
-          <ul class="dropdown-menu dropdown-menu-end dropdown-menu-profile" aria-labelledby="profile-dropdown">
-            <li class="dropdown-header">Welcome !</li>
-            <li><a class="dropdown-item" href="#"><i class="bi bi-person"></i> My Account</a></li>
-            <li><a class="dropdown-item" href="#"><i class="bi bi-gear"></i> Settings</a></li>
-            <li><a class="dropdown-item" href="#"><i class="bi bi-lock"></i> Lock Screen</a></li>
-            <li>
-              <hr class="dropdown-divider">
-            </li>
-            <li><a class="dropdown-item text-danger" href="page-login.html"><i class="bi bi-box-arrow-right"></i>
-                Logout</a></li>
-          </ul>
-        </div>
-      </div>
-    </header>
-    <!-- END: Top Navbar Component -->
-
-    <!-- START: Dashboard Header Banner -->
     <div class="page-header">
-      <div>
-        <h1 class="page-title">Dashboard</h1>
-        <p class="page-subtitle">An easy way to manage sales with care and precision.</p>
-      </div>
-      <button class="btn-date-picker" type="button" id="date-picker-trigger">
-        <i class="bi bi-calendar4-event"></i>
-        <span id="selected-date-range">January 12, 2026 - January 23, 2026</span>
-        <i class="bi bi-chevron-down ms-1"></i>
-      </button>
-    </div>
-    <!-- END: Dashboard Header Banner -->
 
-    <!-- START: Main Layout Grid (2 Columns: Dashboard + Performance Pane) -->
-    <div class="row g-4">
+        <div>
+            <h1 class="page-title">
+                <i class="bi bi-speedometer2 me-2"></i>
+                Dashboard Overview
+            </h1>
 
-      <!-- TOP AREA: Quick Info Stat Cards Row (Full Width) -->
-      <div class="col-12">
-        <div class="row g-4">
-          <!-- Stat Card 1: Green Alert Banner -->
-          <div class="col-md-4">
-            <div class="card alert-green-card">
-              <div class="position-relative z-index-2">
-                <span class="alert-green-badge">Update</span>
-                <div class="alert-green-date">Feb 14th 2026</div>
-                <div class="alert-green-text">Sales revenue increased 40% in 1 week</div>
-              </div>
-              <a href="#" class="alert-green-link z-index-2" id="alert-link-statistics">
-                <span>See Statistics</span>
-                <i class="bi bi-arrow-right"></i>
-              </a>
-
-              <!-- Inline SVG geometric decoration (Lime green 6-pointed star/asterisk with rounded caps) -->
-              <svg class="alert-green-bg-shape" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <g transform="translate(50,50)">
-                  <rect x="-6" y="-45" width="12" height="90" rx="6" ry="6" fill="#B4F105" />
-                  <rect x="-6" y="-45" width="12" height="90" rx="6" ry="6" fill="#B4F105" transform="rotate(60)" />
-                  <rect x="-6" y="-45" width="12" height="90" rx="6" ry="6" fill="#B4F105" transform="rotate(120)" />
-                </g>
-              </svg>
-            </div>
-          </div>
-
-          <!-- Stat Card 2: Net Income -->
-          <div class="col-md-4">
-            <div class="card card-stat d-flex flex-column justify-content-between">
-              <div>
-                <div class="card-header">
-                  <span class="stat-label">Net Income</span>
-                  <div class="dropdown">
-                    <button class="card-more-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false"
-                      aria-label="More Options" id="btn-more-income">
-                      <i class="bi bi-three-dots"></i>
-                    </button>
-                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-custom">
-                      <li><a class="dropdown-item" href="#"><i class="bi bi-arrow-repeat"></i> Refresh</a></li>
-                      <li><a class="dropdown-item" href="#"><i class="bi bi-file-earmark-arrow-down"></i> Export
-                          Report</a></li>
-                      <li>
-                        <hr class="dropdown-divider">
-                      </li>
-                      <li><a class="dropdown-item text-danger" href="#"><i class="bi bi-eye-slash"></i> Hide Details</a>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-                <div class="stat-value">$196.000</div>
-                <div class="trend-badge trend-up">
-                  <i class="bi bi-arrow-up-right"></i>
-                  <span>+35% from last month</span>
-                </div>
-              </div>
-              <div class="sparkline-container sparkline-card-footer">
-                <div id="income-sparkline"></div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Stat Card 3: Total Return -->
-          <div class="col-md-4">
-            <div class="card card-stat d-flex flex-column justify-content-between">
-              <div>
-                <div class="card-header">
-                  <span class="stat-label">Total Return</span>
-                  <div class="dropdown">
-                    <button class="card-more-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false"
-                      aria-label="More Options" id="btn-more-return">
-                      <i class="bi bi-three-dots"></i>
-                    </button>
-                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-custom">
-                      <li><a class="dropdown-item" href="#"><i class="bi bi-arrow-repeat"></i> Refresh</a></li>
-                      <li><a class="dropdown-item" href="#"><i class="bi bi-file-earmark-arrow-down"></i> Export
-                          Report</a></li>
-                      <li>
-                        <hr class="dropdown-divider">
-                      </li>
-                      <li><a class="dropdown-item text-danger" href="#"><i class="bi bi-eye-slash"></i> Hide Details</a>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-                <div class="stat-value">$32.000</div>
-                <div class="trend-badge trend-down">
-                  <i class="bi bi-arrow-down-left"></i>
-                  <span>-24% from last month</span>
-                </div>
-              </div>
-              <div class="sparkline-container sparkline-card-footer">
-                <div id="return-sparkline"></div>
-              </div>
-            </div>
-          </div>
+            <p class="page-subtitle">
+                Microlab Laboratory Management Analytics
+            </p>
         </div>
-      </div>
-      <!-- END: TOP AREA -->
 
-      <!-- LEFT AREA: Primary Dashboard Stats & Tables -->
-      <div class="col-xl-9 col-lg-8">
-
-        <!-- START: Details Area (Transactions + Performance Charts) -->
-        <div class="row g-4">
-          <!-- Column: Revenue Chart (Full Width / Wider) -->
-          <div class="col-12">
-            <div class="card mb-0">
-              <div class="card-header mb-2">
-                <h2 class="card-title">Revenue</h2>
-                <!-- Custom Static Legends -->
-                <div class="d-flex gap-3 align-items-center">
-                  <div class="chart-legend-item">
-                    <span class="legend-dot bg-forest-medium"></span>
-                    <span class="chart-legend-label">Income</span>
-                  </div>
-                  <div class="chart-legend-item">
-                    <span class="legend-dot bg-lime-accent"></span>
-                    <span class="chart-legend-label">Expenses</span>
-                  </div>
-                </div>
-              </div>
-              <div class="d-flex align-items-baseline gap-2 mb-3">
-                <span class="stat-value-amount">$196.000</span>
-                <span class="trend-badge trend-up fs-xs">+35% from last month</span>
-              </div>
-              <div id="revenue-chart"></div>
-            </div>
-          </div>
-
-          <!-- Column: Transaction List -->
-          <div class="col-md-7 d-flex flex-column">
-            <div class="card h-100 flex-grow-1">
-              <div class="card-header">
-                <h2 class="card-title">Transaction</h2>
-                <div class="dropdown">
-                  <button class="card-more-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false"
-                    aria-label="More Options" id="btn-more-transaction">
-                    <i class="bi bi-three-dots"></i>
-                  </button>
-                  <ul class="dropdown-menu dropdown-menu-end dropdown-menu-custom">
-                    <li><a class="dropdown-item" href="#"><i class="bi bi-funnel"></i> Filter Status</a></li>
-                    <li><a class="dropdown-item" href="#"><i class="bi bi-file-earmark-arrow-down"></i> Export CSV</a>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-
-              <!-- Transaction Items List -->
-              <div class="transaction-list">
-                <div class="transaction-item">
-                  <div class="transaction-icon bg-forest-light text-lime">
-                    <i class="bi bi-spotify"></i>
-                  </div>
-                  <div class="transaction-info">
-                    <div class="transaction-name">Spotify Subscription</div>
-                    <div class="transaction-date">Feb 14, 2026 • 12:40 PM</div>
-                  </div>
-                  <div class="transaction-amount text-main">-$15.00</div>
-                </div>
-
-                <div class="transaction-item">
-                  <div class="transaction-icon bg-forest-light text-lime">
-                    <i class="bi bi-paypal"></i>
-                  </div>
-                  <div class="transaction-info">
-                    <div class="transaction-name">Paypal Transfer</div>
-                    <div class="transaction-date">Feb 13, 2026 • 08:15 AM</div>
-                  </div>
-                  <div class="transaction-amount text-success">+$1,250.00</div>
-                </div>
-
-                <div class="transaction-item">
-                  <div class="transaction-icon bg-forest-light text-lime">
-                    <i class="bi bi-stripe"></i>
-                  </div>
-                  <div class="transaction-info">
-                    <div class="transaction-name">Stripe Payout</div>
-                    <div class="transaction-date">Feb 11, 2026 • 04:30 PM</div>
-                  </div>
-                  <div class="transaction-amount text-success">+$3,400.00</div>
-                </div>
-
-                <div class="transaction-item">
-                  <div class="transaction-icon bg-forest-light text-lime">
-                    <i class="bi bi-slack"></i>
-                  </div>
-                  <div class="transaction-info">
-                    <div class="transaction-name">Slack Pro Workspace</div>
-                    <div class="transaction-date">Feb 09, 2026 • 09:20 AM</div>
-                  </div>
-                  <div class="transaction-amount text-main">-$45.00</div>
-                </div>
-              </div>
-
-            </div>
-          </div>
-
-          <!-- Column: Product Overview Progress -->
-          <div class="col-md-5 d-flex flex-column">
-            <div class="card h-100 flex-grow-1">
-              <div class="card-header">
-                <h2 class="card-title">Product Overview</h2>
-                <div class="dropdown">
-                  <button class="card-more-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false"
-                    aria-label="More Options" id="btn-more-products">
-                    <i class="bi bi-three-dots"></i>
-                  </button>
-                  <ul class="dropdown-menu dropdown-menu-end dropdown-menu-custom">
-                    <li><a class="dropdown-item" href="#"><i class="bi bi-plus-lg"></i> Add Product</a></li>
-                    <li><a class="dropdown-item" href="#"><i class="bi bi-gear"></i> Manage</a></li>
-                  </ul>
-                </div>
-              </div>
-
-              <div class="progress-container">
-                <div class="progress-label-row">
-                  <span class="progress-label">Product Launched</span>
-                  <span class="progress-value">233</span>
-                </div>
-                <div class="progress" role="progressbar" aria-label="Product Launched Progress" aria-valuenow="65"
-                  aria-valuemin="0" aria-valuemax="100">
-                  <div class="progress-bar bg-lime-accent w-65"></div>
-                </div>
-              </div>
-
-              <div class="progress-container">
-                <div class="progress-label-row">
-                  <span class="progress-label">Ongoing Product</span>
-                  <span class="progress-value">23</span>
-                </div>
-                <div class="progress" role="progressbar" aria-label="Ongoing Product Progress" aria-valuenow="20"
-                  aria-valuemin="0" aria-valuemax="100">
-                  <div class="progress-bar bg-lime-accent opacity-50 w-50"></div>
-                </div>
-              </div>
-
-              <div class="progress-container">
-                <div class="progress-label-row">
-                  <span class="progress-label">Product Sold</span>
-                  <span class="progress-value">482</span>
-                </div>
-                <div class="progress" role="progressbar" aria-label="Product Sold Progress" aria-valuenow="85"
-                  aria-valuemin="0" aria-valuemax="100">
-                  <div class="progress-bar bg-lime-accent w-85"></div>
-                </div>
-              </div>
-
-              <div class="progress-container">
-                <div class="progress-label-row">
-                  <span class="progress-label">Product Returned</span>
-                  <span class="progress-value">8</span>
-                </div>
-                <div class="progress" role="progressbar" aria-label="Product Returned Progress" aria-valuenow="10"
-                  aria-valuemin="0" aria-valuemax="100">
-                  <div class="progress-bar bg-brand-orange w-38"></div>
-                </div>
-              </div>
-
-              <div class="progress-container">
-                <div class="progress-label-row">
-                  <span class="progress-label">Product In Stock</span>
-                  <span class="progress-value">1,420</span>
-                </div>
-                <div class="progress" role="progressbar" aria-label="Product In Stock Progress" aria-valuenow="75"
-                  aria-valuemin="0" aria-valuemax="100">
-                  <div class="progress-bar bg-lime-accent w-75"></div>
-                </div>
-              </div>
-
-              <div class="progress-container">
-                <div class="progress-label-row">
-                  <span class="progress-label">Pending Shipment</span>
-                  <span class="progress-value">64</span>
-                </div>
-                <div class="progress" role="progressbar" aria-label="Pending Shipment Progress" aria-valuenow="45"
-                  aria-valuemin="0" aria-valuemax="100">
-                  <div class="progress-bar bg-lime-accent opacity-50 w-45"></div>
-                </div>
-              </div>
-            </div>
-
-          </div>
+        <div class="text-muted small">
+            <i class="bi bi-calendar3 me-1"></i>
+            {% now "d F Y" %}
         </div>
-        <!-- END: Details Area -->
-
-      </div>
-
-      <!-- RIGHT AREA: Performance Details Sidebar Panel -->
-      <div class="col-xl-3 col-lg-4">
-        <div class="right-panel-wrapper d-flex flex-column gap-4 h-100">
-
-          <!-- Performance Donut Chart card -->
-          <div class="card flex-grow-1 d-flex flex-column justify-content-between mb-0">
-            <div class="card-header mb-1">
-              <h2 class="card-title">Total View Performance</h2>
-            </div>
-
-            <div id="views-chart"></div>
-
-            <!-- Custom Legends below the chart -->
-            <div class="chart-legends-container">
-              <div class="chart-legend-item">
-                <span class="legend-dot bg-lime-accent"></span>
-                <span class="text-muted-green">View Count</span>
-              </div>
-              <div class="chart-legend-item">
-                <span class="legend-dot bg-forest-medium"></span>
-                <span class="text-muted-green">Percentage</span>
-              </div>
-              <div class="chart-legend-item">
-                <span class="legend-dot bg-brand-orange"></span>
-                <span class="text-muted-green">Sales</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Level Up Promotion CTA banner -->
-          <div class="promo-banner-card">
-            <!-- Inline SVG geometric decoration (Lime green 6-pointed star/asterisk with rounded caps) -->
-            <svg class="promo-banner-bg-shape" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <g transform="translate(50,50)">
-                <rect x="-6" y="-45" width="12" height="90" rx="6" ry="6" fill="#B4F105" />
-                <rect x="-6" y="-45" width="12" height="90" rx="6" ry="6" fill="#B4F105" transform="rotate(60)" />
-                <rect x="-6" y="-45" width="12" height="90" rx="6" ry="6" fill="#B4F105" transform="rotate(120)" />
-              </g>
-            </svg>
-
-            <h3 class="promo-title">Level up your sales managing to the next level.</h3>
-            <p class="promo-desc">An easy way to manage sales with care and precision.</p>
-            <button class="btn-promo" id="btn-promo-action">Check the updates now</button>
-          </div>
-        </div>
-      </div>
-      <!-- END: RIGHT AREA -->
 
     </div>
-    <!-- END: Main Layout Grid -->
 
-    <!-- START: Footer Component -->
-    <footer class="footer-custom">
-      <div class="footer-left">
-        <span class="footer-logo">
-          <i class="bi bi-asterisk"></i> Spark Admin
-        </span>
-        <span class="footer-separator">|</span>
-        <span class="footer-copy">&copy; 2026 Made with <i class="bi bi-heart-fill text-danger footer-heart"></i> by<a
-            href="https://sparkadminpro.gumroad.com/" target="_blank">Spark Admin</a>• Distributed by <a
-            href="https://www.themewagon.com/" target="_blank">ThemeWagon</a> </span>
-      </div>
-      <div class="footer-right">
-        <ul class="footer-links">
-          <li><a href="#" class="footer-link">Overview</a></li>
-          <li><a href="#" class="footer-link">Statistics</a></li>
-          <li><a href="#" class="footer-link">Help & Documentation</a></li>
-          <li><a href="#" class="footer-link">Status <span class="status-dot"></span></a></li>
-        </ul>
-      </div>
-    </footer>
-    <!-- END: Footer Component -->
 
-  </div>
-  <!-- ==========================================
-         END: Main Content Area
-         ========================================== -->
+    <!-- DATE FILTER -->
 
-  <!-- Local Third-Party Libraries Script dependencies -->
-  <script src="{% static 'assets/libs/bootstrap/js/bootstrap.bundle.min.js'%}"></script>
-  <script src="{% static 'assets/libs/apexcharts/apexcharts.min.js' %}"></script>
-  <script src="{% static 'assets/libs/flatpickr/flatpickr.min.js' %}"></script>
+    <div class="filter-card">
 
-  <!-- Local dashboard interactions controller -->
-  <script src="{% static 'assets/js/dashboard.js' %}"></script>
+        <form method="GET" id="filterForm">
+
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+
+                <div>
+
+                    <h6 class="fw-bold mb-1">
+
+                        <i class="bi bi-funnel me-2"></i>
+                        Dashboard Filters
+
+                    </h6>
+
+                    <span class="filter-description">
+                        Select a period to analyse laboratory performance
+                    </span>
+
+                </div>
+
+                <div class="filter-controls">
+
+                    <select
+                        class="form-select"
+                        name="filter"
+                        id="dateFilter">
+
+                        {% for key,label in filter_options %}
+
+                            <option
+                                value="{{ key }}"
+                                {% if selected_filter == key %}selected{% endif %}>
+
+                                {{ label }}
+
+                            </option>
+
+                        {% endfor %}
+
+                    </select>
+
+                </div>
+
+            </div>
+
+
+            <!-- CUSTOM DATE RANGE -->
+
+            <div
+                class="custom-dates {% if selected_filter == 'custom' %}show{% endif %}"
+                id="customDates">
+
+                <div class="row g-3 align-items-end">
+
+                    <div class="col-md-4">
+
+                        <label class="form-label small fw-semibold">
+                            Start Date
+                        </label>
+
+                        <input
+                            type="date"
+                            class="form-control"
+                            name="start_date"
+                            id="startDate"
+                            value="{{ start_date }}"
+                            max="{% now 'Y-m-d' %}"
+                            required>
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                        <label class="form-label small fw-semibold">
+                            End Date
+                        </label>
+
+                        <input
+                            type="date"
+                            class="form-control"
+                            name="end_date"
+                            id="endDate"
+                            value="{{ end_date }}"
+                            max="{% now 'Y-m-d' %}"
+                            required>
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                        <button
+                            type="submit"
+                            name="filter"
+                            value="custom"
+                            class="btn btn-primary w-100 filter-submit">
+
+                            <i class="bi bi-calendar-check me-2"></i>
+                            Apply Custom Date Range
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </form>
+
+    </div>
+
+
+    <!-- TODAY OVERVIEW -->
+
+    <div class="mb-4">
+
+        <h5 class="section-heading">
+            <i class="bi bi-calendar-check me-2"></i>
+            Today's Overview
+        </h5>
+
+        <div class="row g-3">
+
+            <div class="col-xl-3 col-md-6 col-6">
+
+                <div class="today-card">
+
+                    <div class="d-flex justify-content-between">
+
+                        <span class="today-label">Today's Bills</span>
+
+                        <i class="bi bi-receipt"></i>
+
+                    </div>
+
+                    <div class="today-value">
+                        {{ today_bills|default:0 }}
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-xl-3 col-md-6 col-6">
+
+                <div class="today-card" style="background:linear-gradient(135deg,#B84444,#E76F51);">
+
+                    <div class="d-flex justify-content-between">
+
+                        <span class="today-label">Urgent Bills</span>
+
+                        <i class="bi bi-exclamation-triangle"></i>
+
+                    </div>
+
+                    <div class="today-value">
+                        {{ today_urgent_bills|default:0 }}
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-xl-3 col-md-6 col-6">
+
+                <div class="today-card" style="background:linear-gradient(135deg,#087C7C,#00A6A6);">
+
+                    <div class="d-flex justify-content-between">
+
+                        <span class="today-label">Samples Received</span>
+
+                        <i class="bi bi-check-circle"></i>
+
+                    </div>
+
+                    <div class="today-value">
+                        {{ today_completed_collections|default:0 }}
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-xl-3 col-md-6 col-6">
+
+                <div class="today-card" style="background:linear-gradient(135deg,#A46A13,#E9A23B);">
+
+                    <div class="d-flex justify-content-between">
+
+                        <span class="today-label">Pending Samples</span>
+
+                        <i class="bi bi-hourglass-split"></i>
+
+                    </div>
+
+                    <div class="today-value">
+                        {{ today_pending_collections|default:0 }}
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- KPI CARDS -->
+
+    <div class="mb-4">
+
+        <h5 class="section-heading">
+            <i class="bi bi-bar-chart-line me-2"></i>
+            Performance Summary
+        </h5>
+
+        <div class="row g-3">
+
+
+            <!-- TOTAL BRANCHES -->
+
+            <div class="col-xl-3 col-md-6">
+
+                <div class="dashboard-card">
+
+                    <div class="d-flex justify-content-between">
+
+                        <span class="stat-label">Total Branches</span>
+
+                        <div class="stat-icon icon-blue">
+                            <i class="bi bi-building"></i>
+                        </div>
+
+                    </div>
+
+                    <div class="stat-value">
+                        {{ total_branches }}
+                    </div>
+
+                    <small class="text-muted">
+                        Registered branches
+                    </small>
+
+                </div>
+
+            </div>
+
+
+            <!-- TOTAL BILLS -->
+
+            <div class="col-xl-3 col-md-6">
+
+                <div class="dashboard-card">
+
+                    <div class="d-flex justify-content-between">
+
+                        <span class="stat-label">Total Bills</span>
+
+                        <div class="stat-icon icon-green">
+                            <i class="bi bi-receipt"></i>
+                        </div>
+
+                    </div>
+
+                    <div class="stat-value">
+                        {{ total_bills }}
+                    </div>
+
+                    <small class="text-muted">
+                        Patient registrations
+                    </small>
+
+                </div>
+
+            </div>
+
+
+            <!-- UNIQUE PATIENTS -->
+
+            <div class="col-xl-3 col-md-6">
+
+                <div class="dashboard-card">
+
+                    <div class="d-flex justify-content-between">
+
+                        <span class="stat-label">Unique Patients</span>
+
+                        <div class="stat-icon icon-purple">
+                            <i class="bi bi-person-check"></i>
+                        </div>
+
+                    </div>
+
+                    <div class="stat-value">
+                        {{ total_patients }}
+                    </div>
+
+                    <small class="text-muted">
+                        Unique phone numbers
+                    </small>
+
+                </div>
+
+            </div>
+
+
+            <!-- URGENT BILLS -->
+
+            <div class="col-xl-3 col-md-6">
+
+                <div class="dashboard-card">
+
+                    <div class="d-flex justify-content-between">
+
+                        <span class="stat-label">Urgent Bills</span>
+
+                        <div class="stat-icon icon-red">
+                            <i class="bi bi-exclamation-triangle"></i>
+                        </div>
+
+                    </div>
+
+                    <div class="stat-value">
+                        {{ urgent_bills }}
+                    </div>
+
+                    <small class="text-muted">
+                        Urgent registrations
+                    </small>
+
+                </div>
+
+            </div>
+
+
+            <!-- NORMAL BILLS -->
+
+            <div class="col-xl-3 col-md-6">
+
+                <div class="dashboard-card">
+
+                    <div class="d-flex justify-content-between">
+
+                        <span class="stat-label">Normal Bills</span>
+
+                        <div class="stat-icon icon-blue">
+                            <i class="bi bi-person"></i>
+                        </div>
+
+                    </div>
+
+                    <div class="stat-value">
+                        {{ normal_bills }}
+                    </div>
+
+                    <small class="text-muted">
+                        Normal registrations
+                    </small>
+
+                </div>
+
+            </div>
+
+
+            <!-- TOTAL SAMPLE RECEIPTS -->
+
+            <div class="col-xl-3 col-md-6">
+
+                <div class="dashboard-card">
+
+                    <div class="d-flex justify-content-between">
+
+                        <span class="stat-label">Total Sample Receipts</span>
+
+                        <div class="stat-icon icon-cyan">
+                            <i class="bi bi-clipboard2-pulse"></i>
+                        </div>
+
+                    </div>
+
+                    <div class="stat-value">
+                        {{ total_collections }}
+                    </div>
+
+                    <small class="text-muted">
+                        Registered sample receipts
+                    </small>
+
+                </div>
+
+            </div>
+
+
+            <!-- RECEIVED SAMPLES -->
+
+            <div class="col-xl-3 col-md-6">
+
+                <div class="dashboard-card">
+
+                    <div class="d-flex justify-content-between">
+
+                        <span class="stat-label">Received Samples</span>
+
+                        <div class="stat-icon icon-green">
+                            <i class="bi bi-check-circle"></i>
+                        </div>
+
+                    </div>
+
+                    <div class="stat-value">
+                        {{ completed_collections }}
+                    </div>
+
+                    <small class="text-muted">
+                        Samples marked as received
+                    </small>
+
+                </div>
+
+            </div>
+
+
+            <!-- PENDING SAMPLES -->
+
+            <div class="col-xl-3 col-md-6">
+
+                <div class="dashboard-card">
+
+                    <div class="d-flex justify-content-between">
+
+                        <span class="stat-label">Pending Samples</span>
+
+                        <div class="stat-icon icon-orange">
+                            <i class="bi bi-hourglass-split"></i>
+                        </div>
+
+                    </div>
+
+                    <div class="stat-value">
+                        {{ pending_collections }}
+                    </div>
+
+                    <small class="text-muted">
+                        Samples awaiting receipt
+                    </small>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- PATIENT ANALYTICS -->
+
+    <div class="row g-3 mb-4">
+
+        <div class="col-lg-8">
+
+            <div class="chart-card">
+
+                <h5 class="chart-title">
+                    Patient Registration Analytics
+                </h5>
+
+                <p class="chart-subtitle">
+                    Patient bill registrations for the selected period
+                </p>
+
+                <div id="patientChart" class="chart-area"></div>
+
+            </div>
+
+        </div>
+
+
+        <div class="col-lg-4">
+
+            <div class="chart-card">
+
+                <h5 class="chart-title">
+                    Patient Priority Distribution
+                </h5>
+
+                <p class="chart-subtitle">
+                    Urgent and normal patient registrations
+                </p>
+
+                <div id="urgencyChart" class="chart-area"></div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- SAMPLE RECEIPT ANALYTICS -->
+
+    <div class="row g-3 mb-4">
+
+        <div class="col-lg-8">
+
+            <div class="chart-card">
+
+                <h5 class="chart-title">
+                    Sample Receipt Performance
+                </h5>
+
+                <p class="chart-subtitle">
+                    Received and pending samples based on bill registration date
+                </p>
+
+                <div id="collectionChart" class="chart-area"></div>
+
+            </div>
+
+        </div>
+
+
+        <div class="col-lg-4">
+
+            <div class="chart-card">
+
+                <h5 class="chart-title">
+                    Sample Receipt Status
+                </h5>
+
+                <p class="chart-subtitle">
+                    Overall received and pending percentage
+                </p>
+
+                <div id="completionChart" class="chart-area"></div>
+
+                <hr>
+
+                <div class="d-flex justify-content-between mb-2">
+
+                    <span class="text-muted small">
+                        Received
+                    </span>
+
+                    <strong>
+                        {{ completed_collections }}
+                    </strong>
+
+                </div>
+
+                <div class="progress mb-3">
+
+                    <div class="progress-bar"
+                         style="background-color:var(--ml-green);width:{{ completion_percentage }}%">
+                    </div>
+
+                </div>
+
+
+                <div class="d-flex justify-content-between mb-2">
+
+                    <span class="text-muted small">
+                        Pending
+                    </span>
+
+                    <strong>
+                        {{ pending_collections }}
+                    </strong>
+
+                </div>
+
+                <div class="progress">
+
+                    <div class="progress-bar"
+                         style="background-color:var(--ml-amber);width:{{ pending_percentage }}%">
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- BRANCH ANALYTICS -->
+
+    <div class="row g-3 mb-4">
+
+        <div class="col-12">
+
+            <div class="chart-card">
+
+                <h5 class="chart-title">
+                    Branch-wise Patient Statistics
+                </h5>
+
+                <p class="chart-subtitle">
+                    Patient bill registrations across laboratory branches
+                </p>
+
+                <div id="branchChart" class="chart-area"></div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- FOOTER -->
+
+</div>
+
+{% include 'footer.html' %}
+
+
+<!-- CHART DATA -->
+
+{{ chart_data|json_script:"dashboard-chart-data" }}
+
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    // ==========================================
+    // DATE FILTER
+    // ==========================================
+
+    const dateFilter = document.getElementById("dateFilter");
+
+    const customDates = document.getElementById("customDates");
+
+    const filterForm = document.getElementById("filterForm");
+
+    const startDate = document.getElementById("startDate");
+
+    const endDate = document.getElementById("endDate");
+
+
+    function toggleCustomDates() {
+
+        if (dateFilter.value === "custom") {
+
+            customDates.classList.add("show");
+
+        } else {
+
+            customDates.classList.remove("show");
+
+        }
+
+    }
+
+
+    dateFilter.addEventListener("change", function () {
+
+        toggleCustomDates();
+
+        if (this.value !== "custom") {
+
+            filterForm.submit();
+
+        }
+
+    });
+
+
+    startDate.addEventListener("change", function () {
+
+        endDate.min = this.value;
+
+    });
+
+
+    endDate.addEventListener("change", function () {
+
+        if (startDate.value && this.value < startDate.value) {
+
+            alert("End date cannot be earlier than start date.");
+
+            this.value = "";
+
+        }
+
+    });
+
+
+    toggleCustomDates();
+
+
+    // ==========================================
+    // CHART DATA
+    // ==========================================
+
+    const dataNode = document.getElementById("dashboard-chart-data");
+
+    let data = {};
+
+    try {
+
+        data = dataNode
+            ? JSON.parse(dataNode.textContent || "{}")
+            : {};
+
+    } catch (error) {
+
+        console.error("Chart data JSON error:", error);
+
+    }
+
+
+    const asNumbers = value => {
+
+        if (!Array.isArray(value)) return [];
+
+        return value.map(v => {
+
+            const number = Number(v);
+
+            return Number.isFinite(number) ? number : 0;
+
+        });
+
+    };
+
+
+    const labels = Array.isArray(data.labels) ? data.labels : [];
+
+    const patients = asNumbers(data.patients);
+
+    const completed = asNumbers(data.completed);
+
+    const pending = asNumbers(data.pending);
+
+
+    const urgencyLabels =
+        data.urgency && Array.isArray(data.urgency.labels)
+            ? data.urgency.labels
+            : ["Urgent", "Normal"];
+
+
+    const urgencyValues =
+        asNumbers(data.urgency && data.urgency.values);
+
+
+    const branchLabels =
+        data.branches && Array.isArray(data.branches.labels)
+            ? data.branches.labels
+            : [];
+
+
+    const branchValues =
+        asNumbers(data.branches && data.branches.values);
+
+
+    // ==========================================
+    // MICROLAB COLOUR PALETTE
+    // ==========================================
+
+    const C = {
+
+        navy: "#123B5D",
+
+        blue: "#1677B8",
+
+        teal: "#00A6A6",
+
+        aqua: "#55C6C8",
+
+        green: "#2E9D72",
+
+        amber: "#E9A23B",
+
+        coral: "#E76F51",
+
+        purple: "#7467B8"
+
+    };
+
+
+    // ==========================================
+    // CHECK APEXCHARTS
+    // ==========================================
+
+    if (typeof ApexCharts === "undefined") {
+
+        document.querySelectorAll(".chart-area").forEach(el => {
+
+            el.innerHTML =
+                '<div class="text-danger small p-3">Chart library could not load. Check ApexCharts static path.</div>';
+
+        });
+
+        return;
+
+    }
+
+
+    // ==========================================
+    // COMMON CHART SETTINGS
+    // ==========================================
+
+    const base = {
+
+        chart: {
+
+            toolbar: {
+                show: false
+            },
+
+            fontFamily: "inherit",
+
+            animations: {
+                enabled: true
+            }
+
+        },
+
+        dataLabels: {
+            enabled: false
+        },
+
+        grid: {
+            borderColor: "#edf0f5",
+            strokeDashArray: 4
+        },
+
+        tooltip: {
+            theme: "light"
+        }
+
+    };
+
+
+    function render(selector, options) {
+
+        const element = document.querySelector(selector);
+
+        if (!element) return;
+
+        try {
+
+            const chart = new ApexCharts(element, options);
+
+            chart.render().catch(error => {
+
+                console.error("Chart rendering error:", selector, error);
+
+            });
+
+        } catch (error) {
+
+            console.error("Chart render failed:", selector, error);
+
+            element.innerHTML =
+                '<div class="text-muted small p-3">Unable to display chart.</div>';
+
+        }
+
+    }
+
+
+    // ==========================================
+    // PATIENT REGISTRATION CHART
+    // ==========================================
+
+    render("#patientChart", {
+
+        ...base,
+
+        chart: {
+            ...base.chart,
+            type: "area",
+            height: 300
+        },
+
+        series: [{
+
+            name: "Patient Bills",
+
+            data: patients
+
+        }],
+
+        xaxis: {
+
+            categories: labels,
+
+            labels: {
+                rotate: -35
+            }
+
+        },
+
+        stroke: {
+
+            curve: "smooth",
+
+            width: 3
+
+        },
+
+        fill: {
+
+            type: "gradient",
+
+            gradient: {
+
+                opacityFrom: 0.35,
+
+                opacityTo: 0.04
+
+            }
+
+        },
+
+        colors: [C.blue],
+
+        markers: {
+            size: 4
+        },
+
+        yaxis: {
+
+            min: 0,
+
+            forceNiceScale: true,
+
+            labels: {
+
+                formatter: v => Math.round(v)
+
+            }
+
+        },
+
+        noData: {
+            text: "No patient registrations in this period"
+        }
+
+    });
+
+
+    // ==========================================
+    // URGENCY DISTRIBUTION
+    // ==========================================
+
+    render("#urgencyChart", {
+
+        ...base,
+
+        chart: {
+
+            ...base.chart,
+
+            type: "donut",
+
+            height: 300
+
+        },
+
+        series: urgencyValues,
+
+        labels: urgencyLabels,
+
+        colors: [C.coral, C.blue],
+
+        legend: {
+            position: "bottom"
+        },
+
+        dataLabels: {
+
+            enabled: true,
+
+            formatter: val => val.toFixed(1) + "%"
+
+        },
+
+        plotOptions: {
+
+            pie: {
+
+                donut: {
+
+                    size: "68%",
+
+                    labels: {
+
+                        show: true,
+
+                        total: {
+
+                            show: true,
+
+                            label: "Bills",
+
+                            formatter: w =>
+
+                                w.globals.seriesTotals.reduce(
+                                    (a, b) => a + b, 0
+                                )
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        },
+
+        noData: {
+            text: "No patient priority data"
+        }
+
+    });
+
+
+    // ==========================================
+    // SAMPLE RECEIPT PERFORMANCE
+    // ==========================================
+
+    render("#collectionChart", {
+
+        ...base,
+
+        chart: {
+
+            ...base.chart,
+
+            type: "bar",
+
+            height: 300
+
+        },
+
+        series: [
+
+            {
+
+                name: "Received Samples",
+
+                data: completed
+
+            },
+
+            {
+
+                name: "Pending Samples",
+
+                data: pending
+
+            }
+
+        ],
+
+        xaxis: {
+
+            categories: labels,
+
+            labels: {
+                rotate: -35
+            }
+
+        },
+
+        colors: [C.green, C.amber],
+
+        plotOptions: {
+
+            bar: {
+
+                horizontal: false,
+
+                columnWidth: "48%",
+
+                borderRadius: 4,
+
+                dataLabels: {
+                    position: "top"
+                }
+
+            }
+
+        },
+
+        dataLabels: {
+
+            enabled: true,
+
+            offsetY: -18,
+
+            formatter: v => v ? v : ""
+
+        },
+
+        legend: {
+            position: "top"
+        },
+
+        yaxis: {
+
+            min: 0,
+
+            forceNiceScale: true,
+
+            labels: {
+
+                formatter: v => Math.round(v)
+
+            }
+
+        },
+
+        noData: {
+            text: "No sample receipts in this period"
+        }
+
+    });
+
+
+    // ==========================================
+    // SAMPLE RECEIPT COMPLETION
+    // ==========================================
+
+    const completedTotal =
+        Number("{{ completed_collections|default:0 }}") || 0;
+
+    const pendingTotal =
+        Number("{{ pending_collections|default:0 }}") || 0;
+
+
+    render("#completionChart", {
+
+        ...base,
+
+        chart: {
+
+            ...base.chart,
+
+            type: "donut",
+
+            height: 240
+
+        },
+
+        series: [completedTotal, pendingTotal],
+
+        labels: ["Received", "Pending"],
+
+        colors: [C.green, C.amber],
+
+        legend: {
+            position: "bottom"
+        },
+
+        dataLabels: {
+
+            enabled: true,
+
+            formatter: val => val.toFixed(1) + "%"
+
+        },
+
+        plotOptions: {
+
+            pie: {
+
+                donut: {
+
+                    size: "70%",
+
+                    labels: {
+
+                        show: true,
+
+                        total: {
+
+                            show: true,
+
+                            label: "Samples",
+
+                            formatter: w =>
+
+                                w.globals.seriesTotals.reduce(
+                                    (a, b) => a + b, 0
+                                )
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        },
+
+        noData: {
+            text: "No sample receipt data available"
+        }
+
+    });
+
+
+    // ==========================================
+    // BRANCH ANALYTICS
+    // ==========================================
+
+    render("#branchChart", {
+
+        ...base,
+
+        chart: {
+
+            ...base.chart,
+
+            type: "bar",
+
+            height: Math.max(320, branchLabels.length * 42)
+
+        },
+
+        series: [{
+
+            name: "Patient Bills",
+
+            data: branchValues
+
+        }],
+
+        xaxis: {
+
+            categories: branchLabels
+
+        },
+
+        colors: [C.teal],
+
+        plotOptions: {
+
+            bar: {
+
+                horizontal: true,
+
+                borderRadius: 4,
+
+                barHeight: "58%",
+
+                dataLabels: {
+                    position: "right"
+                }
+
+            }
+
+        },
+
+        dataLabels: {
+
+            enabled: true,
+
+            formatter: v => v ? v : ""
+
+        },
+
+        yaxis: {
+            min: 0
+        },
+
+        noData: {
+            text: "No branch-wise patient data"
+        }
+
+    });
+
+
+    console.info("Microlab dashboard loaded successfully", data);
+
+});
+
+</script>
+
+
+<script src="{% static 'assets/libs/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+
 </body>
-
 </html>
